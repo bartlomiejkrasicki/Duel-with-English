@@ -12,5 +12,4 @@ public interface DatabaseColumnNames extends BaseColumns {
     String TABLE_NAME = "vocabulary_table";
     String COLUMN_NAME_GROUP_NUMBER = "group_number";
     String COLUMN_NAME_ITEM_NUMBER = "item_number";
-
 }
