@@ -54,6 +54,7 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
     private SQLiteCursor pobierzDane() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         SQLiteCursor cursor = (SQLiteCursor) sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME, null);
+
         return cursor;
     }
 }
