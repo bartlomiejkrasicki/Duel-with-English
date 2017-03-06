@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="70dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:orientation="vertical"
+        android:layout_weight="12"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/engWord"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/plWord"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:contentDescription="@string/favourite_star_content_description"
+        android:src="@android:drawable/star_big_off"
+        android:id="@+id/favourite_star_lv"
+        android:layout_weight="1"
+        android:visibility="gone"
+        android:layout_gravity="end"
+        android:onClick="addToFavourite" />
+
+</LinearLayout>
