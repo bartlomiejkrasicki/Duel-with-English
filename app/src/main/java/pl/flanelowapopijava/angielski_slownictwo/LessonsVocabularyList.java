@@ -31,7 +31,6 @@ public class LessonsVocabularyList extends AppCompatActivity {
         vocabularyFavouritePL = new ArrayList<>();
         vocabularyFavouriteEN = new ArrayList<>();
 
-
         Intent intent = getIntent();
         int i = intent.getIntExtra("LIST_CHOICE_GROUP", 200);
         int i1 = intent.getIntExtra("LIST_CHOICE_ITEM", 200);
