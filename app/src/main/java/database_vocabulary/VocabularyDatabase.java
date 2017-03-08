@@ -15,6 +15,10 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         super(context, DatabaseColumnNames.DATABASE_NAME, factory, DatabaseColumnNames.DATABASE_VERSION);
     }
 
+    public VocabularyDatabase(Context context){
+        super(context, DatabaseColumnNames.DATABASE_NAME, null, DatabaseColumnNames.DATABASE_VERSION);
+    }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseColumnNames.TABLE_NAME
@@ -38,7 +42,7 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         super.onDowngrade(db, oldVersion, newVersion);
     }
 
-    private boolean setValuesToDatabase(int columnGroup, int columnItem, String engword, String plword, String favouriteImage){
+    public void putValuesToDatabase(int columnGroup, int columnItem, String engword, String plword, String favouriteImage){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER, columnGroup);
@@ -47,14 +51,28 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         values.put(DatabaseColumnNames.COLUMN_NAME_PLWORD, plword);
         values.put(DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE, favouriteImage);
 
-        long newRowId = sqLiteDatabase.insert(DatabaseColumnNames.TABLE_NAME, null, values);
-        return true;
+        sqLiteDatabase.insert(DatabaseColumnNames.TABLE_NAME, null, values);
     }
 
-    private SQLiteCursor pobierzDane() {
+    public SQLiteCursor getValues() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         SQLiteCursor cursor = (SQLiteCursor) sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME, null);
 
         return cursor;
+    }
+
+    public SQLiteCursor takeValues(){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        SQLiteCursor cursor = (SQLiteCursor) sqLiteDatabase.query(DatabaseColumnNames.TABLE_NAME, new String[]{DatabaseColumnNames._ID, DatabaseColumnNames.COLUMN_NAME_ENGWORD, DatabaseColumnNames.COLUMN_NAME_PLWORD}, null, null, null, null, DatabaseColumnNames.COLUMN_NAME_PLWORD + " DESC");
+        return cursor;
+    }
+
+    public void showVocabulary(SQLiteCursor cursor){
+        while(cursor.moveToNext()){
+            long id = cursor.getLong(0);
+            String plword = cursor.getString(3);
+            String engword = cursor.getString(4);
+            String favouriteImageStar = cursor.getString(5);
+        }
     }
 }
