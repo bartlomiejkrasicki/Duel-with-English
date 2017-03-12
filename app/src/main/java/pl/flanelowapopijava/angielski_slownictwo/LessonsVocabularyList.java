@@ -1,6 +1,8 @@
 package pl.flanelowapopijava.angielski_slownictwo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,13 +13,15 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import database_vocabulary.DatabaseColumnNames;
+import database_vocabulary.VocabularyDatabase;
+
 public class LessonsVocabularyList extends AppCompatActivity {
 
     private LessonsVocabularyListAdapter adapter;
-    private List<String> vocabularyLessonsPL;
-    private List<String> vocabularyLessonsEN;
-    private List<String> vocabularyFavouritePL;
-    private List<String> vocabularyFavouriteEN;
+    public static List<String> vocabularyLessonsPL;
+    public static List<String> vocabularyLessonsEN;
+    private VocabularyDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,17 +30,21 @@ public class LessonsVocabularyList extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_lessons_vocabulary);
         setSupportActionBar(toolbar);
 
-
         ListView LVVocabularyLessons = (ListView) findViewById(R.id.lessonsVocabularyListView);
-        vocabularyFavouritePL = new ArrayList<>();
-        vocabularyFavouriteEN = new ArrayList<>();
-
         Intent intent = getIntent();
         int i = intent.getIntExtra("LIST_CHOICE_GROUP", 200);
         int i1 = intent.getIntExtra("LIST_CHOICE_ITEM", 200);
-        initLessons(i, i1);
-        adapter = new LessonsVocabularyListAdapter(this, vocabularyLessonsPL, vocabularyLessonsEN);
+
+        Context context = getApplicationContext();
+        context.deleteDatabase(DatabaseColumnNames.DATABASE_NAME);
+        database = new VocabularyDatabase(getApplicationContext());
+        database.initData();
+        Cursor cursor = database.getValues();
+        adapter = new LessonsVocabularyListAdapter(this, database, cursor);
         LVVocabularyLessons.setAdapter(adapter);
+        cursor.close();
+        database.close();
+
     }
 
     @Override

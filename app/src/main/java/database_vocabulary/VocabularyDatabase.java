@@ -2,10 +2,11 @@ package database_vocabulary;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteCursor;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class VocabularyDatabase extends SQLiteOpenHelper {
@@ -20,22 +21,19 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {                                                                           //tworzenie tablicy
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseColumnNames.TABLE_NAME
-                + " (" + DatabaseColumnNames._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " (" + DatabaseColumnNames._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER + " INTEGER,"
                 + DatabaseColumnNames.COLUMN_NAME_ITEM_NUMBER + " INTEGER,"
                 + DatabaseColumnNames.COLUMN_NAME_PLWORD + " TEXT,"
                 + DatabaseColumnNames.COLUMN_NAME_ENGWORD + " TEXT,"
                 + DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON + " INTEGER)");
-        if (sqLiteDatabase.equals(null))
-            initData();
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {                                          //aktualizacja danych
-        Log.d("AKTUALIZACJA", "Aktualizacja bazy danych z wersji: " + oldVersion + " na: " + newVersion);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXIST " + DatabaseColumnNames.TABLE_NAME);
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {//aktualizacja danych
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseColumnNames.TABLE_NAME + "");
         onCreate(sqLiteDatabase);
     }
 
@@ -56,35 +54,33 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.insert(DatabaseColumnNames.TABLE_NAME, null, values);
     }
 
-    public SQLiteCursor getValues() {                          //pobieranie danych
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        SQLiteCursor cursor = (SQLiteCursor) sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME, null);
-
-        return cursor;
-    }
-
-    public SQLiteCursor takeValues(){                           //pobieranie danych
+    public Cursor getValues(){                           //pobieranie danych
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        SQLiteCursor cursor = (SQLiteCursor) sqLiteDatabase.query(DatabaseColumnNames.TABLE_NAME, new String[]{DatabaseColumnNames._ID, DatabaseColumnNames.COLUMN_NAME_ENGWORD,
-                DatabaseColumnNames.COLUMN_NAME_PLWORD, DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON}, null, null, null, null, DatabaseColumnNames.COLUMN_NAME_PLWORD + " DESC");
+        Cursor cursor = sqLiteDatabase.query(DatabaseColumnNames.TABLE_NAME, new String[]{DatabaseColumnNames._ID, DatabaseColumnNames.COLUMN_NAME_ENGWORD,
+                DatabaseColumnNames.COLUMN_NAME_PLWORD, DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON}, null, null, null, null, null);
         return cursor;
     }
 
-    public void showVocabulary(SQLiteCursor cursor){            //pokazywanie danych
-        while(cursor.moveToNext()){
+    public int getTableCount(){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT COUNT (*) FROM " + DatabaseColumnNames.TABLE_NAME + ";", null);
+        return cursor.getCount();
+    }
+
+    public void showVocabulary(Cursor cursor, TextView plword, TextView engword, ImageView favouriteImageStar) {            //pokazywanie danych
+        while (cursor.moveToNext()) {
             long id = cursor.getLong(0);
-            String plword = cursor.getString(3);
-            String engword = cursor.getString(4);
-            int favouriteImageStar = cursor.getInt(5);
+            plword.setText(cursor.getString(2));
+            engword.setText(cursor.getString(1));
         }
     }
 
-    private void initData(){                            //inicjalizacja danych
+    public void initData(){                            //inicjalizacja danych
         putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
+        putValuesToDatabase(0, 1, "jump", "skakać", 0);
+        putValuesToDatabase(0, 2, "jump", "skakać", 0);
+        putValuesToDatabase(0, 3, "jump", "skakać", 0);
+        putValuesToDatabase(0, 4, "jump", "skakać", 0);
+        putValuesToDatabase(0, 5, "jump", "skakać", 0);
     }
 }

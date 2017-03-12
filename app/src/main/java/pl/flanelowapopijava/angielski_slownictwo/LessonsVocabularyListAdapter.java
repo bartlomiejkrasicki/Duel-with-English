@@ -1,6 +1,7 @@
 package pl.flanelowapopijava.angielski_slownictwo;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,35 +9,29 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.util.List;
+import database_vocabulary.VocabularyDatabase;
 
 public class LessonsVocabularyListAdapter extends BaseAdapter{
 
     private Context context;
-    private List<String> valuesPL;
-    private List<String> valuesEN;
-    private boolean ENorPL;
+    private Cursor cursor;
+    private VocabularyDatabase database;
     private ImageButton favouriteStar;
 
-    public LessonsVocabularyListAdapter(Context context, List<String> valuesPL, List<String> valuesEN) {
+    public LessonsVocabularyListAdapter(Context context, VocabularyDatabase database, Cursor cursor) {
         this.context = context;
-        this.valuesPL = valuesPL;
-        this.valuesEN = valuesEN;
+        this.database = database;
+        this.cursor = cursor;
     }
 
     @Override
     public int getCount() {
-        return valuesEN.size();
+        return cursor.getCount();
     }
 
     @Override
     public Object getItem(int i) {
-        if (ENorPL) {
-            return valuesEN.get(i);
-        }
-        else {
-            return valuesPL.get(i);
-        }
+        return  i;
     }
 
     @Override
@@ -44,14 +39,8 @@ public class LessonsVocabularyListAdapter extends BaseAdapter{
         return i;
     }
 
-
-
     @Override
     public View getView(int i, View view, final ViewGroup viewGroup) {
-        ENorPL = true;
-        String engWord = (String) getItem(i);
-        ENorPL = false;
-        String plWord = (String) getItem(i);
         if (view == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             view = layoutInflater.inflate(R.layout.lv_vocabulary_lessons_item, null);
@@ -65,8 +54,11 @@ public class LessonsVocabularyListAdapter extends BaseAdapter{
         }
         TextView polishWord = (TextView) view.findViewById(R.id.plWord);
         TextView englishWord = (TextView) view.findViewById(R.id.engWord);
-        polishWord.setText(engWord);
-        englishWord.setText(plWord);
+        VocabularyDatabase database = new VocabularyDatabase(view.getContext());
+        cursor = database.getValues();
+        database.showVocabulary(cursor, polishWord, englishWord, favouriteStar);
+
+
         return view;
     }
 }
