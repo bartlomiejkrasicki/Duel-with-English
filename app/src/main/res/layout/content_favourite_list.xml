@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="pl.flanelowapopijava.angielski_slownictwo.LessonsVocabularyList"
+    tools:context="pl.flanelowapopijava.angielski_slownictwo.lessons_vocabulary_list.LessonsVocabularyList"
     tools:showIn="@layout/activity_favourite_list">
 
     <ListView

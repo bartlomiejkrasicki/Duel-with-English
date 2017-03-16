@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="70dp">
 
@@ -31,14 +32,14 @@
     </LinearLayout>
 
     <ImageButton
+        android:id="@+id/favourite_star_lv"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
-        android:contentDescription="@string/favourite_star_content_description"
-        android:src="@android:drawable/star_big_off"
-        android:id="@+id/favourite_star_lv"
-        android:layout_weight="1"
-        android:visibility="gone"
         android:layout_gravity="end"
-        android:onClick="addToFavourite" />
+        android:layout_weight="1"
+        android:contentDescription="@string/favourite_star_content_description"
+        android:onClick="addToFavourite"
+        android:visibility="invisible"
+        app:srcCompat="@android:drawable/btn_star_big_off" />
 
 </LinearLayout>

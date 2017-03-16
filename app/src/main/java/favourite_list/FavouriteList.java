@@ -1,4 +1,4 @@
-package pl.flanelowapopijava.angielski_slownictwo;
+package favourite_list;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.ListView;
 
 import java.util.List;
+
+import lessons_vocabulary_list.LessonsVocabularyList;
+import pl.flanelowapopijava.angielski_slownictwo.R;
 
 public class FavouriteList extends AppCompatActivity {
 
@@ -46,5 +49,4 @@ public class FavouriteList extends AppCompatActivity {
         adapter = new FavouriteListAdapter(vocabularyFavouriteEN, vocabularyFavouritePL, this, preferences);
         favouriteListView.setAdapter(adapter);
     }
-
 }

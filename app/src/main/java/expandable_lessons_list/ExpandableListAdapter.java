@@ -1,4 +1,4 @@
-package pl.flanelowapopijava.angielski_slownictwo;
+package expandable_lessons_list;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
+
+import pl.flanelowapopijava.angielski_slownictwo.R;
 
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {

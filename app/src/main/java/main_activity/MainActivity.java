@@ -1,4 +1,4 @@
-package pl.flanelowapopijava.angielski_slownictwo;
+package main_activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import favourite_list.FavouriteList;
+import pl.flanelowapopijava.angielski_slownictwo.R;
+import expandable_lessons_list.VocabularyExpandableList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void vocabularyButtonOnClick(View view){         //klikniecie przycisku słownictwo
-        Intent intent = new Intent(this, VocabularyList.class);
+        Intent intent = new Intent(this, VocabularyExpandableList.class);
         startActivity(intent);
     }
 

@@ -1,4 +1,5 @@
-package pl.flanelowapopijava.angielski_slownictwo;
+package favourite_list;
+
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import pl.flanelowapopijava.angielski_slownictwo.R;
+
 public class FavouriteListAdapter extends BaseAdapter {
 
     private List<String> valuesEN;
@@ -19,8 +22,8 @@ public class FavouriteListAdapter extends BaseAdapter {
     private SharedPreferences preferences;
 
     public FavouriteListAdapter(List<String> valuesEN, List<String> valuesPL, Context context, SharedPreferences preferences) {
-//        this.valuesEN = valuesEN;
-//        this.valuesPL = valuesPL;
+        //        this.valuesEN = valuesEN;
+        //        this.valuesPL = valuesPL;
         this.context = context;
         this.preferences = preferences;
     }
@@ -32,13 +35,13 @@ public class FavouriteListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-//        if (PLOrEN){
-//            return valuesPL.get(i);
-//        }
-//        else {
-//            return valuesEN.get(i);
-//        }
-    return null;
+        //        if (PLOrEN){
+        //            return valuesPL.get(i);
+        //        }
+        //        else {
+        //            return valuesEN.get(i);
+        //        }
+        return null;
     }
 
     @Override
@@ -48,20 +51,14 @@ public class FavouriteListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-//        PLOrEN = false;
-//        final String enTemp = (String) getItem(i);
-//        PLOrEN = true;
-//        final String plTemp = (String) getItem(i);
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.lv_vocabulary_lessons_item, null);
+            TextView enVocabularyTV = (TextView) view.findViewById(R.id.engWord);
+            TextView plVocabularyTV = (TextView) view.findViewById(R.id.plWord);
+            enVocabularyTV.setText("tak tak");
+            plVocabularyTV.setText("tak tak");
         }
-//        String sharedEN = preferences.getString(enTemp, "DEFAULT");
-//        String sharedPL = preferences.getString(plTemp, "DEFAULT");
-        TextView enVocabularyTV = (TextView) view.findViewById(R.id.engWord);
-        TextView plVocabularyTV = (TextView) view.findViewById(R.id.plWord);
-        enVocabularyTV.setText("tak tak");
-        plVocabularyTV.setText("tak tak");
         return view;
     }
 }

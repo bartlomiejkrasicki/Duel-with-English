@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".MainActivity"
+            android:name="main_activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -21,33 +21,33 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="main_activity.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pl.flanelowapopijava.angielski_slownictwo.MainActivity" />
+                android:value="main_activity.MainActivity" />
         </activity>
         <activity
-            android:name=".VocabularyList"
+            android:name="expandable_lessons_list.VocabularyExpandableList"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".LessonsVocabularyList"
+            android:name="lessons_vocabulary_list.LessonsVocabularyList"
             android:label="@string/title_activity_lessons_vocabulary_list"
-            android:parentActivityName=".VocabularyList"
+            android:parentActivityName="expandable_lessons_list.VocabularyExpandableList"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pl.flanelowapopijava.angielski_slownictwo.VocabularyList" />
+                android:value="pl.flanelowapopijava.angielski_slownictwo.expandable_lessons_list.VocabularyExpandableList" />
         </activity>
         <activity
-            android:name=".FavouriteList"
+            android:name="favourite_list.FavouriteList"
             android:label="@string/title_activity_favourite_list"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="main_activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pl.flanelowapopijava.angielski_slownictwo.MainActivity" />
+                android:value="main_activity.MainActivity" />
         </activity>
     </application>
 
