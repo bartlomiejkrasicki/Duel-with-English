@@ -38,7 +38,6 @@
         android:layout_gravity="end"
         android:layout_weight="1"
         android:contentDescription="@string/favourite_star_content_description"
-        android:onClick="addToFavourite"
         android:visibility="invisible"
         app:srcCompat="@android:drawable/btn_star_big_off" />
 

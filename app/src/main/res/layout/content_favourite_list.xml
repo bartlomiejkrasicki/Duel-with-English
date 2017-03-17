@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="pl.flanelowapopijava.angielski_slownictwo.lessons_vocabulary_list.LessonsVocabularyList"
+    tools:context="lessons_vocabulary_list.LessonsVocabularyList"
     tools:showIn="@layout/activity_favourite_list">
 
     <ListView
@@ -14,6 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_margin="@dimen/fab_margin" />
+        android:layout_marginBottom="@dimen/activity_vertical_listview"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin_listview"
+        android:layout_marginRight="@dimen/activity_horizontal_margin_listview"
+        android:layout_marginTop="@dimen/activity_vertical_listview" />
 
 </RelativeLayout>

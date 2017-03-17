@@ -11,10 +11,6 @@ import android.widget.TextView;
 
 public class VocabularyDatabase extends SQLiteOpenHelper {
 
-    public VocabularyDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DatabaseColumnNames.DATABASE_NAME, factory, DatabaseColumnNames.DATABASE_VERSION);
-    }
-
     public VocabularyDatabase(Context context){
         super(context, DatabaseColumnNames.DATABASE_NAME, null, DatabaseColumnNames.DATABASE_VERSION);
     }
@@ -41,7 +37,7 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         super.onDowngrade(db, oldVersion, newVersion);
     }
 
-    public void putValuesToDatabase(int columnGroup, int columnItem, String engword, String plword, int favouriteImageOn){          //umieszczanie danych w tablicy
+    private void putValuesToDatabase(int columnGroup, int columnItem, String engword, String plword, int favouriteImageOn){          //umieszczanie danych w tablicy
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER, columnGroup);
@@ -63,25 +59,22 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
 
     public Cursor getFavouriteValues(){                           //pobieranie wszystkich danych
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.query(DatabaseColumnNames.TABLE_NAME, new String[]{DatabaseColumnNames._ID, DatabaseColumnNames.COLUMN_NAME_ENGWORD,
-                DatabaseColumnNames.COLUMN_NAME_PLWORD, DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON}, null, null, null, null, null);
-        return cursor;
+        final int addedToFavourite = 1;
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON + "=" + addedToFavourite, null);
     }
 
     public Cursor getSpecificValues(int i, int i1){
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER + "=" + i + " AND "
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER + "=" + i + " AND "
                 + DatabaseColumnNames.COLUMN_NAME_ITEM_NUMBER + "=" + i1, null);
-        return cursor;
     }
     public Cursor getThisValue(int i){
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames._ID + "=" + i, null);
-        return cursor;
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames._ID + "=" + i, null);
     }
 
-    public void showVocabulary(Cursor cursor, TextView plword, TextView engword, ImageView favouriteImageStar, int i) {            //pokazywanie danych
-        cursor.moveToPosition(i);
+    public void showVocabularyForLessons(Cursor cursor, TextView plword, TextView engword, ImageView favouriteImageStar, int position) {            //pokazywanie danych
+        cursor.moveToPosition(position);
         plword.setText(cursor.getString(3));
         engword.setText(cursor.getString(4));
         int addFavOrNot = cursor.getInt(5);
@@ -90,6 +83,12 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         }
         else
             favouriteImageStar.setImageResource(android.R.drawable.star_big_off);
+    }
+
+    public void showVocabularyForFavourite(Cursor cursor, TextView plword, TextView engword, int position) {            //pokazywanie danych
+        cursor.moveToPosition(position);
+        plword.setText(cursor.getString(3));
+        engword.setText(cursor.getString(4));
     }
 
     public void initData(){                            //inicjalizacja danych

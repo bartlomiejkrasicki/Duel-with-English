@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="favourite_list.FavouriteList">
+
+    <item
+        android:id="@+id/backToLessonsList"
+        android:icon="@android:drawable/ic_menu_revert"
+        android:title="@string/up_favourite_menu"
+        app:showAsAction="ifRoom" />
+
+
+</menu>

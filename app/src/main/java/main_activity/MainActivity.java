@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import about_author.AuthorInformation;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.angielski_slownictwo.R;
 import expandable_lessons_list.VocabularyExpandableList;
@@ -52,8 +53,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void favouriteButtonOnClick(View view){
+    public void favouriteButtonOnClick(View view){          //kliknięcie przycisku ulubione
         Intent intent = new Intent(this, FavouriteList.class);
+        startActivity(intent);
+    }
+
+    public void aboutAuthorButtonOnClick(View view){        //kliknięcie przycisku o autorze
+        Intent intent = new Intent(this, AuthorInformation.class);
         startActivity(intent);
     }
 }

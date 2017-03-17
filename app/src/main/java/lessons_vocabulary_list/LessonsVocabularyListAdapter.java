@@ -58,7 +58,7 @@ class LessonsVocabularyListAdapter extends BaseAdapter {
         VocabularyDatabase database = new VocabularyDatabase(view.getContext());
 
         cursor = database.getSpecificValues(group_number, item_number);
-        database.showVocabulary(cursor, polishWord, englishWord, favouriteStar, i);
+        database.showVocabularyForLessons(cursor, polishWord, englishWord, favouriteStar, i);
 
         String tag = LVVocabularyLesson.getTag().toString();
         if (tag.equals("1")){

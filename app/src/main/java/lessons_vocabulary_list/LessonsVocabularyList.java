@@ -6,12 +6,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
 import database_vocabulary.VocabularyDatabase;
+import favourite_list.FavouriteList;
 import pl.flanelowapopijava.angielski_slownictwo.R;
 
 public class LessonsVocabularyList extends AppCompatActivity {
@@ -29,8 +29,6 @@ public class LessonsVocabularyList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons_vocabulary_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_lessons_vocabulary);
-        setSupportActionBar(toolbar);
 
         LVVocabularyLessons = (ListView) findViewById(R.id.lessonsVocabularyListView);
         Intent intent = getIntent();
@@ -78,6 +76,11 @@ public class LessonsVocabularyList extends AppCompatActivity {
             }
             adapter.notifyDataSetChanged();
         }
+        if(id == R.id.goToFavouriteFromMenu){
+            Intent intent = new Intent(this, FavouriteList.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

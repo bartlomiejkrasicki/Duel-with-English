@@ -3,5 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="space_between_objects">8dp</dimen>
+    <dimen name="space_between_objects">3dp</dimen>
+    <dimen name="activity_horizontal_margin_listview">8dp</dimen>
+    <dimen name="activity_vertical_listview">8dp</dimen>
 </resources>

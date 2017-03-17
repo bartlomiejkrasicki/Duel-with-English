@@ -58,11 +58,6 @@ public class VocabularyExpandableList extends AppCompatActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.vocabularyListClose){
-            finish();
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

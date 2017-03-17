@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="pl.flanelowapopijava.angielski_slownictwo.main_activity.MainActivity"
+    tools:context="main_activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <Button
@@ -58,12 +58,13 @@
         android:layout_margin="@dimen/space_between_objects" />
 
     <Button
-        android:text="Button"
+        android:text="@string/about_author_button_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button5"
+        android:id="@+id/aboutAuthorButton"
         android:layout_below="@+id/button4"
         style="@style/Button.Custom"
-        android:layout_margin="@dimen/space_between_objects" />
+        android:layout_margin="@dimen/space_between_objects"
+        android:onClick="aboutAuthorButtonOnClick"/>
 
 </RelativeLayout>

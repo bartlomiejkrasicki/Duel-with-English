@@ -2,46 +2,39 @@ package favourite_list;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.List;
-
+import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.angielski_slownictwo.R;
 
 public class FavouriteListAdapter extends BaseAdapter {
 
-    private List<String> valuesEN;
-    private List<String> valuesPL;
     private Context context;
-    private boolean PLOrEN;
-    private SharedPreferences preferences;
+    private Cursor cursor;
+    private ListView favouriteList;
+    private VocabularyDatabase database;
 
-    public FavouriteListAdapter(List<String> valuesEN, List<String> valuesPL, Context context, SharedPreferences preferences) {
-        //        this.valuesEN = valuesEN;
-        //        this.valuesPL = valuesPL;
+    public FavouriteListAdapter(Context context, Cursor cursor, ListView favouriteList, VocabularyDatabase database) {
         this.context = context;
-        this.preferences = preferences;
+        this.cursor = cursor;
+        this.favouriteList = favouriteList;
+        this.database = database;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return cursor.getCount();
     }
 
     @Override
     public Object getItem(int i) {
-        //        if (PLOrEN){
-        //            return valuesPL.get(i);
-        //        }
-        //        else {
-        //            return valuesEN.get(i);
-        //        }
-        return null;
+        return i;
     }
 
     @Override
@@ -54,11 +47,11 @@ public class FavouriteListAdapter extends BaseAdapter {
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.lv_vocabulary_lessons_item, null);
-            TextView enVocabularyTV = (TextView) view.findViewById(R.id.engWord);
-            TextView plVocabularyTV = (TextView) view.findViewById(R.id.plWord);
-            enVocabularyTV.setText("tak tak");
-            plVocabularyTV.setText("tak tak");
         }
+        TextView plword = (TextView) view.findViewById(R.id.plWord);
+        TextView engword = (TextView) view.findViewById(R.id.engWord);
+        database.showVocabularyForFavourite(cursor, plword, engword, i);
+
         return view;
     }
 }
