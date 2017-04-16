@@ -54,6 +54,7 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON, favouriteImageOn);
         sqLiteDatabase.update(DatabaseColumnNames.TABLE_NAME, values, DatabaseColumnNames._ID + " = ?", new String[] { id });
+        sqLiteDatabase.close();
         return true;
     }
 
@@ -74,21 +75,23 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
     }
 
     public void showVocabularyForLessons(Cursor cursor, TextView plword, TextView engword, ImageView favouriteImageStar, int position) {            //pokazywanie danych
-        cursor.moveToPosition(position);
-        plword.setText(cursor.getString(3));
-        engword.setText(cursor.getString(4));
-        int addFavOrNot = cursor.getInt(5);
-        if(addFavOrNot == 1){
-            favouriteImageStar.setImageResource(android.R.drawable.star_big_on);
+        if(cursor.moveToPosition(position)) {
+            plword.setText(cursor.getString(3));
+            engword.setText(cursor.getString(4));
+            int addFavOrNot = cursor.getInt(5);
+            if (addFavOrNot == 1) {
+                favouriteImageStar.setImageResource(android.R.drawable.star_big_on);
+            } else
+                favouriteImageStar.setImageResource(android.R.drawable.star_big_off);
         }
-        else
-            favouriteImageStar.setImageResource(android.R.drawable.star_big_off);
     }
 
     public void showVocabularyForFavourite(Cursor cursor, TextView plword, TextView engword, int position) {            //pokazywanie danych
-        cursor.moveToPosition(position);
-        plword.setText(cursor.getString(3));
-        engword.setText(cursor.getString(4));
+        if(cursor.moveToPosition(position)) {
+            plword.setText(cursor.getString(3));
+            engword.setText(cursor.getString(4));
+        }
+        cursor.close();
     }
 
     public void initData(){                            //inicjalizacja danych

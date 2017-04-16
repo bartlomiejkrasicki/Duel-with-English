@@ -9,11 +9,13 @@
     <include layout="@layout/content_favourite_list" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/floatingDeleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:backgroundTint="@color/color_buttons_special"
+        app:rippleColor="@color/delete_list_items"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
 </android.support.design.widget.CoordinatorLayout>

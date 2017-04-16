@@ -49,10 +49,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int i, int i1) {
-        if (getDescOrSubdesc){
+        if (getDescOrSubdesc) {
             return descriptionHashMap.get(listHeader.get(i)).get(i1);
-        }
-        else
+        } else
             return subdescriptionHashMap.get(listHeader.get(i)).get(i1);  //i - groupItem, i1 - ChildItem
     }
 
@@ -73,8 +72,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        String headerTitle = (String)getGroup(i);
-        if (view == null){
+        String headerTitle = (String) getGroup(i);
+        if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.el_vocabulary_group, null);
         }
@@ -82,7 +81,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         headerEL.setTypeface(null, Typeface.BOLD);
         headerEL.setText(headerTitle);
         ImageView levelImage = (ImageView) view.findViewById(R.id.iconELGroup);
-        if(categoriesImages.size() > i) {
+        if (categoriesImages.size() > i) {
             levelImage.setImageResource(categoriesImages.get(i));
         }
         return view;
@@ -94,7 +93,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final String descriptionTitle = (String) getChild(i, i1);
         getDescOrSubdesc = false;
         final String subdescriptionTitle = (String) getChild(i, i1);
-        if (view == null){
+        if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.el_vocabulary_item, null);
         }
@@ -106,10 +105,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return view;
     }
 
-
-
     @Override
     public boolean isChildSelectable(int i, int i1) {
-        return true;
+        return false;
     }
 }
+

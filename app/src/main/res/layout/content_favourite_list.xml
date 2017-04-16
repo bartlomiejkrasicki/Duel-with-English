@@ -10,13 +10,15 @@
     tools:showIn="@layout/activity_favourite_list">
 
     <ListView
-        android:id="@+id/favouriteList"
+        android:id="@+id/favouriteListButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:layout_marginBottom="@dimen/activity_vertical_listview"
         android:layout_marginLeft="@dimen/activity_horizontal_margin_listview"
         android:layout_marginRight="@dimen/activity_horizontal_margin_listview"
-        android:layout_marginTop="@dimen/activity_vertical_listview" />
+        android:layout_marginTop="@dimen/activity_vertical_listview"
+        android:background="@drawable/item_selection_state"
+        android:choiceMode="multipleChoice" />
 
 </RelativeLayout>

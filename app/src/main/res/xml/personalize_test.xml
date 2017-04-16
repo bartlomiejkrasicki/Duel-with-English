@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+
+        android:enabled="true"
+        android:title="Słownictwo">
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/list_language_level"
+            android:entryValues="@array/list_language_level"
+            android:icon="@android:drawable/ic_menu_today"
+            android:key="levelOfLanguage"
+            android:summary="Wybierz poziom testu A1-C2"
+            android:title="Poziom testu" />
+
+        <ListPreference
+            android:defaultValue="20"
+            android:entries="@array/list_of_words"
+            android:entryValues="@array/list_of_words"
+            android:icon="?android:attr/actionModePasteDrawable"
+            android:key="numberOfWords"
+            android:summary="Wybierz ile słów ma zawierać test"
+            android:title="Ilość słów" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:enabled="true"
+        android:title="Wygląd testu">
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/preferenceTestToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:titleMargin="10dp"
+        android:title="Personalizuj test"
+        android:logo="@drawable/a_one_level"
+        android:theme="?attr/actionBarTheme"
+        app:navigationIcon="?attr/homeAsUpIndicator"/>
+
+    <fragment
+        android:id="@+id/customizationTestFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment" />
+
+    <Button
+        android:id="@+id/startTestButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="10"
+        style="@style/Button.Custom"
+        android:text="@string/start_test_button"/>
+
+</LinearLayout>

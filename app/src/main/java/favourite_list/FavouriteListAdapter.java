@@ -18,13 +18,18 @@ public class FavouriteListAdapter extends BaseAdapter {
     private Context context;
     private Cursor cursor;
     private ListView favouriteList;
-    private VocabularyDatabase database;
 
-    public FavouriteListAdapter(Context context, Cursor cursor, ListView favouriteList, VocabularyDatabase database) {
+    public FavouriteListAdapter(Context context, Cursor cursor, ListView favouriteList) {
         this.context = context;
         this.cursor = cursor;
         this.favouriteList = favouriteList;
-        this.database = database;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        VocabularyDatabase database = new VocabularyDatabase(context);
+        cursor = database.getFavouriteValues();
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -50,8 +55,14 @@ public class FavouriteListAdapter extends BaseAdapter {
         }
         TextView plword = (TextView) view.findViewById(R.id.plWord);
         TextView engword = (TextView) view.findViewById(R.id.engWord);
+        VocabularyDatabase database = new VocabularyDatabase(view.getContext());
+
+        cursor = database.getFavouriteValues();
         database.showVocabularyForFavourite(cursor, plword, engword, i);
 
+        cursor.close();
+        database.close();
         return view;
     }
+
 }

@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#1b5e20</color>
     <color name="colorAccent">#ff5722</color>
     <color name="transparentColor">#00000000</color>
+    <color name="color_buttons_special">#2094f1</color>
+    <color name="delete_list_items">#F44336</color>
 
 </resources>
