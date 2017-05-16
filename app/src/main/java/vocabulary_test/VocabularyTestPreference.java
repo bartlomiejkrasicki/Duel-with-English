@@ -1,5 +1,6 @@
 package vocabulary_test;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.FragmentActivity;
@@ -38,5 +39,10 @@ public class VocabularyTestPreference extends FragmentActivity {
             addPreferencesFromResource(R.xml.personalize_test);
         }
 
+    }
+
+    public void startTestClick(View view){
+        Intent intent = new Intent(this, VocabularyTest.class);
+        startActivity(intent);
     }
 }

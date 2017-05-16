@@ -32,4 +32,8 @@
     <string name="personalization_test">Personalizacja testu</string>
     <string name="customize_vocabulary_test">Personalizacja testu</string>
     <string name="start_test_button">Uruchom test</string>
+    <string name="vocabulary_test_choice_en_to_pl_title">Przetłumacz z angielskiego na polski:</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="test_vocabulary_choice_pl_to_en">Przetłumacz z polskiego na angielski:</string>
+    <string name="tak">TAK robicie</string>
 </resources>

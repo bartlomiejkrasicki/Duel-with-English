@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-
         android:enabled="true"
         android:title="Słownictwo">
+
         <ListPreference
             android:defaultValue="0"
-            android:entries="@array/list_language_level"
-            android:entryValues="@array/list_language_level"
+            android:entries="@array/list_language_level_array"
+            android:entryValues="@array/list_language_level_values"
             android:icon="@android:drawable/ic_menu_today"
             android:key="levelOfLanguage"
             android:summary="Wybierz poziom testu A1-C2"
@@ -28,4 +28,5 @@
         android:enabled="true"
         android:title="Wygląd testu">
     </PreferenceCategory>
+
 </PreferenceScreen>

@@ -20,5 +20,6 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/vocabularyList"
         android:childDivider="@color/transparentColor"
-        android:layoutDirection="rtl" />
+        android:layoutDirection="rtl"
+        android:clickable="true"/>
 </RelativeLayout>

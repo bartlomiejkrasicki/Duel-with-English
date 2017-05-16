@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/testChoiceEnToPlHint"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:gravity="center_horizontal"
+        android:text="@string/vocabulary_test_choice_en_to_pl_title"/>
+
+    <LinearLayout
+        android:id="@+id/enToPlChoiceLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/testChoiceEnToPlHint">
+    
+    <TextView
+        android:id="@+id/testWordChoice"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_gravity="center"
+        style="@style/TextAppearance.AppCompat.Large"/>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_margin="@dimen/activity_vertical_listview" >
+
+        <TableRow
+            android:id="@+id/testChoiceEnButtonRow1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/testChoiceEnOption1"
+                style="@style/Button.Custom"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/testChoiceEnOption2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:layout_weight="1"
+                style="@style/Button.Custom"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/testChoiceEnButtonRow2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/testChoiceEnOption3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:layout_weight="1"
+                style="@style/Button.Custom"/>
+
+            <Button
+                android:id="@+id/testChoiceEnOption4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:layout_weight="1"
+                style="@style/Button.Custom"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/testChoiceEnButtonRow3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/testChoiceEnOption5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:layout_weight="1"
+                style="@style/Button.Custom"/>
+
+            <Button
+                android:id="@+id/testChoiceEnOption6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:layout_weight="1"
+                style="@style/Button.Custom"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/testChoiceEnButtonRow4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/testChoiceEnOption7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:layout_weight="1"
+                style="@style/Button.Custom"/>
+
+            <Button
+                android:id="@+id/testChoiceEnOption8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:layout_weight="1"
+                style="@style/Button.Custom"/>
+
+        </TableRow>
+        </TableLayout>
+    </LinearLayout>
+
+</RelativeLayout>

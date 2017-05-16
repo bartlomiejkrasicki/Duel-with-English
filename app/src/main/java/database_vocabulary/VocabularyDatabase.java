@@ -69,12 +69,12 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER + "=" + i + " AND "
                 + DatabaseColumnNames.COLUMN_NAME_ITEM_NUMBER + "=" + i1, null);
     }
-    public Cursor getThisValue(int i){
+    public Cursor getGroupValues(int i){
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames._ID + "=" + i, null);
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER + "=" + i, null);
     }
 
-    public void showVocabularyForLessons(Cursor cursor, TextView plword, TextView engword, ImageView favouriteImageStar, int position) {            //pokazywanie danych
+    public void showVocabularyForLessons(Cursor cursor, TextView plword, TextView engword, ImageView favouriteImageStar, int position) {            //pokazywanie danych podczas nauki słownictwa
         if(cursor.moveToPosition(position)) {
             plword.setText(cursor.getString(3));
             engword.setText(cursor.getString(4));
@@ -86,7 +86,7 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public void showVocabularyForFavourite(Cursor cursor, TextView plword, TextView engword, int position) {            //pokazywanie danych
+    public void showVocabularyForFavourite(Cursor cursor, TextView plword, TextView engword, int position) {            //pokazywanie danych dla listy ulubionych
         if(cursor.moveToPosition(position)) {
             plword.setText(cursor.getString(3));
             engword.setText(cursor.getString(4));
@@ -95,48 +95,17 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
     }
 
     public void initData(){                            //inicjalizacja danych
-        putValuesToDatabase(0, 0, "scream", "krzyczeć", 0);
-        putValuesToDatabase(0, 0, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "scream", "krzyczeć", 0);
-        putValuesToDatabase(0, 0, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "scream", "krzyczeć", 0);
-        putValuesToDatabase(0, 0, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "scream", "krzyczeć", 0);
-        putValuesToDatabase(0, 0, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "scream", "krzyczeć", 0);
-        putValuesToDatabase(0, 0, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
-        putValuesToDatabase(0, 0, "scream", "krzyczeć", 0);
-        putValuesToDatabase(0, 0, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 0, "jump", "skakać", 0);
+        putValuesToDatabase(0, 0, "red", "czerwony", 0);
+        putValuesToDatabase(0, 0, "blue", "niebieski", 0);
+        putValuesToDatabase(0, 0, "brown", "brązowy", 0);
+        putValuesToDatabase(0, 0, "white", "biały", 0);
+        putValuesToDatabase(0, 0, "colorful", "kolorowy", 0);
+        putValuesToDatabase(0, 0, "colorless", "bezbarwny", 0);
+        putValuesToDatabase(0, 0, "pink", "różowy", 0);
+        putValuesToDatabase(0, 0, "yellow", "żółty", 0);
+        putValuesToDatabase(0, 0, "green", "zielony", 0);
+        putValuesToDatabase(0, 0, "orange", "pomarańczowy", 0);
         putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
         putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-        putValuesToDatabase(0, 1, "jump", "skakać", 0);
-        putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
-
     }
 }

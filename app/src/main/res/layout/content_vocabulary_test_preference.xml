@@ -30,6 +30,7 @@
         android:layout_height="match_parent"
         android:layout_weight="10"
         style="@style/Button.Custom"
-        android:text="@string/start_test_button"/>
+        android:text="@string/start_test_button"
+        android:onClick="startTestClick"/>
 
 </LinearLayout>

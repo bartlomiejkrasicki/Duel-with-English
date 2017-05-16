@@ -82,16 +82,21 @@ public class VocabularyExpandableList extends AppCompatActivity {
         categoriesImages.add(4, R.drawable.c_one_level);
         categoriesImages.add(5, R.drawable.c_two_level);
 
-
-
-
         List<String> A1Level = new ArrayList<>();      //list of Level Groups items
-        A1Level.add("Szkoła");
+        A1Level.add("Kolory");
         A1Level.add("Dom");
         A1Level.add("Rodzina");
         A1Level.add("Praca");
         A1Level.add("Kolory");
         A1Level.add("Liczby");
+
+        List<String> A1LevelSubdescription = new ArrayList<>();      //list of Level Groups items
+        A1LevelSubdescription.add("Colors");
+        A1LevelSubdescription.add("Dom");
+        A1LevelSubdescription.add("Rodzina");
+        A1LevelSubdescription.add("Praca");
+        A1LevelSubdescription.add("Kolory");
+        A1LevelSubdescription.add("Liczby");
 
         List<String> A2Level = new ArrayList<>();
         A2Level.add("Szkoła");
@@ -140,7 +145,7 @@ public class VocabularyExpandableList extends AppCompatActivity {
         ListDescriptionHash.put(ListHeaderData.get(4), C1Level);
         ListDescriptionHash.put(ListHeaderData.get(5), C2Level);
 
-        ListSubdescriptionHash.put(ListHeaderData.get(0), A1Level);     //subdescriptionsText
+        ListSubdescriptionHash.put(ListHeaderData.get(0), A1LevelSubdescription);     //subdescriptionsText
         ListSubdescriptionHash.put(ListHeaderData.get(1), A2Level);
         ListSubdescriptionHash.put(ListHeaderData.get(2), B1Level);
         ListSubdescriptionHash.put(ListHeaderData.get(3), B2Level);
