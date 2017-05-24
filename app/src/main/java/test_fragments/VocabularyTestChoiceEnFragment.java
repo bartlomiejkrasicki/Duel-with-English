@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.util.Random;
+import android.widget.Toast;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.angielski_slownictwo.R;
@@ -23,6 +23,7 @@ import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.manyGoodAnswer;
 import static vocabulary_test.VocabularyTest.manyTestWords;
+import static vocabulary_test.VocabularyTest.randomNumber;
 
 public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
 
@@ -41,7 +42,7 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
         return view;
     }
 
-    public void addWords(VocabularyTest vocabularyTest, VocabularyDatabase database, SharedPreferences sharedPreferences, View view){
+    private void addWords(VocabularyTest vocabularyTest, VocabularyDatabase database, SharedPreferences sharedPreferences, View view){
         TextView guessWord = (TextView) view.findViewById(R.id.testWordChoice);
         guessButtons[0] = (Button) view.findViewById(R.id.testChoiceEnOption1);
         guessButtons[1] = (Button) view.findViewById(R.id.testChoiceEnOption2);
@@ -57,11 +58,11 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
         for (int i = 0; i<itWasDrawn.length; i++){
             itWasDrawn[i] = false;
         }
-        int tempRandomNumber = vocabularyTest.randomNumber(cursor.getCount());
+        int tempRandomNumber = randomNumber(cursor.getCount());
         itWasDrawn[tempRandomNumber] = true;
         cursor.moveToPosition(tempRandomNumber);
         guessWord.setText(cursor.getString(4));
-        tempRandomNumber = vocabularyTest.randomNumber(8);
+        tempRandomNumber = randomNumber(8);
         guessButtons[tempRandomNumber].setText(cursor.getString(3));
         guessButtons[tempRandomNumber].setTag(1);
         answerText = cursor.getString(3);
@@ -69,7 +70,7 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
         for (Button guessButton : guessButtons) {
             guessButton.setOnClickListener(this);
             do {
-                tempRandomNumber = vocabularyTest.randomNumber(cursor.getCount());
+                tempRandomNumber = randomNumber(cursor.getCount());
             } while (itWasDrawn[tempRandomNumber]);
             if (guessButton.getTag() == null || guessButton.getTag().equals(0)) {
                 cursor.moveToPosition(tempRandomNumber);
@@ -168,20 +169,32 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         } else {
-            showNextWord();
+            replaceFragment();
         }
     }
 
-    private void showNextWord() {
-        Random random = new Random();
-        switch(random.nextInt(2)){
+    private void replaceFragment(){
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
+        switch (randomNumber(4)){
             case 0:{
-                getFragmentManager().beginTransaction().replace(R.id.testFragmentId, new VocabularyTestChoiceEnFragment()).addToBackStack(null).commit();
+                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoiceEnFragment()).commit();
                 break;
             }
             case 1:{
-                getFragmentManager().beginTransaction().replace(R.id.testFragmentId, new VocabularyTestChoicePlFragment()).addToBackStack(null).commit();
+                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoicePlFragment()).commit();
                 break;
+            }
+            case 2:{
+                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWriteEnFragment()).commit();
+                break;
+            }
+            case 3:{
+                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWritePlFragment()).commit();
+                break;
+            }
+            default:{
+                Toast.makeText(getContext(), "Przełączanie widoku na nowy nie zadziałało :(", Toast.LENGTH_SHORT).show();
             }
         }
     }

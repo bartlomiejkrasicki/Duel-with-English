@@ -36,4 +36,11 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="test_vocabulary_choice_pl_to_en">Przetłumacz z polskiego na angielski:</string>
     <string name="tak">TAK robicie</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="test_write_pl_hint">Przetłumacz z polskiego na angielski</string>
+    <string name="test_write_et_hint">Tutaj wpisz słowo</string>
+    <string name="test_write_en_hint">Przetłumacz z angielskiego na polski</string>
+    <string name="vocabulary_test_write_check_answer">Sprawdź</string>
 </resources>

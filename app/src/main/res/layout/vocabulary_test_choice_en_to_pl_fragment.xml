@@ -6,12 +6,14 @@
 
     <TextView
         android:id="@+id/testChoiceEnToPlHint"
-        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.AppCompat.Medium"
         android:gravity="center_horizontal"
-        android:text="@string/vocabulary_test_choice_en_to_pl_title"/>
+        android:text="@string/vocabulary_test_choice_en_to_pl_title"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <LinearLayout
         android:id="@+id/enToPlChoiceLinearLayout"
