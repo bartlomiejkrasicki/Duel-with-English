@@ -64,8 +64,6 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
                 }
                 if (answerFinalForm.equals(answerWord)) {
                     manyGoodAnswer++;
-                    final Animation animationFadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_in);
-                    final Animation animationFadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_out);
                     Animation animationCorrect = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test_big_button);
                     view.setBackgroundResource(R.drawable.good_answer_change_color);
                     animationCorrect.setAnimationListener(new Animation.AnimationListener() {
@@ -74,9 +72,7 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
                             for (EditText completeWordET : answerET) {
                                 completeWordET.setEnabled(false);
                             }
-                            view.startAnimation(animationFadeOut);
                             ((TransitionDrawable) view.getBackground()).startTransition(500);
-                            view.startAnimation(animationFadeIn);
                         }
 
                         @Override
@@ -93,15 +89,19 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
                     });
                     view.startAnimation(animationCorrect);
                 } else {
+                    final Animation animationFadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_in);
+                    final Animation animationFadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_out);
                     Animation animationWrong = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test_big_button);
                     view.setBackgroundResource(R.drawable.bad_answer_change_color);
                     animationWrong.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationStart(Animation animation) {
                             for (int i = 0; i < answerET.length; i++) {
+                                answerET[i].startAnimation(animationFadeOut);
                                 answerET[i].setEnabled(false);
                                 answerET[i].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                                 answerET[i].setText(String.valueOf(answerWord.charAt(i)));
+                                answerET[i].startAnimation(animationFadeIn);
                             }
                             ((TransitionDrawable) view.getBackground()).startTransition(500);
                         }

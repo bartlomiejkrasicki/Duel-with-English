@@ -99,13 +99,13 @@ public class VocabularyTestJigsawWordEnFragment extends Fragment {
                         @Override
                         public void onAnimationStart(Animation animation) {
                             for (int i = 0; i < answerET.length; i++) {
+                                answerET[i].startAnimation(animationFadeOut);
                                 answerET[i].setEnabled(false);
                                 answerET[i].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                                 answerET[i].setText(String.valueOf(answerWord.charAt(i)));
+                                answerET[i].startAnimation(animationFadeIn);
                             }
-                            view.startAnimation(animationFadeOut);
                             ((TransitionDrawable) view.getBackground()).startTransition(500);
-                            view.startAnimation(animationFadeIn);
                         }
 
                         @Override
