@@ -43,4 +43,7 @@
     <string name="test_write_et_hint">Tutaj wpisz słowo</string>
     <string name="test_write_en_hint">Przetłumacz z angielskiego na polski</string>
     <string name="vocabulary_test_write_check_answer">Sprawdź</string>
+    <string name="test_jigsaw_word_en_hint">Z rozsypanych liter ułóż słowo po angielsku, które oznacza:</string>
+    <string name="test_jigsaw_word_pl_hint">Z rozsypanych liter ułóż słowo po polsku, które oznacza:</string>
+    <string name="jigsaw_fragment_check_button">Sprawdź</string>
 </resources>

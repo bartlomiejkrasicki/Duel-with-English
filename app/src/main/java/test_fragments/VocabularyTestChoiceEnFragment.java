@@ -1,13 +1,10 @@
 package test_fragments;
 
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,34 +12,35 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.angielski_slownictwo.R;
 import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.manyGoodAnswer;
-import static vocabulary_test.VocabularyTest.manyTestWords;
 import static vocabulary_test.VocabularyTest.randomNumber;
 
 public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
 
     private String answerText;
-    Button[] guessButtons = new Button[8];
-    VocabularyTest vocabularyTest;
-    
+    private Button[] guessButtons = new Button[8];
+    private VocabularyTest vocabularyTest;
+    private Cursor cursor;
+    private VocabularyDatabase vocabularyDatabase;
+    private int goodAnswer;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.vocabulary_test_choice_en_to_pl_fragment, container, false);
         vocabularyTest = new VocabularyTest();
-        VocabularyDatabase database = new VocabularyDatabase(getContext());
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        addWords(vocabularyTest, database, sharedPreferences, view);
-        database.close();
+        vocabularyDatabase = vocabularyTest.getVocabularyDatabase(getContext());
+        cursor = vocabularyTest.getCursor(getContext(), vocabularyDatabase);
+        addWords(view);
         return view;
     }
 
-    private void addWords(VocabularyTest vocabularyTest, VocabularyDatabase database, SharedPreferences sharedPreferences, View view){
+    private void addWords(View view){
         TextView guessWord = (TextView) view.findViewById(R.id.testWordChoice);
         guessButtons[0] = (Button) view.findViewById(R.id.testChoiceEnOption1);
         guessButtons[1] = (Button) view.findViewById(R.id.testChoiceEnOption2);
@@ -53,7 +51,6 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
         guessButtons[6] = (Button) view.findViewById(R.id.testChoiceEnOption7);
         guessButtons[7] = (Button) view.findViewById(R.id.testChoiceEnOption8);
 
-        Cursor cursor = database.getGroupValues(vocabularyTest.getSPlevelOfLanguage(sharedPreferences));
         boolean[] itWasDrawn = new boolean[cursor.getCount()];
         for (int i = 0; i<itWasDrawn.length; i++){
             itWasDrawn[i] = false;
@@ -63,6 +60,7 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
         cursor.moveToPosition(tempRandomNumber);
         guessWord.setText(cursor.getString(4));
         tempRandomNumber = randomNumber(8);
+        goodAnswer = tempRandomNumber;
         guessButtons[tempRandomNumber].setText(cursor.getString(3));
         guessButtons[tempRandomNumber].setTag(1);
         answerText = cursor.getString(3);
@@ -108,7 +106,9 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    loadNextWord();
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    Activity activity = getActivity();
+                    vocabularyTest.loadNextWord(fragmentTransaction, getContext(), vocabularyDatabase, cursor, activity);
                 }
 
                 @Override
@@ -120,11 +120,13 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
         }
         else {
             thisButton.setBackgroundResource(R.drawable.bad_answer_change_color);
+            guessButtons[goodAnswer].setBackgroundResource(R.drawable.good_answer_change_color);
             Animation falseAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test);
             falseAnswer.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
                     ((TransitionDrawable) thisButton.getBackground()).startTransition(500);
+                    ((TransitionDrawable) guessButtons[goodAnswer].getBackground()).startTransition(300);
                 }
 
                 @Override
@@ -134,7 +136,9 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    loadNextWord();
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    Activity activity = getActivity();
+                    vocabularyTest.loadNextWord(fragmentTransaction, getContext(), vocabularyDatabase, cursor, activity);
                 }
 
                 @Override
@@ -143,59 +147,6 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
                 }
             });
             thisButton.startAnimation(falseAnswer);
-        }
-    }
-
-    private void loadNextWord(){
-        manyTestWords++;
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if(manyTestWords == vocabularyTest.getSPnumberOfWords(sharedPreferences)){
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-            alertDialogBuilder.setTitle("Test został zakończony");
-            alertDialogBuilder.setMessage("Odpowiedziałeś poprawnie na " + manyGoodAnswer + " z " + vocabularyTest.getSPnumberOfWords(sharedPreferences) + " pytań.");
-            alertDialogBuilder.setCancelable(false);
-            alertDialogBuilder.setPositiveButton("Jeszcze raz", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    getActivity().recreate();
-                }
-            });
-            alertDialogBuilder.setNegativeButton("Zakończ", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    getActivity().finish();
-                }
-            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        } else {
-            replaceFragment();
-        }
-    }
-
-    private void replaceFragment(){
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (randomNumber(4)){
-            case 0:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoiceEnFragment()).commit();
-                break;
-            }
-            case 1:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoicePlFragment()).commit();
-                break;
-            }
-            case 2:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWriteEnFragment()).commit();
-                break;
-            }
-            case 3:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWritePlFragment()).commit();
-                break;
-            }
-            default:{
-                Toast.makeText(getContext(), "Przełączanie widoku na nowy nie zadziałało :(", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }
