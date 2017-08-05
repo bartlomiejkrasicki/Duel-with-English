@@ -107,6 +107,14 @@ public class VocabularyDatabase extends SQLiteOpenHelper {
         putValuesToDatabase(0, 0, "orange", "pomarańczowy", 0);
         putValuesToDatabase(0, 1, "dance", "tańczyć", 0);
         putValuesToDatabase(0, 1, "jump", "skakać", 0);
+        putValuesToDatabase(0, 1, "pick up", "podnosić", 0);
+        putValuesToDatabase(0, 1, "laugh", "śmiać się", 0);
+        putValuesToDatabase(0, 1, "run", "biegać", 0);
+        putValuesToDatabase(0, 1, "check", "sprawdzać", 0);
+        putValuesToDatabase(0, 1, "sing", "śpiewać", 0);
+        putValuesToDatabase(0, 1, "wear", "nosić", 0);
+        putValuesToDatabase(0, 1, "drink", "pić", 0);
+        putValuesToDatabase(0, 1, "eat", "jeść", 0);
         putValuesToDatabase(1, 0, "to do", "robić coś", 0);
     }
 }

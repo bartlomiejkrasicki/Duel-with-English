@@ -1,35 +1,35 @@
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="lessons_vocabulary_list.LessonsVocabularyList">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        android:id="@+id/testVocabularyToolbar" />
+        android:id="@+id/testVocabularyToolbar"
+        android:theme="?attr/actionBarTheme"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
 
-        <fragment
-            android:id="@+id/testFragmentId"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment" />
+    <fragment
+        android:id="@+id/testFragmentId"
+        android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
 
-        <ProgressBar
-            android:id="@+id/testProgressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="?attr/actionBarSize"/>
+    <ProgressBar
+        android:id="@+id/testProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:layout_weight="8"
+        android:max="5"
+        android:minHeight="?attr/actionBarSize"
+        android:progress="1" />
 
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>

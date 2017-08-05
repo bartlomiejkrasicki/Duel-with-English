@@ -39,10 +39,11 @@
             android:id="@+id/userWriteWordEnET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:layout_alignParentStart="true"
+            android:ems="10"
             android:hint="@string/test_write_et_hint"
-            android:inputType="textPersonName" />
+            android:inputType="textNoSuggestions"
+            android:focusable="true" />
 
         <Button
             android:id="@+id/testWriteEnCheckButton"

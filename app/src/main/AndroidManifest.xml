@@ -64,7 +64,7 @@
         </activity>
         <activity
             android:name="vocabulary_test.VocabularyTest"
-            android:label="@string/title_activity_vocabulary_test"
+            android:label="@string/Test"
             android:parentActivityName="vocabulary_test.VocabularyTestPreference"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

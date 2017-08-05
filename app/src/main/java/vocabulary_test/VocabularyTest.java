@@ -10,7 +10,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.view.inputmethod.InputMethodManager;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.Random;
@@ -28,32 +30,43 @@ public class VocabularyTest extends FragmentActivity {
 
     public static int manyGoodAnswer = 0;
     public static int manyTestWords = 0;
+    public static int randomNumberOfWords[];
+    private ProgressBar testProgressBar;
+    private Cursor cursor;
+    private VocabularyDatabase vocabularyDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary_test);
+        declarationVariables();
         showFirstFragment();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        manyGoodAnswer = 0;
-        manyTestWords = 0;
-    }
+    private void declarationVariables() {
+        vocabularyDatabase = getVocabularyDatabase(getApplicationContext());
+        cursor = getCursor(getApplicationContext(), vocabularyDatabase);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        randomNumberOfWords = new int[getSPnumberOfWords(sharedPreferences)];
+        randomNumberOfWords = randomWordWithoutReply(randomNumberOfWords, cursor);
 
-    @Override
-    public void recreate() {
-        super.recreate();
-        manyGoodAnswer = 0;
-        manyTestWords = 0;
+        Toolbar toolbar = (Toolbar) findViewById(R.id.testVocabularyToolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+        testProgressBar = (ProgressBar) findViewById(R.id.testProgressBar);
     }
 
     private void showFirstFragment(){
+        testProgressBar.setVisibility(View.VISIBLE);
+        testProgressBar.setEnabled(true);
+        testProgressBar.setProgress(50);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (randomNumber(6)){
+        switch (randomNumber(4)){
             case 0:{
                 fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestChoiceEnFragment()).commit();
                 break;
@@ -79,14 +92,14 @@ public class VocabularyTest extends FragmentActivity {
                 break;
             }
             default:{
-                Toast.makeText(this, "Przełączanie widoku na nowy nie zadziałało :(", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Błąd wczytywania testu. Uruchom go jeszcze raz :(", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     public void replaceFragment(FragmentTransaction fragmentTransaction){                 //show next fragment after answer
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (randomNumber(6)){
+        switch (randomNumber(4)){
             case 0:{
                 fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoiceEnFragment()).commit();
                 break;
@@ -112,24 +125,22 @@ public class VocabularyTest extends FragmentActivity {
                 break;
             }
             default:{
-                Toast.makeText(this, "Przełączanie widoku na nowy nie zadziałało :(", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Błąd wczytywania testu. Uruchom go jeszcze raz :(", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void loadNextWord(FragmentTransaction fragmentTransaction, Context context, VocabularyDatabase vocabularyDatabase, Cursor cursor, Activity activity){
-        vocabularyDatabase.close();
-        cursor.close();
+    public void loadNextWord(FragmentTransaction fragmentTransaction, Context context){
         manyTestWords++;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if(manyTestWords == getSPnumberOfWords(sharedPreferences)){
-            endTestAlertDialog(context, activity);
+            endTestAlertDialog(context);
         } else {
             replaceFragment(fragmentTransaction);
         }
     }
 
-    public void endTestAlertDialog(Context context, final Activity activity){
+    public void endTestAlertDialog(final Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Test został zakończony");
@@ -138,13 +149,15 @@ public class VocabularyTest extends FragmentActivity {
         alertDialogBuilder.setPositiveButton("Jeszcze raz", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                Activity activity = (VocabularyTest) context;
                 activity.recreate();
             }
         });
         alertDialogBuilder.setNegativeButton("Zakończ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                activity.finish();
+                Activity activity1 = (VocabularyTest) context;
+                activity1.finish();
             }
         });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -201,12 +214,101 @@ public class VocabularyTest extends FragmentActivity {
         alertDialog.show();
     }
 
-    public void hideKeyboard(Context context){
-        try {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } catch (NullPointerException exception){
-            Toast.makeText(context, "Coś poszło nie tak", Toast.LENGTH_SHORT).show();
+    public int [] randomWordWithoutReply(int [] randomWordsWithoutReply, Cursor cursor){                //words to create test
+        Random random = new Random();
+        boolean numberIsOther;
+        for(int i = 0; i < randomWordsWithoutReply.length; i++){
+            if(i==0){
+                randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
+            }
+            else {
+                do {
+                    numberIsOther = true;
+                    randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
+                    for(int j = 0; j < i; j++){
+                        if(randomWordsWithoutReply[j]==randomWordsWithoutReply[i]){
+                            numberIsOther = true;
+                            break;
+                        } else {
+                           numberIsOther = false;
+                        }
+                    }
+                } while (numberIsOther);
+            }
         }
+    cursor.close();
+    return randomWordsWithoutReply;
+    }
+
+    public int [] setRandomTableNumber(int maxRangeNumber){          //shuffle numbers and add to table of int
+        int [] tableRandomNumbers = new int[maxRangeNumber];
+        Random random = new Random();
+        boolean numberIsOther;
+        for(int i = 0; i < tableRandomNumbers.length; i++){
+            if(i==0){
+                tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+            }
+            else {
+                do {
+                    numberIsOther = true;
+                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+                    for(int j = 0; j < i; j++){
+                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
+                            numberIsOther = true;
+                            break;
+                        } else {
+                            numberIsOther = false;
+                        }
+                    }
+                } while (numberIsOther);
+            }
+        }
+        return tableRandomNumbers;
+    }
+
+    public int [] setRandomTableNumber(int maxRangeNumber, int index){          //shuffle numbers and add to table of int, class check reply words
+        int [] tableRandomNumbers = new int[7];
+        Random random = new Random();
+        boolean numberIsntOther;
+        for(int i = 0; i < tableRandomNumbers.length; i++){
+            if(i==0){                                                                                       //add first value
+                do {
+                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+                } while (tableRandomNumbers[i] == index);
+            }
+            else {                                                                                          //add other values
+                do {
+                    do {
+                        tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+                    } while (tableRandomNumbers[i] == index);
+                    numberIsntOther = false;
+                    for(int j = 0; j < i; j++){
+                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
+                            numberIsntOther = true;
+                        }
+                    }
+                } while (numberIsntOther);
+            }
+        }
+        return tableRandomNumbers;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        manyGoodAnswer = 0;
+        manyTestWords = 0;
+        cursor.close();
+        vocabularyDatabase.close();
+    }
+
+    @Override
+    public void recreate() {
+        super.recreate();
+        manyGoodAnswer = 0;
+        manyTestWords = 0;
+        cursor.close();
+        vocabularyDatabase.close();
+
     }
 }

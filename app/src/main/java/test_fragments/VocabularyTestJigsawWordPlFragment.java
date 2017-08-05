@@ -1,10 +1,11 @@
 package test_fragments;
 
 
-import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
@@ -27,7 +28,9 @@ import pl.flanelowapopijava.angielski_slownictwo.R;
 import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.manyGoodAnswer;
+import static vocabulary_test.VocabularyTest.manyTestWords;
 import static vocabulary_test.VocabularyTest.randomNumber;
+import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
 public class VocabularyTestJigsawWordPlFragment extends Fragment {
 
@@ -39,97 +42,36 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
     private String answerWord;
     private int randomTable[];
     private VocabularyDatabase vocabularyDatabase;
+    private int numberOfWord;
+    private SharedPreferences sharedPreferences;
+    private Button checkButton;
 
     public VocabularyTestJigsawWordPlFragment() {
-        // Required empty public constructor
     }
-
 
     @Override                                                   //fragment view create
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_vocabulary_test_jigsaw_word_pl, container, false);
-        vocabularyTest = new VocabularyTest();
-        vocabularyDatabase = vocabularyTest.getVocabularyDatabase(getContext());
-        cursor = vocabularyTest.getCursor(getContext(), vocabularyDatabase);
+        View view = inflater.inflate(R.layout.fragment_vocabulary_test_jigsaw_word_en, container, false);
         addWord(view);
         configureAnswer(view);
-        Button checkButton = (Button) view.findViewById(R.id.jigsawPlButtonToCheck);
-        checkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                String answerFinalForm = "";
-                for (EditText anAnswerET : answerET) {
-                    answerFinalForm += anAnswerET.getText();
-                }
-                if (answerFinalForm.equals(answerWord)) {
-                    manyGoodAnswer++;
-                    Animation animationCorrect = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test_big_button);
-                    view.setBackgroundResource(R.drawable.good_answer_change_color);
-                    animationCorrect.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                            for (EditText completeWordET : answerET) {
-                                completeWordET.setEnabled(false);
-                            }
-                            ((TransitionDrawable) view.getBackground()).startTransition(500);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            Activity activity = getActivity();
-                            vocabularyTest.loadNextWord(fragmentTransaction, getContext(), vocabularyDatabase, cursor, activity);
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    });
-                    view.startAnimation(animationCorrect);
-                } else {
-                    final Animation animationFadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_in);
-                    final Animation animationFadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_out);
-                    Animation animationWrong = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test_big_button);
-                    view.setBackgroundResource(R.drawable.bad_answer_change_color);
-                    animationWrong.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                            for (int i = 0; i < answerET.length; i++) {
-                                answerET[i].startAnimation(animationFadeOut);
-                                answerET[i].setEnabled(false);
-                                answerET[i].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                                answerET[i].setText(String.valueOf(answerWord.charAt(i)));
-                                answerET[i].startAnimation(animationFadeIn);
-                            }
-                            ((TransitionDrawable) view.getBackground()).startTransition(500);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            Activity activity = getActivity();
-                            vocabularyTest.loadNextWord(fragmentTransaction, getContext(), vocabularyDatabase, cursor, activity);
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    });
-                    view.startAnimation(animationWrong);
-                }
-            }
-        });
+        setButtonsClick();
         return view;
     }
 
+    private void declarationVariables(View view){                          //declaration layout elements and variables
+        numberOfWord = randomNumberOfWords[manyTestWords];
+        vocabularyTest = new VocabularyTest();
+        vocabularyDatabase = new VocabularyDatabase(getContext());
+        cursor = vocabularyTest.getCursor(getContext(), vocabularyDatabase);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        checkButton = (Button) view.findViewById(R.id.jigsawEnButtonToCheck);
+    }
+
     private void addWord(View view){                            //add word in English. User have to know it in Polish
-        testWordEn = (TextView) view.findViewById(R.id.test_jigsaw_word_pl);
+        testWordEn = (TextView) view.findViewById(R.id.test_jigsaw_word_en);
         int randomNumber = randomNumber(cursor.getCount());
-        cursor.moveToFirst();
-        cursor.moveToPosition(randomNumber);
+        cursor.moveToPosition(numberOfWord);
         testWordEn.setText(cursor.getString(4));
     }
 
@@ -144,7 +86,7 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        LinearLayout answerLL = (LinearLayout) view.findViewById(R.id.answer_linear_layout_jigsaw_pl);
+        LinearLayout answerLL = (LinearLayout) view.findViewById(R.id.answer_linear_layout_jigsaw_en);
         answerET = new EditText[answerWord.length()];
         for (int index = 0; index < answerWord.length(); index++) {                   //show EditText in LinearLayout
             answerET[index] = new EditText(getContext());
@@ -209,7 +151,7 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
 
                         }
                     });
-                   view.startAnimation(animationFadeOut);
+                    view.startAnimation(animationFadeOut);
                 }
             });
             answerLL.addView(answerET[index]);
@@ -220,7 +162,7 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
         DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();           //show Buttons in TableRows
         int width = metrics.widthPixels;
         FlowLayout.LayoutParams layoutButtonParams = new FlowLayout.LayoutParams((width-32)/7, FlowLayout.LayoutParams.WRAP_CONTENT);
-        FlowLayout buttonsViewLL = (FlowLayout) view.findViewById(R.id.jigsawPlButtonsToCreateWord);
+        FlowLayout buttonsViewLL = (FlowLayout) view.findViewById(R.id.jigsawEnButtonsToCreateWord);
         buttonsLetters = new Button[answerWord.length()];
 
         for (int index = 0; index < answerWord.length(); index++){
@@ -272,6 +214,75 @@ public class VocabularyTestJigsawWordPlFragment extends Fragment {
 
             buttonsViewLL.addView(buttonsLetters[index]);
         }
+    }
+
+    private void setButtonsClick(){
+        checkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                String answerFinalForm = "";
+                for (EditText anAnswerET : answerET) {
+                    answerFinalForm += anAnswerET.getText();
+                }
+                if (answerFinalForm.equals(answerWord)) {
+                    manyGoodAnswer++;
+                    Animation animationCorrect = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test_big_button);
+                    view.setBackgroundResource(R.drawable.good_answer_change_color);
+                    animationCorrect.setAnimationListener(new Animation.AnimationListener() {
+
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            for (EditText completeWordET : answerET) {
+                                completeWordET.setEnabled(false);
+                            }
+                            ((TransitionDrawable) view.getBackground()).startTransition(500);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                            vocabularyTest.loadNextWord(fragmentTransaction, getContext());
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+
+                    });
+                    view.startAnimation(animationCorrect);
+                } else {
+                    final Animation animationFadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_in);
+                    final Animation animationFadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_out);
+                    Animation animationWrong = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test_big_button);
+                    view.setBackgroundResource(R.drawable.bad_answer_change_color);
+                    animationWrong.setAnimationListener(new Animation.AnimationListener() {
+
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            for (int i = 0; i < answerET.length; i++) {
+                                answerET[i].startAnimation(animationFadeOut);
+                                answerET[i].setEnabled(false);
+                                answerET[i].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                                answerET[i].setText(String.valueOf(answerWord.charAt(i)));
+                                answerET[i].startAnimation(animationFadeIn);
+                            }
+                            ((TransitionDrawable) view.getBackground()).startTransition(500);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                            vocabularyTest.loadNextWord(fragmentTransaction, getContext());                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+
+                    });
+                    view.startAnimation(animationWrong);
+                }
+            }
+        });
     }
 
     private int[] randomTableWithoutRepeat(int [] table){         //make table of random numbers to shuffle words
