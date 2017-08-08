@@ -24,12 +24,13 @@ import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.angielski_slownictwo.R;
 import vocabulary_test.VocabularyTest;
 
+import static vocabulary_test.VocabularyTest.inEnglish;
 import static vocabulary_test.VocabularyTest.manyGoodAnswer;
 import static vocabulary_test.VocabularyTest.manyTestWords;
 import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
 
-public class VocabularyTestWritePlFragment extends Fragment {
+public class VocabularyTestWriteFragment extends Fragment {
 
     private VocabularyTest vocabularyTest;
     private Cursor cursor;
@@ -38,14 +39,15 @@ public class VocabularyTestWritePlFragment extends Fragment {
     private VocabularyDatabase vocabularyDatabase;
     private int numberOfWord;
     private SharedPreferences sharedPreferences;
+    private String correctAnswer;
 
-    public VocabularyTestWritePlFragment() {
+    public VocabularyTestWriteFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_vocabulary_test_write_pl, container, false);
+        View view = inflater.inflate(R.layout.fragment_vocabulary_test_write, container, false);
         declarationVariables(view);
         setToolbar();
         addWord();
@@ -59,9 +61,15 @@ public class VocabularyTestWritePlFragment extends Fragment {
         vocabularyDatabase = vocabularyTest.getVocabularyDatabase(getContext());
         cursor = vocabularyTest.getCursor(getContext(), vocabularyDatabase);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        wordtoGuess = (TextView) view.findViewById(R.id.test_write_pl_word);
-        userWordET = (EditText) view.findViewById(R.id.userWriteWordPlET);
+        wordtoGuess = (TextView) view.findViewById(R.id.test_write_word);
+        userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
         numberOfWord = randomNumberOfWords[manyTestWords];
+        TextView hint = (TextView) view.findViewById(R.id.test_write_hint);
+        if (inEnglish[manyTestWords] == 1) {
+            hint.setText(R.string.test_write_pl_hint);
+        } else {
+            hint.setText(R.string.test_write_en_hint);
+        }
     }
 
     private void setToolbar(){
@@ -73,17 +81,25 @@ public class VocabularyTestWritePlFragment extends Fragment {
 
     private void addWord(){
         cursor.moveToPosition(numberOfWord);
-        wordtoGuess.setText(cursor.getString(3));
+        if (inEnglish[manyTestWords] == 1) {
+            wordtoGuess.setText(cursor.getString(4));
+        } else {
+            wordtoGuess.setText(cursor.getString(3));
+        }
     }
 
     private void configureEditText(){
-        userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(4).length())});
+        if (inEnglish[manyTestWords] == 1) {
+            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(3).length())});
+        } else {
+            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(4).length())});
+        }
         userWordET.setText("");
     }
 
     private void configureCheckButton(View view){
-        Button testWriteButtonCheckPl = (Button) view.findViewById(R.id.testWritePlCheckButton);
-        testWriteButtonCheckPl.setOnClickListener(new View.OnClickListener() {
+        Button testWriteButtonCheckEn = (Button) view.findViewById(R.id.testWriteCheckButton);
+        testWriteButtonCheckEn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 userWordET.setFocusableInTouchMode(true);
@@ -91,12 +107,19 @@ public class VocabularyTestWritePlFragment extends Fragment {
                 userWordET.setSelected(true);
                 final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 String userRealAnswer = userWordET.getText().toString();
-                final String correctAnswer = cursor.getString(4);
+                if (inEnglish[manyTestWords] == 1) {
+                    correctAnswer = cursor.getString(3);
+                } else {
+                    correctAnswer = cursor.getString(4);
+                }
                 if (userRealAnswer.equals("")){
                     Toast.makeText(getContext(), "Pole odpowiedzi jest puste", Toast.LENGTH_SHORT).show();
-                } else if (userRealAnswer.equals(correctAnswer)){                                                //good answer
+                }
+                else if (userRealAnswer.equals(correctAnswer)){                                                                                            //good answer
+                    view.setClickable(false);
                     goodAnswerClick(view, fragmentTransaction);
-                } else if (!(userRealAnswer.equals(correctAnswer))){                                                                                          //bad answer
+                } else if (!(userRealAnswer.equals(correctAnswer))){                                                                                       //bad answer
+                    view.setClickable(false);
                     badAnswerClick(view, fragmentTransaction);
                 }
             }
@@ -136,7 +159,11 @@ public class VocabularyTestWritePlFragment extends Fragment {
                 Animation animationFadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_in);
                 userWordET.setEnabled(false);
                 userWordET.startAnimation(animationFadeOut);
-                userWordET.setText(cursor.getString(4));
+                if (inEnglish[manyTestWords] == 1) {
+                    userWordET.setText(cursor.getString(3));
+                } else {
+                    userWordET.setText(cursor.getString(4));
+                }
                 userWordET.startAnimation(animationFadeIn);
                 userWordET.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 view.setBackgroundResource(R.drawable.bad_answer_change_color);

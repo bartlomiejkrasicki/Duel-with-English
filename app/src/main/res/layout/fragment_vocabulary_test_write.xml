@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="test_fragments.VocabularyTestWriteEnFragment">
+    tools:context="test_fragments.VocabularyTestWriteFragment">
 
     <TextView
+        android:id="@+id/test_write_hint"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/test_write_en_hint"
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
@@ -21,7 +21,7 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/test_write_en_word"
+            android:id="@+id/test_write_word"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -36,7 +36,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/userWriteWordEnET"
+            android:id="@+id/userWriteWordET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -46,7 +46,7 @@
             android:focusable="true" />
 
         <Button
-            android:id="@+id/testWriteEnCheckButton"
+            android:id="@+id/testWriteCheckButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

@@ -5,7 +5,6 @@
     <string name="button_vocabulary_text">Słownictwo</string>
     <string name="settings_menu">Ustawienia</string>
     <string name="title_activity_settings">Ustawienia</string>
-
     <string name="title_activity_lessons_vocabulary_list">LessonsVocabularyList</string>
     <string name="lesson_english_column">Po angielsku</string>
     <string name="lesson_polish_column">Po polsku</string>
@@ -24,27 +23,27 @@
     <string name="up_favourite_menu">W górę</string>
     <string name="mainMenuSubtitle">Menu główne</string>
     <string name="title_activity_main2">Main2Activity</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="mainMenuTestButton">Test</string>
     <string name="title_activity_vocabulary_test">Ustawienia testu</string>
+
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!--VocabularyTestPreference-->
+    <string name="start_test_button">Uruchom test</string>
     <string name="personalization_test">Personalizacja testu</string>
     <string name="customize_vocabulary_test">Personalizacja testu</string>
-    <string name="start_test_button">Uruchom test</string>
-    <string name="vocabulary_test_choice_en_to_pl_title">Przetłumacz z angielskiego na polski:</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="test_vocabulary_choice_pl_to_en">Przetłumacz z polskiego na angielski:</string>
-    <string name="tak">TAK robicie</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="test_write_pl_hint">Przetłumacz z polskiego na angielski</string>
-    <string name="test_write_et_hint">Tutaj wpisz słowo</string>
-    <string name="test_write_en_hint">Przetłumacz z angielskiego na polski</string>
+    <!--Vocabulary test fragments-->
     <string name="vocabulary_test_write_check_answer">Sprawdź</string>
-    <string name="test_jigsaw_word_en_hint">Z rozsypanych liter ułóż słowo po angielsku, które oznacza:</string>
-    <string name="test_jigsaw_word_pl_hint">Z rozsypanych liter ułóż słowo po polsku, które oznacza:</string>
+    <string name="test_write_et_hint">Tutaj wpisz słowo</string>
+    <string name="test_choice_en_hint">Przetłumacz poniższe słowo na język angielski klikając w poprawne tłumaczenie:</string>
+    <string name="test_choice_pl_hint">Przetłumacz poniższe słowo na język polski klikając w poprawne tłumaczenie:</string>
+    <string name="test_write_en_hint">Przetłumacz na język angielski słowo wpisując je w poniższym polu: </string>
+    <string name="test_write_pl_hint">Przetłumacz na język polski słowo wpisując je w poniższym polu: </string>
+    <string name="test_jigsaw_word_pl_hint">Przetłumacz poniższe słowo na język polski, układając je z rozsypanych liter:</string>
+    <string name="test_jigsaw_word_en_hint">Przetłumacz poniższe słowo na język angielski, układając je z rozsypanych liter:</string>
     <string name="jigsaw_fragment_check_button">Sprawdź</string>
     <string name="Test">Test</string>
 </resources>

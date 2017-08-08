@@ -3,18 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="test_fragments.VocabularyTestJigsawWordEnFragment">
+    tools:context="test_fragments.VocabularyTestJigsawWordFragment">
 
     <TextView
+        android:id="@+id/test_jigsaw_hint"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
-        android:text="@string/test_jigsaw_word_en_hint"
         android:gravity="center"/>
 
     <TextView
-        android:id="@+id/test_jigsaw_word_en"
+        android:id="@+id/test_jigsaw_word"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -23,7 +23,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <LinearLayout
-        android:id="@+id/answer_linear_layout_jigsaw_en"
+        android:id="@+id/answer_linear_layout_jigsaw"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="0.5"
@@ -32,7 +32,7 @@
         />
 
     <com.wefika.flowlayout.FlowLayout
-        android:id="@+id/jigsawEnButtonsToCreateWord"
+        android:id="@+id/jigsawButtonsToCreateWord"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -41,7 +41,7 @@
         android:gravity="center"/>
 
     <Button
-        android:id="@+id/jigsawEnButtonToCheck"
+        android:id="@+id/jigsawButtonToCheck"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/jigsaw_fragment_check_button"

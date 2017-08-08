@@ -19,18 +19,15 @@ import java.util.Random;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.angielski_slownictwo.R;
-import test_fragments.VocabularyTestChoiceEnFragment;
-import test_fragments.VocabularyTestChoicePlFragment;
-import test_fragments.VocabularyTestJigsawWordEnFragment;
-import test_fragments.VocabularyTestJigsawWordPlFragment;
-import test_fragments.VocabularyTestWriteEnFragment;
-import test_fragments.VocabularyTestWritePlFragment;
+import test_fragments.VocabularyTestChoiceFragment;
+import test_fragments.VocabularyTestJigsawWordFragment;
+import test_fragments.VocabularyTestWriteFragment;
 
 public class VocabularyTest extends FragmentActivity {
 
     public static int manyGoodAnswer = 0;
     public static int manyTestWords = 0;
-    public static int randomNumberOfWords[];
+    public static int randomNumberOfWords[], inEnglish[];
     private ProgressBar testProgressBar;
     private Cursor cursor;
     private VocabularyDatabase vocabularyDatabase;
@@ -49,7 +46,10 @@ public class VocabularyTest extends FragmentActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         randomNumberOfWords = new int[getSPnumberOfWords(sharedPreferences)];
         randomNumberOfWords = randomWordWithoutReply(randomNumberOfWords, cursor);
-
+        inEnglish = new int[getSPnumberOfWords(sharedPreferences)];
+        for (int i = 0; i < inEnglish.length; i++){
+            inEnglish[i] = randomNumber(2);
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.testVocabularyToolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,29 +66,17 @@ public class VocabularyTest extends FragmentActivity {
         testProgressBar.setProgress(50);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (randomNumber(4)){
+        switch (randomNumber(3)){
             case 0:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestChoiceEnFragment()).commit();
+                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestChoiceFragment()).commit();
                 break;
             }
             case 1:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestChoicePlFragment()).commit();
+                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestWriteFragment()).commit();
                 break;
             }
             case 2:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestWriteEnFragment()).commit();
-                break;
-            }
-            case 3:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestWritePlFragment()).commit();
-                break;
-            }
-            case 4:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestJigsawWordEnFragment()).commit();
-                break;
-            }
-            case 5:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestJigsawWordPlFragment()).commit();
+                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestJigsawWordFragment()).commit();
                 break;
             }
             default:{
@@ -99,29 +87,17 @@ public class VocabularyTest extends FragmentActivity {
 
     public void replaceFragment(FragmentTransaction fragmentTransaction){                 //show next fragment after answer
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (randomNumber(4)){
+        switch (randomNumber(3)){
             case 0:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoiceEnFragment()).commit();
+                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoiceFragment()).commit();
                 break;
             }
             case 1:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoicePlFragment()).commit();
+                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWriteFragment()).commit();
                 break;
             }
             case 2:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWriteEnFragment()).commit();
-                break;
-            }
-            case 3:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWritePlFragment()).commit();
-                break;
-            }
-            case 4:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestJigsawWordEnFragment()).commit();
-                break;
-            }
-            case 5:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestJigsawWordPlFragment()).commit();
+                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestJigsawWordFragment()).commit();
                 break;
             }
             default:{
@@ -182,6 +158,10 @@ public class VocabularyTest extends FragmentActivity {
         return Integer.parseInt(sharedPreferences.getString("levelOfLanguage", ""));
     }
 
+    public int getSPamountOfButtons(SharedPreferences sharedPreferences){
+        return Integer.parseInt(sharedPreferences.getString("amountOfButtons", ""));
+    }
+
     public VocabularyDatabase getVocabularyDatabase(Context context){
         return new VocabularyDatabase(context);
     }
@@ -239,6 +219,7 @@ public class VocabularyTest extends FragmentActivity {
     cursor.close();
     return randomWordsWithoutReply;
     }
+
 
     public int [] setRandomTableNumber(int maxRangeNumber){          //shuffle numbers and add to table of int
         int [] tableRandomNumbers = new int[maxRangeNumber];

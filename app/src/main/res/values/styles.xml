@@ -25,7 +25,7 @@
     <style name="Button.Custom" parent="Base.TextAppearance.AppCompat.Button">
         <item name="android:background">@color/color_buttons_special</item>
         <item name="android:elevation">15dp</item>
-        <item name="android:layout_margin">4dp</item>
+        <item name="android:layout_margin">3dp</item>
     </style>
 
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

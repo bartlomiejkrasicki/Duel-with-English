@@ -27,6 +27,16 @@
     <PreferenceCategory
         android:enabled="true"
         android:title="Wygląd testu">
+
+        <ListPreference
+            android:defaultValue="6"
+            android:entries="@array/amount_of_buttons"
+            android:entryValues="@array/amount_of_buttons"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:key="amountOfButtons"
+            android:summary="Ilość przycisków podczas testu wyboru"
+            android:title="Ilość podpowiedzi" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

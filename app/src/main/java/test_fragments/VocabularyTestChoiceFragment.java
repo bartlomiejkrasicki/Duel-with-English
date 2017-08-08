@@ -13,34 +13,36 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.angielski_slownictwo.R;
 import vocabulary_test.VocabularyTest;
 
+import static vocabulary_test.VocabularyTest.inEnglish;
 import static vocabulary_test.VocabularyTest.manyGoodAnswer;
 import static vocabulary_test.VocabularyTest.manyTestWords;
 import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
-public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
+public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
 
     private String answerText;
-    private Button[] guessButtons = new Button[8];
+    private Button[] guessButtons;
     private VocabularyTest vocabularyTest;
     private Cursor cursor;
     private VocabularyDatabase vocabularyDatabase;
     private SharedPreferences sharedPreferences;
-    private int goodAnswer;
-    private int numberOfWord;
+    private int goodAnswer, numberOfWord, numberOfButtons;
 
-    public VocabularyTestChoiceEnFragment(){
+    public VocabularyTestChoiceFragment(){
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.vocabulary_test_choice_en_to_pl_fragment, container, false);
+        View view = inflater.inflate(R.layout.vocabulary_test_choice_fragment, container, false);
         declarationVariables(view);
         setToolbar();
         addWords(view);
@@ -49,18 +51,67 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
 
     private void declarationVariables(View view){                          //declaration layout elements and variables
         numberOfWord = randomNumberOfWords[manyTestWords];
-        guessButtons[0] = (Button) view.findViewById(R.id.testChoiceEnOption1);
-        guessButtons[1] = (Button) view.findViewById(R.id.testChoiceEnOption2);
-        guessButtons[2] = (Button) view.findViewById(R.id.testChoiceEnOption3);
-        guessButtons[3] = (Button) view.findViewById(R.id.testChoiceEnOption4);
-        guessButtons[4] = (Button) view.findViewById(R.id.testChoiceEnOption5);
-        guessButtons[5] = (Button) view.findViewById(R.id.testChoiceEnOption6);
-        guessButtons[6] = (Button) view.findViewById(R.id.testChoiceEnOption7);
-        guessButtons[7] = (Button) view.findViewById(R.id.testChoiceEnOption8);
         vocabularyTest = new VocabularyTest();
         vocabularyDatabase = new VocabularyDatabase(getContext());
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        numberOfButtons = vocabularyTest.getSPamountOfButtons(sharedPreferences);
+        guessButtons = new Button[numberOfButtons];
+        buttonsDeclaration(view);
         cursor = vocabularyDatabase.getGroupValues(vocabularyTest.getSPlevelOfLanguage(sharedPreferences));
+        TextView testHint = (TextView) view.findViewById(R.id.testChoiceHint);
+        if (inEnglish[manyTestWords] == 1) {
+            testHint.setText(R.string.test_choice_en_hint);
+        } else {
+            testHint.setText(R.string.test_choice_pl_hint);
+        }
+    }
+
+    private void buttonsDeclaration(View view){
+        switch (numberOfButtons){
+            case 2:{
+                guessButtons[0] = (Button) view.findViewById(R.id.testChoice1);
+                guessButtons[1] = (Button) view.findViewById(R.id.testChoice2);
+                LinearLayout buttonLayout = (LinearLayout) view.findViewById(R.id.testChoiceButtonsLL);
+                buttonLayout.setVisibility(View.VISIBLE);
+                break;
+            }
+            case 4:{
+                guessButtons[0] = (Button) view.findViewById(R.id.testChoice1);
+                guessButtons[1] = (Button) view.findViewById(R.id.testChoice2);
+                guessButtons[2] = (Button) view.findViewById(R.id.testChoice3);
+                guessButtons[3] = (Button) view.findViewById(R.id.testChoice4);
+                LinearLayout buttonLayout = (LinearLayout) view.findViewById(R.id.testChoiceButtonsLL);
+                buttonLayout.setVisibility(View.VISIBLE);
+                break;
+            }
+            case 6:{
+                guessButtons[0] = (Button) view.findViewById(R.id.testChoiceOption1);
+                guessButtons[1] = (Button) view.findViewById(R.id.testChoiceOption2);
+                guessButtons[2] = (Button) view.findViewById(R.id.testChoiceOption3);
+                guessButtons[3] = (Button) view.findViewById(R.id.testChoiceOption4);
+                guessButtons[4] = (Button) view.findViewById(R.id.testChoiceOption5);
+                guessButtons[5] = (Button) view.findViewById(R.id.testChoiceOption6);
+                TableLayout tableLayout = (TableLayout) view.findViewById(R.id.testChoiceButtonsTable);
+                tableLayout.setVisibility(View.VISIBLE);
+                break;
+            }
+            case 8:{
+                guessButtons[0] = (Button) view.findViewById(R.id.testChoiceOption1);
+                guessButtons[1] = (Button) view.findViewById(R.id.testChoiceOption2);
+                guessButtons[2] = (Button) view.findViewById(R.id.testChoiceOption3);
+                guessButtons[3] = (Button) view.findViewById(R.id.testChoiceOption4);
+                guessButtons[4] = (Button) view.findViewById(R.id.testChoiceOption5);
+                guessButtons[5] = (Button) view.findViewById(R.id.testChoiceOption6);
+                guessButtons[6] = (Button) view.findViewById(R.id.testChoiceOption7);
+                guessButtons[7] = (Button) view.findViewById(R.id.testChoiceOption8);
+                TableLayout tableLayout = (TableLayout) view.findViewById(R.id.testChoiceButtonsTable);
+                tableLayout.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+        for (Button guessButton : guessButtons){
+            guessButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setToolbar(){
@@ -76,18 +127,26 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
         shuffleNumberButtonTable = vocabularyTest.setRandomTableNumber(shuffleNumberButtonTable.length);    //add shuffle number button table
 
         cursor.moveToPosition(numberOfWord);                                //add good answer to first button
-        guessWord.setText(cursor.getString(4));
+        if (inEnglish[manyTestWords] == 1) {
+            guessWord.setText(cursor.getString(3));
+            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(4));
+        } else {
+            guessWord.setText(cursor.getString(4));
+            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(3));
+        }
         goodAnswer = shuffleNumberButtonTable[0];
-        guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(3));
         guessButtons[shuffleNumberButtonTable[0]].setOnClickListener(this);
-        answerText = cursor.getString(3);
+        if (inEnglish[manyTestWords] == 1) {
+            answerText = cursor.getString(4);
+        } else {
+            answerText = cursor.getString(3);
+        }
+
         final int idWord = cursor.getInt(0);                                //id of first word
 
         int category = cursor.getInt(2);                                    //set cursor to category
         cursor = vocabularyDatabase.getSpecificValues(vocabularyTest.getSPlevelOfLanguage(sharedPreferences), category);        //change cursor to category words
 
-
-//        cursor.moveToFirst();
         final int index = searchId(cursor, idWord);
         int[] tableToShuffleWord = vocabularyTest.setRandomTableNumber(cursor.getCount(), index);
 
@@ -95,7 +154,11 @@ public class VocabularyTestChoiceEnFragment extends android.support.v4.app.Fragm
             guessButtons[i].setOnClickListener(this);
             do {
                 cursor.moveToPosition(tableToShuffleWord[i]);
-                guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(3));
+                if (inEnglish[manyTestWords] == 1) {
+                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(4));
+                } else {
+                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(3));
+                }
             } while (false);
         }
     }

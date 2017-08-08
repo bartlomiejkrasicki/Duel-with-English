@@ -21,8 +21,15 @@
     <string-array name="list_of_words">
         <item>5</item>
         <item>10</item>
+        <item>15</item>
         <item>20</item>
-        <item>Wszystkie z danej kategorii</item>
+    </string-array>
+
+    <string-array name="amount_of_buttons">
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
     </string-array>
 
 </resources>
