@@ -13,6 +13,8 @@
 		    android:layout_centerHorizontal="true" />
 	<TextView
 		android:id="@+id/textOnTestProgressBar"
+		android:gravity="center"
+		android:layout_gravity="center"
 		android:layout_alignLeft="@id/testProgressBar" android:layout_alignTop="@id/testProgressBar"
 		android:layout_alignRight="@id/testProgressBar" android:layout_alignBottom="@id/testProgressBar"
 		android:background="@android:color/transparent" />
