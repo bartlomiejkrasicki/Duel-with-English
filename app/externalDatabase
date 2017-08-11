@@ -58,6 +58,7 @@ public boolean updateValuesInDatabase(String id, int favouriteImageOn, final Str
         return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER + "=" + i + " AND "
                 + DatabaseColumnNames.COLUMN_NAME_ITEM_NUMBER + "=" + i1, null);
     }
+    
     public Cursor getGroupValues(int i, final String TABLE_NAME){
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_GROUP_NUMBER + "=" + i, null);
@@ -82,6 +83,11 @@ public boolean updateValuesInDatabase(String id, int favouriteImageOn, final Str
         }
         cursor.close();
     }
+    
+    public Cursor showAllCategories(){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_CATEGORIES, null);
+    }
 
 
 // ----------------------------------------------------------------------------------------------
@@ -100,6 +106,7 @@ public interface DatabaseColumnNames extends BaseColumns {
     final String TABLE_NAME_B2 = "B2";
     final String TABLE_NAME_C1 = "C1";
     final String TABLE_NAME_C2 = "C2";
+    final String TABLE_NAME_CATEGORIES = "categories_from_level";
     final String COLUMN_CATEGORY = "category";
     final String COLUMN_ENWORD = "engword";
     final String COLUMN_PLWORD = "plword";
