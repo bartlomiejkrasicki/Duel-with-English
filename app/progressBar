@@ -1,50 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="wrap_content" >
-
-	<ProgressBar
-		android:id="@+id/testProgressBar"
-		style="@android:style/Widget.ProgressBar.Horizontal"
-		android:layout_width="match_parent"
-		android:minHeight="10dp"
-		android:maxHeight="20dp"
-		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
-		android:layout_centerHorizontal="true"
-		android:background="@android:color/progressBarColor"
-		android:progressDrawable="@drawable/test_horizotal_progressbar" />
-		    
-	<TextView
-		android:id="@+id/textOnTestProgressBar"
-		android:gravity="center"
-		android:layout_gravity="center"
-		android:layout_alignLeft="@id/testProgressBar" android:layout_alignTop="@id/testProgressBar"
-		android:layout_alignRight="@id/testProgressBar" android:layout_alignBottom="@id/testProgressBar"
-		android:background="@android:color/transparent" />
-	
-</RelativeLayout>
-
-
-nowy widok w xml
-
-<item android:id="@android:id/background">
-    <shape>
-        <corners android:radius="8dp"/>
-        <solid android:color="@color/dirtyWhite"/>
-    </shape>
-</item>
-
-<item android:id="@android:id/progress"
-    android:top="1dp"
-    android:bottom="1dp"
-    android:left="1dp"
-    android:right="1dp">
-
-    <scale android:scaleWidth="100%">
-        <shape>
-            <corners android:radius="8dp"/>
-            <solid android:color="@color/colorPrimaryDark"/>
-        </shape>
-    </scale>
-</item>
-
+<com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/testProgressBar"
+        android:layout_height="match_parent" 
+        android:layout_width="30dp"
+        app:rcBackgroundPadding="5dp"
+	app:rcProgressColor="color"
+	app:rcBackgroundColor="color"
+	app:rcRadius="10dp" />
