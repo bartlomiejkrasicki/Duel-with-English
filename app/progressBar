@@ -1,0 +1,15 @@
+<com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/testProgressBar"
+        android:layout_height="match_parent" 
+        android:layout_width="30dp"
+        app:rcBackgroundPadding="5dp"
+	app:rcProgressColor="color"
+	app:rcBackgroundColor="color"
+	app:rcRadius="10dp" />
+
+
+https://material.io/icons/   <----- ikonki
+
+http://guides.codepath.com/android/fragment-navigation-drawer <--- tutorial
+
+https://github.com/race604/WaveLoading <--- animacja na start apki
