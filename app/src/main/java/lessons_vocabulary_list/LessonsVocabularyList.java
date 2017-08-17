@@ -10,9 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
 import favourite_list.FavouriteList;
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 
 public class LessonsVocabularyList extends AppCompatActivity {
 
@@ -39,13 +40,12 @@ public class LessonsVocabularyList extends AppCompatActivity {
 
         database = new VocabularyDatabase(getApplicationContext());
         if (!(preferences.getString(PREFERENCES_DATABASE_INITDATA, "").equals("INITED"))) {
-            database.initData();
             SharedPreferences.Editor preferencesEditor = preferences.edit();
             String initDataOk = "INITED";
             preferencesEditor.putString(PREFERENCES_DATABASE_INITDATA, initDataOk);
             preferencesEditor.apply();
         }
-        cursor = database.getSpecificValues(i, i1);
+        cursor = database.getSpecificValues(DatabaseColumnNames.TABLE_NAME_A1);
         adapter = new LessonsVocabularyListAdapter(this, cursor, i, i1, LVVocabularyLessons);
         LVVocabularyLessons.setAdapter(adapter);
     }

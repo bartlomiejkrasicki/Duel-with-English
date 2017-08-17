@@ -17,8 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+
+import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.inEnglish;
@@ -35,6 +38,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private VocabularyDatabase vocabularyDatabase;
     private SharedPreferences sharedPreferences;
     private int goodAnswer, numberOfWord, numberOfButtons;
+    private Animation trueAnswer, falseAnswer;
 
     public VocabularyTestChoiceFragment(){
     }
@@ -45,6 +49,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
         View view = inflater.inflate(R.layout.vocabulary_test_choice_fragment, container, false);
         declarationVariables(view);
         setToolbar();
+        setProgressBar();
         addWords(view);
         return view;
     }
@@ -57,7 +62,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
         numberOfButtons = vocabularyTest.getSPamountOfButtons(sharedPreferences);
         guessButtons = new Button[numberOfButtons];
         buttonsDeclaration(view);
-        cursor = vocabularyDatabase.getGroupValues(vocabularyTest.getSPlevelOfLanguage(sharedPreferences));
+        cursor = vocabularyDatabase.getGroupValues(vocabularyTest.getSPlevelOfLanguage(sharedPreferences), DatabaseColumnNames.TABLE_NAME_A1);
         TextView testHint = (TextView) view.findViewById(R.id.testChoiceHint);
         if (inEnglish[manyTestWords] == 1) {
             testHint.setText(R.string.test_choice_en_hint);
@@ -117,8 +122,14 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private void setToolbar(){
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getInt(2));
+        toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
         toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + vocabularyTest.getSPnumberOfWords(sharedPreferences));
+    }
+
+    private void setProgressBar(){
+        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+        testProgressBar.setProgress(manyTestWords);
+        testProgressBar.setSecondaryProgress(manyTestWords+1);
     }
 
     private void addWords(View view){                                       //add words and implement onClickListener to Buttons
@@ -128,24 +139,24 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
 
         cursor.moveToPosition(numberOfWord);                                //add good answer to first button
         if (inEnglish[manyTestWords] == 1) {
-            guessWord.setText(cursor.getString(3));
-            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(4));
+            guessWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(DatabaseColumnNames.plwordColumn));
         } else {
-            guessWord.setText(cursor.getString(4));
-            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(3));
+            guessWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(DatabaseColumnNames.enwordColumn));
         }
         goodAnswer = shuffleNumberButtonTable[0];
         guessButtons[shuffleNumberButtonTable[0]].setOnClickListener(this);
         if (inEnglish[manyTestWords] == 1) {
-            answerText = cursor.getString(4);
+            answerText = cursor.getString(DatabaseColumnNames.plwordColumn);
         } else {
-            answerText = cursor.getString(3);
+            answerText = cursor.getString(DatabaseColumnNames.enwordColumn);
         }
 
-        final int idWord = cursor.getInt(0);                                //id of first word
+        final int idWord = cursor.getInt(DatabaseColumnNames.idColumn);                                //id of first word
 
-        int category = cursor.getInt(2);                                    //set cursor to category
-        cursor = vocabularyDatabase.getSpecificValues(vocabularyTest.getSPlevelOfLanguage(sharedPreferences), category);        //change cursor to category words
+        int category = cursor.getInt(DatabaseColumnNames.categoryColumn);                                    //set cursor to category
+        cursor = vocabularyDatabase.getSpecificValues(DatabaseColumnNames.TABLE_NAME_A1);        //change cursor to category words
 
         final int index = searchId(cursor, idWord);
         int[] tableToShuffleWord = vocabularyTest.setRandomTableNumber(cursor.getCount(), index);
@@ -155,9 +166,9 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
             do {
                 cursor.moveToPosition(tableToShuffleWord[i]);
                 if (inEnglish[manyTestWords] == 1) {
-                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(4));
+                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(DatabaseColumnNames.plwordColumn));
                 } else {
-                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(3));
+                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(DatabaseColumnNames.enwordColumn));
                 }
             } while (false);
         }
@@ -201,14 +212,22 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private void setGoodAnswer(final Button thisButton){                                                                    //good answer handling
         manyGoodAnswer++;
         thisButton.setBackgroundResource(R.drawable.good_answer_change_color);
-        Animation trueAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test);
+        if (numberOfButtons > 5) {
+            trueAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test);
+        } else {
+            trueAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test_big_button);
+        }
         startAnimation(trueAnswer, thisButton, true);
     }
 
     private void setBadAnswer(final Button thisButton){                                                                     //bad answer handling
         thisButton.setBackgroundResource(R.drawable.bad_answer_change_color);
         guessButtons[goodAnswer].setBackgroundResource(R.drawable.good_answer_change_color);
-        Animation falseAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test);
+        if (numberOfButtons > 5) {
+            falseAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test);
+        } else {
+            falseAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test_big_button);
+        }
         startAnimation(falseAnswer, thisButton, false);
     }
 

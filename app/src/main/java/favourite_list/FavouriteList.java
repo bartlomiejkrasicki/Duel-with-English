@@ -15,8 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 
 public class FavouriteList extends AppCompatActivity {
 
@@ -106,7 +107,7 @@ public class FavouriteList extends AppCompatActivity {
                             favouritelist.getChildAt(i).setTag(0);
                             cursor.moveToPosition(i);
                             String index = String.valueOf(cursor.getInt(0));
-                            database.updateValuesInDatabase(index, 0);
+                            database.updateValuesInDatabase(index, 0, DatabaseColumnNames.TABLE_NAME_A1);
                         }
                     }
                     Toast.makeText(context, "Usuwanie zakończone pomyślnie", Toast.LENGTH_SHORT).show();
@@ -149,8 +150,8 @@ public class FavouriteList extends AppCompatActivity {
         favouritelist = (ListView) findViewById(R.id.favouriteListButton);
         fab = (FloatingActionButton) findViewById(R.id.floatingDeleteButton);
         context = getApplicationContext();
-        database = new VocabularyDatabase(getApplicationContext());
-        cursor = database.getFavouriteValues();
+        database = new VocabularyDatabase(context);
+        cursor = database.getFavouriteValues(DatabaseColumnNames.TABLE_NAME_A1);
         adapter = new FavouriteListAdapter(this, cursor, favouritelist);
     }
 }

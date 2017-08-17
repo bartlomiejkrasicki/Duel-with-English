@@ -12,13 +12,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 import java.util.Random;
 
+import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 import test_fragments.VocabularyTestChoiceFragment;
 import test_fragments.VocabularyTestJigsawWordFragment;
 import test_fragments.VocabularyTestWriteFragment;
@@ -28,7 +30,7 @@ public class VocabularyTest extends FragmentActivity {
     public static int manyGoodAnswer = 0;
     public static int manyTestWords = 0;
     public static int randomNumberOfWords[], inEnglish[];
-    private ProgressBar testProgressBar;
+    private RoundCornerProgressBar testProgressBar;
     private Cursor cursor;
     private VocabularyDatabase vocabularyDatabase;
 
@@ -57,13 +59,12 @@ public class VocabularyTest extends FragmentActivity {
                 onBackPressed();
             }
         });
-        testProgressBar = (ProgressBar) findViewById(R.id.testProgressBar);
+        testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
+        testProgressBar.setMax(getSPnumberOfWords(sharedPreferences));
+        testProgressBar.setProgress(3);
     }
 
     private void showFirstFragment(){
-        testProgressBar.setVisibility(View.VISIBLE);
-        testProgressBar.setEnabled(true);
-        testProgressBar.setProgress(50);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
         switch (randomNumber(3)){
@@ -117,6 +118,7 @@ public class VocabularyTest extends FragmentActivity {
     }
 
     public void endTestAlertDialog(final Context context){
+        testProgressBar.setProgress(testProgressBar.getMax());
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Test został zakończony");
@@ -167,7 +169,7 @@ public class VocabularyTest extends FragmentActivity {
     }
 
     public Cursor getCursor(Context context, VocabularyDatabase vocabularyDatabase) {
-        return vocabularyDatabase.getGroupValues(getSPlevelOfLanguage(getSharedPreferences(context)));
+        return vocabularyDatabase.getGroupValues(getSPlevelOfLanguage(getSharedPreferences(context)), DatabaseColumnNames.TABLE_NAME_A1);
     }
 
     public SharedPreferences getSharedPreferences(Context context) {

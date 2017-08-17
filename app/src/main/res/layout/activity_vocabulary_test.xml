@@ -18,18 +18,21 @@
         android:id="@+id/testFragmentId"
         android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <ProgressBar
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
         android:id="@+id/testProgressBar"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:layout_weight="8"
-        android:max="5"
-        android:minHeight="?attr/actionBarSize"
-        android:progress="1" />
+        android:layout_height="30dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        app:rcBackgroundPadding="6dp"
+        app:rcRadius="20dp"
+        app:rcBackgroundColor="@color/color_buttons_special"
+        app:rcSecondaryProgressColor="@color/colorAccent"
+        app:rcProgressColor="@color/colorPrimaryDark" />
 
-    </LinearLayout>
+</LinearLayout>

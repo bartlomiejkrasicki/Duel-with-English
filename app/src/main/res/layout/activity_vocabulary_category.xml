@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="expandable_lessons_list.VocabularyExpandableList">
+    tools:context="vocabulary_level_category.VocabularyCategory">
 
-    <include layout="@layout/content_vocabularylist" />
+    <include layout="@layout/content_vocabulary_category" />
 
 </android.support.design.widget.CoordinatorLayout>

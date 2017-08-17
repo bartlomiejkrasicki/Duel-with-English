@@ -10,8 +10,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 
 
 class LessonsVocabularyListAdapter extends BaseAdapter {
@@ -55,9 +56,9 @@ class LessonsVocabularyListAdapter extends BaseAdapter {
         final ImageButton favouriteStar = (ImageButton) view.findViewById(R.id.favourite_star_lv);
         TextView polishWord = (TextView) view.findViewById(R.id.plWord);
         TextView englishWord = (TextView) view.findViewById(R.id.engWord);
-        VocabularyDatabase database = new VocabularyDatabase(view.getContext());
+        VocabularyDatabase database = new VocabularyDatabase(context);
 
-        cursor = database.getSpecificValues(group_number, item_number);
+        cursor = database.getSpecificValues(DatabaseColumnNames.TABLE_NAME_A1);
         database.showVocabularyForLessons(cursor, polishWord, englishWord, favouriteStar, i);
 
         String tag = LVVocabularyLesson.getTag().toString();
@@ -71,17 +72,17 @@ class LessonsVocabularyListAdapter extends BaseAdapter {
         favouriteStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                VocabularyDatabase database = new VocabularyDatabase(view.getContext());
+                VocabularyDatabase database = new VocabularyDatabase(context);
                 cursor.moveToPosition(i);
                 String index = String.valueOf(cursor.getInt(0));
                 int isFavourite = cursor.getInt(5);
                 if (isFavourite == 0) {
-                    database.updateValuesInDatabase(index, 1);
+                    database.updateValuesInDatabase(index, 1, DatabaseColumnNames.TABLE_NAME_A1);
                     favouriteStar.setImageResource(android.R.drawable.star_big_on);
 
                 }
                 else {
-                   database.updateValuesInDatabase(index, 0);
+                   database.updateValuesInDatabase(index, 0, DatabaseColumnNames.TABLE_NAME_A1);
                    favouriteStar.setImageResource(android.R.drawable.star_big_off);
                 }
                 notifyDataSetChanged();

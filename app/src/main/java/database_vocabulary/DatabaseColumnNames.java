@@ -4,12 +4,24 @@ import android.provider.BaseColumns;
 
 public interface DatabaseColumnNames extends BaseColumns {
 
-    String DATABASE_NAME = "vocabulary_database.db";
+    String DATABASE_NAME = "vocabularydb.db";
     int DATABASE_VERSION = 1;
     String COLUMN_NAME_PLWORD = "plword";
     String COLUMN_NAME_ENGWORD = "engword";
     String COLUMN_NAME_FAVOURITE_IMAGE_ON = "favouriteimage";
+    String COLUMN_CATEGORY = "category";
     String TABLE_NAME = "vocabulary_table";
+    String TABLE_NAME_A1 = "A1";
+    String TABLE_NAME_A2 = "A2";
+    String TABLE_NAME_B1 = "B1";
+    String TABLE_NAME_B2 = "B2";
+    String TABLE_NAME_C1 = "C1";
+    String TABLE_NAME_C2 = "C2";
     String COLUMN_NAME_GROUP_NUMBER = "group_number";
     String COLUMN_NAME_ITEM_NUMBER = "item_number";
+    int idColumn = 0;
+    int categoryColumn = 1;
+    int enwordColumn = 2;
+    int plwordColumn = 3;
+    int isfavouriteColumn = 4;
 }

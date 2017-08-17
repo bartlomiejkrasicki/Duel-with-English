@@ -21,12 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.Random;
 
+import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.inEnglish;
@@ -55,6 +57,7 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_vocabulary_test_jigsaw, container, false);
         declarationVariables(view);
         setToolbar();
+        setProgressBar();
         addWord(view);
         configureAnswer(view);
         setButtonsClick();
@@ -79,25 +82,31 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
     private void setToolbar(){
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getInt(2));
+        toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
         toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + vocabularyTest.getSPnumberOfWords(sharedPreferences));
+    }
+
+    private void setProgressBar(){
+        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+        testProgressBar.setProgress(manyTestWords);
+        testProgressBar.setSecondaryProgress(manyTestWords+1);
     }
 
     private void addWord(View view){                            //add word in english or polish
         TextView testWord = (TextView) view.findViewById(R.id.test_jigsaw_word);
         cursor.moveToPosition(numberOfWord);
         if (inEnglish[manyTestWords] == 1) {
-            testWord.setText(cursor.getString(3));
+            testWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
         } else {
-            testWord.setText(cursor.getString(4));
+            testWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
         }
     }
 
     private void configureAnswer(View view){                    //configure EditText table (word to write)
         if (inEnglish[manyTestWords] == 1) {
-            answerWord = cursor.getString(4);
+            answerWord = cursor.getString(DatabaseColumnNames.plwordColumn);
         } else {
-            answerWord = cursor.getString(3);
+            answerWord = cursor.getString(DatabaseColumnNames.enwordColumn);
         }
         shuffleTable();
         addEditTexts(view, answerWord);
@@ -170,11 +179,11 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
 
         for (int index = 0; index < answerWord.length(); index++){                          //add buttons and shuffle, set text
             buttonsLetters[index] = new Button(getContext());
+            buttonsLetters[index].setBackgroundResource(R.drawable.circle_button);
             buttonsLetters[index].setLayoutParams(layoutButtonParams);
             buttonsLetters[index].setText(String.valueOf(answerWord.charAt(randomTable[index])));
             buttonsLetters[index].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             buttonsLetters[index].setTag(randomTable[index]);
-
             if (answerWord.charAt(randomTable[index])==' ') {
                 buttonsLetters[index].setVisibility(View.GONE);
             }
@@ -233,9 +242,11 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
                     Toast.makeText(getContext(), "Użyj wszystkich dostępnych liter", Toast.LENGTH_SHORT).show();
                 }
                 else if (answerFinalForm.equals(answerWord)) {
-                  goodAnswer(view);
+                    view.setClickable(false);
+                    goodAnswer(view);
                 }
                 else {
+                    view.setClickable(false);
                     badAnswer(view);
                 }
             }

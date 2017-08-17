@@ -20,8 +20,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+
+import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.inEnglish;
@@ -50,6 +53,7 @@ public class VocabularyTestWriteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_vocabulary_test_write, container, false);
         declarationVariables(view);
         setToolbar();
+        setProgressBar();
         addWord();
         configureEditText();
         configureCheckButton(view);
@@ -75,24 +79,30 @@ public class VocabularyTestWriteFragment extends Fragment {
     private void setToolbar(){
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getInt(2));
+        toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
         toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + vocabularyTest.getSPnumberOfWords(sharedPreferences));
+    }
+
+    private void setProgressBar(){
+        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+        testProgressBar.setProgress(manyTestWords);
+        testProgressBar.setSecondaryProgress(manyTestWords+1);
     }
 
     private void addWord(){
         cursor.moveToPosition(numberOfWord);
         if (inEnglish[manyTestWords] == 1) {
-            wordtoGuess.setText(cursor.getString(4));
+            wordtoGuess.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
         } else {
-            wordtoGuess.setText(cursor.getString(3));
+            wordtoGuess.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
         }
     }
 
     private void configureEditText(){
         if (inEnglish[manyTestWords] == 1) {
-            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(3).length())});
+            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(DatabaseColumnNames.enwordColumn).length())});
         } else {
-            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(4).length())});
+            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(DatabaseColumnNames.plwordColumn).length())});
         }
         userWordET.setText("");
     }
@@ -108,9 +118,9 @@ public class VocabularyTestWriteFragment extends Fragment {
                 final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 String userRealAnswer = userWordET.getText().toString();
                 if (inEnglish[manyTestWords] == 1) {
-                    correctAnswer = cursor.getString(3);
+                    correctAnswer = cursor.getString(DatabaseColumnNames.enwordColumn);
                 } else {
-                    correctAnswer = cursor.getString(4);
+                    correctAnswer = cursor.getString(DatabaseColumnNames.plwordColumn);
                 }
                 if (userRealAnswer.equals("")){
                     Toast.makeText(getContext(), "Pole odpowiedzi jest puste", Toast.LENGTH_SHORT).show();
@@ -128,7 +138,7 @@ public class VocabularyTestWriteFragment extends Fragment {
 
     private void goodAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
         manyGoodAnswer++;
-        Animation animationCorrect = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test);
+        Animation animationCorrect = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test_big_button);
         animationCorrect.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -151,7 +161,7 @@ public class VocabularyTestWriteFragment extends Fragment {
     }
 
     private void badAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
-        Animation animationWrong = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test);
+        Animation animationWrong = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test_big_button);
         animationWrong.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -160,9 +170,9 @@ public class VocabularyTestWriteFragment extends Fragment {
                 userWordET.setEnabled(false);
                 userWordET.startAnimation(animationFadeOut);
                 if (inEnglish[manyTestWords] == 1) {
-                    userWordET.setText(cursor.getString(3));
+                    userWordET.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
                 } else {
-                    userWordET.setText(cursor.getString(4));
+                    userWordET.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
                 }
                 userWordET.startAnimation(animationFadeIn);
                 userWordET.setBackgroundColor(getResources().getColor(R.color.colorPrimary));

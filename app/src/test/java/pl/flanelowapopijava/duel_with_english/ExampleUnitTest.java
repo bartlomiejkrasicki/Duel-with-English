@@ -1,4 +1,4 @@
-package pl.flanelowapopijava.angielski_slownictwo;
+package pl.flanelowapopijava.duel_with_english;
 
 import org.junit.Test;
 

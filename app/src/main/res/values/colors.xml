@@ -7,4 +7,5 @@
     <color name="color_buttons_special">#2094f1</color>
     <color name="delete_list_items">#F44336</color>
     <color name="colorBadAnswer">#B71C1C</color>
+    <color name="textColor">#de111010</color>
 </resources>

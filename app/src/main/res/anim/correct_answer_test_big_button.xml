@@ -5,7 +5,7 @@
 
     <translate
         android:fromYDelta="0"
-        android:toYDelta="-10%p"
+        android:toYDelta="-28%p"
         android:repeatCount="1"
         android:repeatMode="reverse" />
 

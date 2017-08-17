@@ -7,15 +7,17 @@
 
     <TextView
         android:id="@+id/test_jigsaw_hint"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/space_edittext"
+        android:layout_marginStart="@dimen/space_edittext"
+        android:layout_marginEnd="@dimen/space_edittext"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
-        android:gravity="center"/>
+        android:gravity="center_horizontal"
+        style="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:id="@+id/test_jigsaw_word"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
@@ -26,10 +28,11 @@
         android:id="@+id/answer_linear_layout_jigsaw"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:orientation="horizontal"
         android:layout_gravity="center"
-        />
+        android:layout_weight="0.5"
+        android:background="@drawable/expandable_vocabulary_list_shape"
+        android:gravity="center"
+        android:orientation="horizontal" />
 
     <com.wefika.flowlayout.FlowLayout
         android:id="@+id/jigsawButtonsToCreateWord"
@@ -40,12 +43,16 @@
         android:layout_gravity="center"
         android:gravity="center"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <Button
         android:id="@+id/jigsawButtonToCheck"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/jigsaw_fragment_check_button"
-        style="@style/Button.Custom"
-        android:layout_margin="@dimen/fab_margin" />
+        style="@style/Button.Custom" />
+    </LinearLayout>
 
 </LinearLayout>

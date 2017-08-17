@@ -6,13 +6,16 @@
 
     <TextView
         android:id="@+id/testChoiceHint"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/space_edittext"
+        android:layout_marginStart="@dimen/space_edittext"
+        android:layout_marginEnd="@dimen/space_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.AppCompat.Medium"
         android:gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
 
     <LinearLayout
         android:id="@+id/enToPlChoiceLinearLayout"
@@ -23,7 +26,6 @@
     
         <TextView
             android:id="@+id/testWordChoice"
-            android:layout_marginTop="@dimen/fab_margin"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_weight="1"
@@ -79,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
-            android:layout_margin="@dimen/activity_vertical_listview"
+            android:layout_gravity="bottom"
             android:visibility="gone">
 
         <TableRow

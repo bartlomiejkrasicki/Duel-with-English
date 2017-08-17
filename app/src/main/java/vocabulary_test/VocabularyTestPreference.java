@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import pl.flanelowapopijava.angielski_slownictwo.R;
+import pl.flanelowapopijava.duel_with_english.R;
 
 public class VocabularyTestPreference extends FragmentActivity {
 

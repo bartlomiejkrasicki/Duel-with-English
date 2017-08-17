@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Angielski - slownictwo</string>
+    <string name="app_name">Duel with English</string>
     <string name="lessons_vocabulary_list_name">Słownictwo</string>
     <string name="action_settings">Settings</string>
     <string name="button_vocabulary_text">Słownictwo</string>
@@ -46,4 +46,10 @@
     <string name="test_jigsaw_word_en_hint">Przetłumacz poniższe słowo na język angielski, układając je z rozsypanych liter:</string>
     <string name="jigsaw_fragment_check_button">Sprawdź</string>
     <string name="Test">Test</string>
+    <string name="vocabulary_category_a1_text">A1</string>
+    <string name="vocabulary_category_a2_text">A2</string>
+    <string name="vocabulary_category_b1_text">B1</string>
+    <string name="vocabulary_category_b2_text">B2</string>
+    <string name="vocabulary_category_c1_text">C1</string>
+    <string name="vocabulary_category_c2_text">C2</string>
 </resources>

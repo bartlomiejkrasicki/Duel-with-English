@@ -1,4 +1,4 @@
-package pl.flanelowapopijava.angielski_slownictwo;
+package pl.flanelowapopijava.duel_with_english;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("pl.flanelowapopijava.angielski_slownictwo", appContext.getPackageName());
+        assertEquals("pl.flanelowapopijava.duel_with_english", appContext.getPackageName());
     }
 }

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_main"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_vocabularycategory"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="main_activity.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_vocabulary_category">
 
     <TableRow
         android:layout_width="match_parent"
@@ -16,25 +14,24 @@
         android:weightSum="2"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_vocabulary"
-            style="@style/Button.Custom"
+        <at.markushi.ui.CircleButton
+            android:id="@+id/button_category_A1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_column="0"
             android:layout_weight="1"
-            android:onClick="vocabularyButtonOnClick"
-            android:text="@string/button_vocabulary_text" />
+            app:cb_color="@color/colorAccent"
+            android:onClick="categoryButtonOnClick"
+            android:text="@string/vocabulary_category_a1_text" />
 
-        <Button
-            android:id="@+id/favouriteListButton"
-            style="@style/Button.Custom"
+        <at.markushi.ui.CircleButton
+            android:id="@+id/button_category_A2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_column="1"
             android:layout_weight="1"
-            android:onClick="favouriteButtonOnClick"
-            android:text="@string/favourite_main_button" />
+            android:onClick="categoryButtonOnClick"
+            android:text="@string/vocabulary_category_a2_text" />
 
     </TableRow>
 
@@ -45,24 +42,23 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/testButton"
-            style="@style/Button.Custom"
+        <at.markushi.ui.CircleButton
+            android:id="@+id/button_category_B1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_column="0"
-            android:onClick="testButtonOnClick"
-            android:text="@string/mainMenuTestButton" />
+            android:onClick="categoryButtonOnClick"
+            android:text="@string/vocabulary_category_b1_text" />
 
-        <Button
-            android:id="@+id/button4"
-            style="@style/Button.Custom"
+        <at.markushi.ui.CircleButton
+            android:id="@+id/button_category_B2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_column="1"
             android:layout_weight="1"
-            android:text="Button" />
+            android:onClick="categoryButtonOnClick"
+            android:text="@string/vocabulary_category_b2_text" />
 
     </TableRow>
 
@@ -73,15 +69,24 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/aboutAuthorButton"
-            style="@style/Button.Custom"
+        <at.markushi.ui.CircleButton
+            android:id="@+id/button_category_C1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_column="0"
-            android:layout_weight="2"
-            android:onClick="aboutAuthorButtonOnClick"
-            android:text="@string/about_author_button_text" />
+            android:layout_weight="1"
+            android:onClick="categoryButtonOnClick"
+            android:text="@string/vocabulary_category_c1_text" />
+
+        <at.markushi.ui.CircleButton
+            android:id="@+id/button_category_C2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_column="1"
+            android:layout_weight="1"
+            android:onClick="categoryButtonOnClick"
+            android:text="@string/vocabulary_category_c2_text" />
 
     </TableRow>
+
 </TableLayout>
