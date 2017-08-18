@@ -52,4 +52,6 @@
     <string name="vocabulary_category_b2_text">B2</string>
     <string name="vocabulary_category_c1_text">C1</string>
     <string name="vocabulary_category_c2_text">C2</string>
+    <string name="logo_description">Logo aplikacji</string>
+    <string name="title_description">Nazwa aplikacji - Duel with English</string>
 </resources>
