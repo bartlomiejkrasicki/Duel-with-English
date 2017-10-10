@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -22,15 +20,18 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON, favouriteImageOn);
-        sqLiteDatabase.update(TABLE_NAME, values, DatabaseColumnNames._ID + " = ?", new String[]{id});
+        sqLiteDatabase.update(TABLE_NAME, values, DatabaseColumnNames.COLUMN_NAME_ID + " = ?", new String[]{id});
         sqLiteDatabase.close();
         return true;
     }
 
-    public Cursor getFavouriteValues(final String TABLE_NAME) {                           //pobieranie wszystkich danych
+    public Cursor getFavouriteValues(final String TABLE_NAME, final boolean isAlphabetical) {                           //pobieranie wszystkich danych
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-//        final int addedToFavourite = 1;
-        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        if (isAlphabetical){
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON + " = " + 1 + " ORDER BY " + DatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
+        } else {
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON + " = " + 1, null);
+        }
     }
 
     public Cursor getSpecificValues(final String TABLE_NAME) {
@@ -38,28 +39,22 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
         return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
-    public Cursor getGroupValues(int i, final String TABLE_NAME) {
+    public Cursor getCategoryValues(final String TABLE_NAME) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
-    public void showVocabularyForLessons(Cursor cursor, TextView plword, TextView engword, ImageView favouriteImageStar, int position) {            //pokazywanie danych podczas nauki słownictwa
-        if (cursor.moveToPosition(position)) {
-            plword.setText(cursor.getString(3));
-            engword.setText(cursor.getString(4));
-            int addFavOrNot = cursor.getInt(5);
-            if (addFavOrNot == 1) {
-                favouriteImageStar.setImageResource(android.R.drawable.star_big_on);
-            } else
-                favouriteImageStar.setImageResource(android.R.drawable.star_big_off);
+    public Cursor showVocabularyForLessons(final String TABLE_NAME, String categoryName, boolean isAlphabetical) {            //pokazywanie danych podczas nauki słownictwa
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        if (isAlphabetical){
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'" + " ORDER BY " + DatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
+        } else {
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'", null);
         }
     }
 
-    public void showVocabularyForFavourite(Cursor cursor, TextView plword, TextView engword, int position) {            //pokazywanie danych dla listy ulubionych
-        if (cursor.moveToPosition(position)) {
-            plword.setText(cursor.getString(3));
-            engword.setText(cursor.getString(4));
-        }
-        cursor.close();
+    public Cursor showAllOfCategory (final String TABLE_NAME) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT DISTINCT " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " FROM " + TABLE_NAME, null);
     }
 }

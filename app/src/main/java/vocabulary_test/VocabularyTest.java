@@ -30,7 +30,6 @@ public class VocabularyTest extends FragmentActivity {
     public static int manyGoodAnswer = 0;
     public static int manyTestWords = 0;
     public static int randomNumberOfWords[], inEnglish[];
-    private RoundCornerProgressBar testProgressBar;
     private Cursor cursor;
     private VocabularyDatabase vocabularyDatabase;
 
@@ -44,7 +43,7 @@ public class VocabularyTest extends FragmentActivity {
 
     private void declarationVariables() {
         vocabularyDatabase = getVocabularyDatabase(getApplicationContext());
-        cursor = getCursor(getApplicationContext(), vocabularyDatabase);
+        cursor = getCursor(vocabularyDatabase);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         randomNumberOfWords = new int[getSPnumberOfWords(sharedPreferences)];
         randomNumberOfWords = randomWordWithoutReply(randomNumberOfWords, cursor);
@@ -59,9 +58,9 @@ public class VocabularyTest extends FragmentActivity {
                 onBackPressed();
             }
         });
-        testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
+        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
         testProgressBar.setMax(getSPnumberOfWords(sharedPreferences));
-        testProgressBar.setProgress(3);
+        testProgressBar.setProgress(0);
     }
 
     private void showFirstFragment(){
@@ -107,19 +106,19 @@ public class VocabularyTest extends FragmentActivity {
         }
     }
 
-    public void loadNextWord(FragmentTransaction fragmentTransaction, Context context){
+    public void loadNextWord(FragmentTransaction fragmentTransaction, Context context, RoundCornerProgressBar testProgressBar){
         manyTestWords++;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if(manyTestWords == getSPnumberOfWords(sharedPreferences)){
-            endTestAlertDialog(context);
+            endTestAlertDialog(context, testProgressBar);
         } else {
             replaceFragment(fragmentTransaction);
         }
     }
 
-    public void endTestAlertDialog(final Context context){
-        testProgressBar.setProgress(testProgressBar.getMax());
+    public void endTestAlertDialog(final Context context, RoundCornerProgressBar testProgressBar){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        testProgressBar.setProgress(manyTestWords);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Test został zakończony");
         alertDialogBuilder.setMessage("Odpowiedziałeś poprawnie na " + manyGoodAnswer + " z " + getSPnumberOfWords(sharedPreferences) + " pytań.");
@@ -134,8 +133,8 @@ public class VocabularyTest extends FragmentActivity {
         alertDialogBuilder.setNegativeButton("Zakończ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Activity activity1 = (VocabularyTest) context;
-                activity1.finish();
+                Activity activity = (VocabularyTest) context;
+                activity.finish();
             }
         });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -156,10 +155,6 @@ public class VocabularyTest extends FragmentActivity {
         return Integer.parseInt(sharedPreferences.getString("numberOfWords", ""));
     }
 
-    public int getSPlevelOfLanguage(SharedPreferences sharedPreferences){
-        return Integer.parseInt(sharedPreferences.getString("levelOfLanguage", ""));
-    }
-
     public int getSPamountOfButtons(SharedPreferences sharedPreferences){
         return Integer.parseInt(sharedPreferences.getString("amountOfButtons", ""));
     }
@@ -168,12 +163,8 @@ public class VocabularyTest extends FragmentActivity {
         return new VocabularyDatabase(context);
     }
 
-    public Cursor getCursor(Context context, VocabularyDatabase vocabularyDatabase) {
-        return vocabularyDatabase.getGroupValues(getSPlevelOfLanguage(getSharedPreferences(context)), DatabaseColumnNames.TABLE_NAME_A1);
-    }
-
-    public SharedPreferences getSharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
+    public Cursor getCursor(VocabularyDatabase vocabularyDatabase) {
+        return vocabularyDatabase.getCategoryValues(DatabaseColumnNames.TABLE_NAME_A1);
     }
 
     @Override

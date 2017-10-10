@@ -4,25 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="about_author.AuthorInformation">
+    tools:context="lessons_vocabulary_list.LessonsVocabularyList">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.NoActionBar.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/authorInfoToolbar"
+            android:id="@+id/vocabularyListToolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            android:visibility="visible"
-            app:title="@string/title_activity_author_info" />
+            app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" />
 
-        <include layout="@layout/content_author_information" />
+    </android.support.design.widget.AppBarLayout>
 
-    </LinearLayout>
+    <include layout="@layout/content_lessons_vocabulary_list" />
 
 </android.support.design.widget.CoordinatorLayout>

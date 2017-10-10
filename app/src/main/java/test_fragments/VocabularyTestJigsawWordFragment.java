@@ -68,7 +68,7 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
         numberOfWord = randomNumberOfWords[manyTestWords];
         vocabularyTest = new VocabularyTest();
         vocabularyDatabase = new VocabularyDatabase(getContext());
-        cursor = vocabularyTest.getCursor(getContext(), vocabularyDatabase);
+        cursor = vocabularyTest.getCursor(vocabularyDatabase);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         checkButton = (Button) view.findViewById(R.id.jigsawButtonToCheck);
         TextView hintText = (TextView) view.findViewById(R.id.test_jigsaw_hint);
@@ -89,7 +89,6 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
     private void setProgressBar(){
         RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
         testProgressBar.setProgress(manyTestWords);
-        testProgressBar.setSecondaryProgress(manyTestWords+1);
     }
 
     private void addWord(View view){                            //add word in english or polish
@@ -241,7 +240,7 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
                 if (isEmpty){
                     Toast.makeText(getContext(), "Użyj wszystkich dostępnych liter", Toast.LENGTH_SHORT).show();
                 }
-                else if (answerFinalForm.equals(answerWord)) {
+                else if (answerFinalForm.equalsIgnoreCase(answerWord)) {
                     view.setClickable(false);
                     goodAnswer(view);
                 }
@@ -284,7 +283,8 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext());
+                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
             }
             @Override
             public void onAnimationRepeat(Animation animation) {
@@ -316,7 +316,8 @@ public class VocabularyTestJigsawWordFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext());
+                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
             }
             @Override
             public void onAnimationRepeat(Animation animation) {

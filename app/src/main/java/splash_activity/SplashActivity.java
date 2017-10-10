@@ -1,11 +1,11 @@
 package splash_activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 
-import com.race604.drawable.wave.WaveDrawable;
-
+import main_activity.MainActivity;
 import pl.flanelowapopijava.duel_with_english.R;
 
 public class SplashActivity extends AppCompatActivity {
@@ -15,9 +15,19 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        ImageView logoImage = (ImageView) findViewById(R.id.splashScreenLogo);
-        WaveDrawable waveDrawable = new WaveDrawable(this, R.drawable.logo);
-        logoImage.setImageDrawable(waveDrawable);
-        waveDrawable.setIndeterminate(true);
+
+        final Intent intent = new Intent(this, MainActivity.class);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                startActivity(intent);
+                finish();
+            }
+        }, 1500);
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

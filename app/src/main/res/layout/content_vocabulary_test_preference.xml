@@ -12,7 +12,7 @@
         android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         app:titleMargin="10dp"
-        android:title="Personalizuj test"
+        android:title="@string/personalize_test"
         android:logo="@drawable/a_one_level"
         android:theme="?attr/actionBarTheme"
         app:navigationIcon="?attr/homeAsUpIndicator"/>

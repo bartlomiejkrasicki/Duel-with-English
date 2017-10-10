@@ -3,33 +3,43 @@ package favourite_list;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import database_vocabulary.DatabaseColumnNames;
-import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
 
-public class FavouriteListAdapter extends BaseAdapter {
+class FavouriteListAdapter extends BaseAdapter {
 
     private Context context;
     private Cursor cursor;
-    private ListView favouriteList;
+    private FloatingActionButton floatingActionButton;
 
-    public FavouriteListAdapter(Context context, Cursor cursor, ListView favouriteList) {
+    FavouriteListAdapter(Context context, FloatingActionButton floatingActionButton, Cursor cursor) {
         this.context = context;
+        this.floatingActionButton = floatingActionButton;
         this.cursor = cursor;
-        this.favouriteList = favouriteList;
+    }
+
+    Cursor getCursor() {
+        return cursor;
+    }
+
+    void setCursor(Cursor cursor) {
+        this.cursor = cursor;
     }
 
     @Override
     public void notifyDataSetChanged() {
-        VocabularyDatabase database = new VocabularyDatabase(context);
-        cursor = database.getFavouriteValues(DatabaseColumnNames.TABLE_NAME_A1);
+        if (cursor.getCount()==0) {
+            floatingActionButton.setVisibility(View.INVISIBLE);
+        } else {
+            floatingActionButton.setVisibility(View.VISIBLE);
+        }
         super.notifyDataSetChanged();
     }
 
@@ -54,15 +64,19 @@ public class FavouriteListAdapter extends BaseAdapter {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.lv_vocabulary_lessons_item, null);
         }
+
         TextView plword = (TextView) view.findViewById(R.id.plWord);
         TextView engword = (TextView) view.findViewById(R.id.engWord);
-        VocabularyDatabase database = new VocabularyDatabase(context);
 
-        cursor = database.getFavouriteValues(DatabaseColumnNames.TABLE_NAME_A1);
-        database.showVocabularyForFavourite(cursor, plword, engword, i);
+        cursor = getCursor();
 
-        cursor.close();
-        database.close();
+        if (cursor.moveToPosition(i)) {
+            plword.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+            engword.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+        }
+
+        notifyDataSetChanged();
+
         return view;
     }
 

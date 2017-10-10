@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="70dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    tools:context="lessons_vocabulary_list.LessonsVocabularyList">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -19,14 +22,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/engWord"
-        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:textColor="@color/textColor"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/plWord"
-        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textColor="@color/textColor"
         />
 
     </LinearLayout>
@@ -37,8 +42,10 @@
         android:layout_height="70dp"
         android:layout_gravity="end"
         android:layout_weight="1"
+        android:layout_marginEnd="5dp"
         android:contentDescription="@string/favourite_star_content_description"
         android:visibility="invisible"
+        android:background="@color/transparentColor"
         app:srcCompat="@android:drawable/btn_star_big_off" />
 
 </LinearLayout>

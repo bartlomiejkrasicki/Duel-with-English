@@ -18,7 +18,8 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin_listview"
         android:layout_marginRight="@dimen/activity_horizontal_margin_listview"
         android:layout_marginTop="@dimen/activity_vertical_listview"
-        android:background="@drawable/item_selection_state"
-        android:choiceMode="multipleChoice" />
+        android:choiceMode="multipleChoiceModal"
+        android:smoothScrollbar="true"
+        android:cacheColorHint="@color/transparentColor"/>
 
 </RelativeLayout>

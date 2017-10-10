@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom">
+
+    <TextView
+        android:id="@+id/authorAppTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/author_info_who_made"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textAlignment="center"/>
+
+    <Button
+        android:id="@+id/SendMessageToMe"
+        style="@style/Button.Custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@android:drawable/ic_dialog_email"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:onClick="sendEmailOnClick"
+        android:text="@string/send_email_to_author" />
+
+    <Button
+        android:id="@+id/rateAppButton"
+        style="@style/Button.Custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/rate_app_btton_description"
+        android:drawableEnd="@android:drawable/star_big_off"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:onClick="rateAppOnClick"
+        android:text="@string/rate_app_text" />
+
+</LinearLayout>

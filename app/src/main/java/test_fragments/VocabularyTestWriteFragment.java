@@ -63,7 +63,7 @@ public class VocabularyTestWriteFragment extends Fragment {
     private void declarationVariables(View view){
         vocabularyTest = new VocabularyTest();
         vocabularyDatabase = vocabularyTest.getVocabularyDatabase(getContext());
-        cursor = vocabularyTest.getCursor(getContext(), vocabularyDatabase);
+        cursor = vocabularyTest.getCursor(vocabularyDatabase);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         wordtoGuess = (TextView) view.findViewById(R.id.test_write_word);
         userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
@@ -86,7 +86,6 @@ public class VocabularyTestWriteFragment extends Fragment {
     private void setProgressBar(){
         RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
         testProgressBar.setProgress(manyTestWords);
-        testProgressBar.setSecondaryProgress(manyTestWords+1);
     }
 
     private void addWord(){
@@ -122,13 +121,13 @@ public class VocabularyTestWriteFragment extends Fragment {
                 } else {
                     correctAnswer = cursor.getString(DatabaseColumnNames.plwordColumn);
                 }
-                if (userRealAnswer.equals("")){
+                if (userRealAnswer.equalsIgnoreCase("")){
                     Toast.makeText(getContext(), "Pole odpowiedzi jest puste", Toast.LENGTH_SHORT).show();
                 }
-                else if (userRealAnswer.equals(correctAnswer)){                                                                                            //good answer
+                else if (userRealAnswer.equalsIgnoreCase(correctAnswer)){                                                                                            //good answer
                     view.setClickable(false);
                     goodAnswerClick(view, fragmentTransaction);
-                } else if (!(userRealAnswer.equals(correctAnswer))){                                                                                       //bad answer
+                } else if (!(userRealAnswer.equalsIgnoreCase(correctAnswer))){                                                                                       //bad answer
                     view.setClickable(false);
                     badAnswerClick(view, fragmentTransaction);
                 }
@@ -150,7 +149,8 @@ public class VocabularyTestWriteFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 userWordET.setText("");
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext());
+                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
             }
             @Override
             public void onAnimationRepeat(Animation animation) {
@@ -183,7 +183,8 @@ public class VocabularyTestWriteFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 userWordET.setText("");
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext());
+                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
             }
 
             @Override

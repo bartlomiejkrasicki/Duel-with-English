@@ -1,8 +1,10 @@
 package main_activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,9 +14,9 @@ import android.view.View;
 import android.widget.Button;
 
 import about_author.AuthorInformation;
-import vocabulary_level_category.VocabularyCategory;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.duel_with_english.R;
+import vocabulary_level_category.VocabularyCategory;
 import vocabulary_test.VocabularyTestPreference;
 
 //menu główne
@@ -49,6 +51,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Czy na pewno chcesz zamknąć aplikację?");
+        alertDialogBuilder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        alertDialogBuilder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private void configurationToolbar(){

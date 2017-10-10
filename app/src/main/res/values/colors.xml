@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4caf50</color>
-    <color name="colorPrimaryDark">#1b5e20</color>
-    <color name="colorAccent">#ff5722</color>
+    <color name="colorPrimary">#00C853</color>
+    <color name="colorPrimaryDark">#009624</color>
+    <color name="colorAccent">#0277bd</color>
     <color name="transparentColor">#00000000</color>
-    <color name="color_buttons_special">#2094f1</color>
+    <color name="color_buttons_special">#0277bd</color>
     <color name="delete_list_items">#F44336</color>
     <color name="colorBadAnswer">#B71C1C</color>
     <color name="textColor">#de111010</color>
+    <color name="textButtonsColor">#FFFFFF</color>
 </resources>

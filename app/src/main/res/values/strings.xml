@@ -13,9 +13,9 @@
     <string name="favourite_star_content_description">Gwiazda - dodaję opcję tworzenia listy ulubionych słów</string>
     <string name="favourite_main_button">Lista ulubionych</string>
     <string name="title_activity_favourite_list">FavouriteList</string>
-    <string name="favourite_list_label_text">Ulubione słowa</string>
+    <string name="favourite_list_label_text">Ulubione</string>
     <string name="back_option_menu">Cofnij</string>
-    <string name="expandable_activity_label">Wybierz kategorię</string>
+    <string name="expandable_activity_label">Poziom języka</string>
     <string name="levelVocabularyImage">Ikonka - pokazujepoziom danej kategorii</string>
     <string name="about_author_button_text">O autorze</string>
     <string name="author_information_activity_label">Informacje o autorze</string>
@@ -27,6 +27,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="mainMenuTestButton">Test</string>
     <string name="title_activity_vocabulary_test">Ustawienia testu</string>
+    <string name="title_activity_author_info">Informacje o autorze</string>
 
     <string name="section_format">Hello World from section: %1$d</string>
 
@@ -54,4 +55,19 @@
     <string name="vocabulary_category_c2_text">C2</string>
     <string name="logo_description">Logo aplikacji</string>
     <string name="title_description">Nazwa aplikacji - Duel with English</string>
+    <string name="title_activity_lessons_vocabulary_list2">LessonsVocabularyList2</string>
+    <string name="rate_app_text">Oceń aplikację</string>
+    <string name="send_email_to_author">Napisz do mnie</string>
+    <string name="author_info_who_made">Aplikacja stworzona przez: \nBartłomiej Krasicki</string>
+    <string name="rate_app_btton_description">Ikona gwiazdki na przycisku oceń aplikację</string>
+    <string name="sort">Sortuj</string>
+    <string name="a1_lvl">Poziom A1</string>
+    <string name="a2_lvl">Poziom A2</string>
+    <string name="b1_lvl">Poziom B1</string>
+    <string name="b2_lvl">Poziom B2</string>
+    <string name="c1_lvl">Poziom C1</string>
+    <string name="c2_lvl">Poziom C2</string>
+    <string name="show_only">Pokaż z zakresu:</string>
+    <string name="personalize_test">Personalizuj</string>
+    <string name="close">Zamknij</string>
 </resources>

@@ -10,7 +10,9 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name="splash_activity.SplashActivity"
+            android:configChanges="orientation"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,31 +20,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="main_activity.MainActivity"
+        <activity
+            android:name="main_activity.MainActivity"
+            android:configChanges="orientation"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="vocabulary_level_category.VocabularyCategory"
+            android:configChanges="orientation"
             android:label="@string/expandable_activity_label"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="main_activity.MainActivity" />
         </activity>
         <activity
-            android:name="lessons_vocabulary_list.LessonsVocabularyList"
-            android:label="@string/lessons_vocabulary_list_name"
-            android:parentActivityName="vocabulary_level_category.VocabularyCategory"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="vocabulary_level_category.VocabularyCategory" />
-        </activity>
-        <activity
             android:name="favourite_list.FavouriteList"
+            android:configChanges="orientation"
             android:label="@string/favourite_list_label_text"
             android:parentActivityName="main_activity.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,17 +49,21 @@
         </activity>
         <activity
             android:name="about_author.AuthorInformation"
+            android:configChanges="orientation"
             android:label="@string/author_information_activity_label"
             android:parentActivityName="main_activity.MainActivity"
-            android:theme="@style/AppTheme">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="main_activity.MainActivity" />
         </activity>
         <activity
             android:name="vocabulary_test.VocabularyTestPreference"
+            android:configChanges="orientation"
             android:label="@string/customize_vocabulary_test"
             android:parentActivityName="main_activity.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -68,13 +71,24 @@
         </activity>
         <activity
             android:name="vocabulary_test.VocabularyTest"
+            android:configChanges="orientation"
             android:label="@string/Test"
             android:parentActivityName="vocabulary_test.VocabularyTestPreference"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vocabulary_test.VocabularyTestPreference" />
+        </activity>
+        <activity
+            android:name="lessons_vocabulary_list.LessonsVocabularyList"
+            android:label="@string/title_activity_lessons_vocabulary_list"
+            android:parentActivityName="main_activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="main_activity.MainActivity" />
         </activity>
     </application>
 

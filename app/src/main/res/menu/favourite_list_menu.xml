@@ -5,10 +5,48 @@
     tools:context="favourite_list.FavouriteList">
 
     <item
-        android:id="@+id/backToLessonsList"
-        android:icon="@android:drawable/ic_menu_revert"
-        android:title="@string/up_favourite_menu"
+        android:id="@+id/favouriteMenuSortIcon"
+        android:checkable="false"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:title="@string/sort"
         app:showAsAction="ifRoom" />
-
-
+    <item
+        android:id="@+id/favouriteMenuLvlSortIcon"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="@string/expandable_activity_label"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group
+                android:checkableBehavior="single"
+                android:id="@+id/favouriteLvlListMenu">
+                <item
+                    android:title="@string/show_only"
+                    android:checkable="false" />
+                <item
+                    android:id="@+id/menuIconSortA1"
+                    android:title="@string/a1_lvl"
+                    android:icon="@drawable/a_one_level" />
+                <item
+                    android:id="@+id/menuIconSortA2"
+                    android:title="@string/a2_lvl"
+                    android:icon="@drawable/a_two_level" />
+                <item
+                    android:id="@+id/menuIconSortB1"
+                    android:title="@string/b1_lvl"
+                    android:icon="@drawable/b_one_level" />
+                <item
+                    android:id="@+id/menuIconSortB2"
+                    android:title="@string/b2_lvl"
+                    android:icon="@drawable/b_two_level" />
+                <item
+                    android:id="@+id/menuIconSortC1"
+                    android:title="@string/c1_lvl"
+                    android:icon="@drawable/c_one_level" />
+                <item
+                    android:id="@+id/menuIconSortC2"
+                    android:title="@string/c2_lvl"
+                    android:icon="@drawable/c_two_level" />
+            </group>
+        </menu>
+    </item>
 </menu>

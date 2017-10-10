@@ -62,7 +62,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
         numberOfButtons = vocabularyTest.getSPamountOfButtons(sharedPreferences);
         guessButtons = new Button[numberOfButtons];
         buttonsDeclaration(view);
-        cursor = vocabularyDatabase.getGroupValues(vocabularyTest.getSPlevelOfLanguage(sharedPreferences), DatabaseColumnNames.TABLE_NAME_A1);
+        cursor = vocabularyDatabase.getCategoryValues(DatabaseColumnNames.TABLE_NAME_A1);
         TextView testHint = (TextView) view.findViewById(R.id.testChoiceHint);
         if (inEnglish[manyTestWords] == 1) {
             testHint.setText(R.string.test_choice_en_hint);
@@ -129,7 +129,6 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private void setProgressBar(){
         RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
         testProgressBar.setProgress(manyTestWords);
-        testProgressBar.setSecondaryProgress(manyTestWords+1);
     }
 
     private void addWords(View view){                                       //add words and implement onClickListener to Buttons
@@ -201,7 +200,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
         final Button thisButton = (Button) view;
         String buttonText = thisButton.getText().toString();
 
-        if (buttonText.equals(answerText)) {
+        if (buttonText.equalsIgnoreCase(answerText)) {
            setGoodAnswer(thisButton);
 
         } else {
@@ -249,7 +248,8 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
                     e.printStackTrace();
                 }
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext());
+                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
             }
 
             @Override
