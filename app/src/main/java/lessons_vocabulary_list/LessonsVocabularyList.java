@@ -1,7 +1,6 @@
 package lessons_vocabulary_list;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,50 +22,45 @@ import java.util.ArrayList;
 import database_vocabulary.VocabularyDatabase;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.duel_with_english.R;
+import vocabulary_test.VocabularyTest;
 
 public class LessonsVocabularyList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private VocabularyDatabase vocabularyDatabase;
     private DrawerLayout drawer;
-    private String categoryName, levelLanguage;
     private Toolbar toolbar;
-    private ListView vocabularyList;
     private LessonsVocabularyListAdapter adapterVocabulary;
-    private Cursor cursorVocabulary;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-    private final String SP_ALPHABETICAL_NAME = "alphabeticalSort";
     private boolean isFirstListClick = true;
 
-    private void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public boolean isFirstListClick() {
+        return isFirstListClick;
     }
 
-    private void setlevelLanguage(String levelLanguage) {
-        this.levelLanguage = levelLanguage;
+    public void setFirstListClick(boolean firstListClick) {
+        isFirstListClick = firstListClick;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons_vocabulary_list);
-        initVariables();
+        adapterVocabulary = new LessonsVocabularyListAdapter(getApplicationContext());
+        adapterVocabulary.setLevelLanguage(getIntent().getStringExtra("levelLanguage"));
         setToolbar();
         setDrawer();
     }
 
-    private void initVariables(){
-        sharedPreferences = getPreferences(MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        setAlphabeticalSortSP(false);
-        editor.apply();
+    @Override
+    protected void onDestroy() {
+        adapterVocabulary.getCursor().close();
+        adapterVocabulary.getVocabularyDatabase().close();
+        vocabularyDatabase.close();
+        super.onDestroy();
     }
 
     private void setToolbar(){
         toolbar = (Toolbar) findViewById(R.id.vocabularyListToolbar);
-        setlevelLanguage(getIntent().getStringExtra("levelLanguage"));
-        toolbar.setTitle(levelLanguage);
+        toolbar.setSubtitle(adapterVocabulary.getLevelLanguage());
         setSupportActionBar(toolbar);
     }
 
@@ -86,7 +80,7 @@ public class LessonsVocabularyList extends AppCompatActivity
     private void setCategoryList(){                                                                 // set category list in nav drawer
         ListView categoryList = (ListView) findViewById(R.id.categoryListLessonDrawer);
         vocabularyDatabase = new VocabularyDatabase(getApplicationContext());
-        Cursor cursorCategory = vocabularyDatabase.showAllOfCategory(levelLanguage);
+        Cursor cursorCategory = vocabularyDatabase.showAllOfCategory(adapterVocabulary.getLevelLanguage());
 
         final ArrayList<String> categoryListValues = new ArrayList<>();                             //add categories to list
         while (cursorCategory.moveToNext()){
@@ -98,22 +92,21 @@ public class LessonsVocabularyList extends AppCompatActivity
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(isFirstListClick){
+                if(isFirstListClick()){
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                isFirstListClick = false;
+                setFirstListClick(false);
                 }
                 drawer.closeDrawer(GravityCompat.START);
-                setCategoryName(categoryListValues.get(i));
-                toolbar.setSubtitle(categoryName);
+                adapterVocabulary.setCategoryName(categoryListValues.get(i));
+                toolbar.setTitle(adapterVocabulary.getCategoryName());
                 setVocabularyList();
             }
         });
     }
 
     private void setVocabularyList(){                                                               //set list of words lesson --> adapter to listview
-        vocabularyList = (ListView) findViewById(R.id.vocabularyListView);
-        cursorVocabulary = vocabularyDatabase.showVocabularyForLessons(levelLanguage, categoryName, getAlphabeticalSortSP(sharedPreferences));
-        adapterVocabulary = new LessonsVocabularyListAdapter(getApplicationContext(), cursorVocabulary, vocabularyList, levelLanguage, categoryName);
+        ListView vocabularyList = (ListView) findViewById(R.id.vocabularyListView);
+        adapterVocabulary.setCursor(vocabularyDatabase.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
         vocabularyList.setAdapter(adapterVocabulary);
     }
 
@@ -137,27 +130,24 @@ public class LessonsVocabularyList extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.addToFavouriteWordsStar) {
-            String tag = vocabularyList.getTag().toString();
-            if (tag.equals("0")) {
-                vocabularyList.setTag(1);
+            if (adapterVocabulary.isStarVisible()) {
+                adapterVocabulary.setStarVisible(false);
             } else {
-                vocabularyList.setTag(0);
+                adapterVocabulary.setStarVisible(true);
             }
+            adapterVocabulary.setCursor(vocabularyDatabase.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
             adapterVocabulary.notifyDataSetChanged();
         } else if (id == R.id.goToFavouriteFromMenu) {
             Intent intent = new Intent(this, FavouriteList.class);
             startActivity(intent);
             finish();
         } else if (id == R.id.LessonMenuSortIcon) {
-            if (sharedPreferences.getBoolean(SP_ALPHABETICAL_NAME, false)) {
-                setAlphabeticalSortSP(false);
-                cursorVocabulary = vocabularyDatabase.showVocabularyForLessons(levelLanguage, categoryName, getAlphabeticalSortSP(sharedPreferences));
-                adapterVocabulary.setCursor(cursorVocabulary);
+            if (adapterVocabulary.isAlphabeticalSort()) {
+                adapterVocabulary.setAlphabeticalSort(false);
             } else {
-                setAlphabeticalSortSP(true);
-                cursorVocabulary = vocabularyDatabase.showVocabularyForLessons(levelLanguage, categoryName, getAlphabeticalSortSP(sharedPreferences));
-                adapterVocabulary.setCursor(cursorVocabulary);
+                adapterVocabulary.setAlphabeticalSort(true);
             }
+            adapterVocabulary.setCursor(vocabularyDatabase.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
             adapterVocabulary.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
@@ -169,35 +159,16 @@ public class LessonsVocabularyList extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void setAlphabeticalSortSP(boolean isAlphabetical){
-        editor.putBoolean(SP_ALPHABETICAL_NAME, isAlphabetical);
-        editor.apply();
+    public void startTestFromLessonOnClick(View view) {
+        Intent intent = new Intent(this, VocabularyTest.class);
+        intent.putExtra("wordsAmount", adapterVocabulary.getCount());
+        intent.putExtra("lvlOfLanguage", adapterVocabulary.getLevelLanguage());
+        intent.putExtra("category", adapterVocabulary.getCategoryName());
+        startActivity(intent);
     }
-
-    public boolean getAlphabeticalSortSP(SharedPreferences sharedPreferences){
-        return sharedPreferences.getBoolean(SP_ALPHABETICAL_NAME, false);
-    }
-
-//    public void favStarOnClick(View view) {
-//                VocabularyDatabase vocabularyDatabase = new VocabularyDatabase(context);
-//                cursor.moveToPosition(i);
-//                String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
-//                if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 0) {
-//                    vocabularyDatabase.updateValuesInDatabase(index, 1, levelLanguage);
-//                    favouriteStar.setImageResource(android.R.drawable.star_big_on);
-//                }
-//                else if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 1){
-//                    vocabularyDatabase.updateValuesInDatabase(index, 0, levelLanguage);
-//                    favouriteStar.setImageResource(android.R.drawable.star_big_off);
-//                }
-//                notifyDataSetChanged();
-//            }
-//        });
-//    }
 }

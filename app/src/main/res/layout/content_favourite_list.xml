@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_lessons_vocabulary_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="lessons_vocabulary_list.LessonsVocabularyList"
+    android:orientation="vertical"
+    tools:context="favourite_list.FavouriteList"
     tools:showIn="@layout/activity_favourite_list">
 
     <ListView
-        android:id="@+id/favouriteListButton"
+        android:id="@+id/favouriteListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="@dimen/activity_vertical_listview"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin_listview"
-        android:layout_marginRight="@dimen/activity_horizontal_margin_listview"
-        android:layout_marginTop="@dimen/activity_vertical_listview"
-        android:choiceMode="multipleChoiceModal"
-        android:smoothScrollbar="true"
-        android:cacheColorHint="@color/transparentColor"/>
+        android:layout_height="wrap_content"
+        android:clickable="false" />
 
-</RelativeLayout>
+</LinearLayout>

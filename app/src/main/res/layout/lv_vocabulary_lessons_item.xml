@@ -8,7 +8,7 @@
     tools:context="lessons_vocabulary_list.LessonsVocabularyList">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="70dp"
         android:orientation="vertical"
         android:layout_weight="12"

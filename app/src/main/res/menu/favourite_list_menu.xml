@@ -49,4 +49,9 @@
             </group>
         </menu>
     </item>
+    <item
+        android:id="@+id/favBarDeleteIcon"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/fav_bar_button_delete"
+        app:showAsAction="ifRoom" />
 </menu>

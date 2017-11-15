@@ -1,15 +1,12 @@
 package lessons_vocabulary_list;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import database_vocabulary.DatabaseColumnNames;
@@ -19,36 +16,66 @@ import pl.flanelowapopijava.duel_with_english.R;
 
 class LessonsVocabularyListAdapter extends BaseAdapter {
 
+    private boolean isStarVisible = false;
     private Context context;
     private Cursor cursor;
-    private ListView LVVocabularyLesson;
     private VocabularyDatabase vocabularyDatabase;
     private ImageButton favouriteStar;
     private TextView polishWord;
     private TextView englishWord;
-    private String levelLanguage, categoryName;
-    private LessonsVocabularyList lessonsVocabularyList = new LessonsVocabularyList();
-    private SharedPreferences sharedPreferences;
+    private String levelLanguage = "", categoryName = "";
+    private boolean isAlphabeticalSort = false;
 
-    LessonsVocabularyListAdapter(Context context, Cursor cursor, ListView LVVocabularyLesson, String levelLanguage, String categoryName) {
+    LessonsVocabularyListAdapter(Context context) {
         this.context = context;
-        this.cursor = cursor;
-        this.LVVocabularyLesson = LVVocabularyLesson;
-        this.levelLanguage = levelLanguage;
-        this.categoryName = categoryName;
     }
 
-    private Cursor getCursor() {
+    public Cursor getCursor() {
         return cursor;
     }
 
-    void setCursor(Cursor cursor) {
+    public void setCursor(Cursor cursor) {
         this.cursor = cursor;
+    }
+
+    public boolean isStarVisible() {
+        return isStarVisible;
+    }
+
+    public void setStarVisible(boolean starVisible) {
+        isStarVisible = starVisible;
+    }
+
+    public String getLevelLanguage() {
+        return levelLanguage;
+    }
+
+    public void setLevelLanguage(String levelLanguage) {
+        this.levelLanguage = levelLanguage;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public boolean isAlphabeticalSort() {
+        return isAlphabeticalSort;
+    }
+
+    public void setAlphabeticalSort(boolean alphabeticalSort) {
+        isAlphabeticalSort = alphabeticalSort;
+    }
+
+    public VocabularyDatabase getVocabularyDatabase() {
+        return vocabularyDatabase;
     }
 
     @Override
     public void notifyDataSetChanged() {
-        cursor = getCursor();
         super.notifyDataSetChanged();
     }
 
@@ -76,30 +103,22 @@ class LessonsVocabularyListAdapter extends BaseAdapter {
 
         declarationVariables(view);
 
-        int addFavOrNot;
-
-        cursor = getCursor();
-
         if(cursor.moveToPosition(i)) {                                                  //add values to listView
             polishWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
             englishWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
-            addFavOrNot = cursor.getInt(DatabaseColumnNames.isfavouriteColumn);
+            int addFavOrNot = cursor.getInt(DatabaseColumnNames.isfavouriteColumn);
             if (addFavOrNot == 1) {
                 favouriteStar.setImageResource(android.R.drawable.star_big_on);
             } else
                 favouriteStar.setImageResource(android.R.drawable.star_big_off);
         }
-
-        final String tag = LVVocabularyLesson.getTag().toString();                      //star button is visible or not
-        if (tag.equals("1")){
+        if (isStarVisible()){                                     //star button is visible or not
             favouriteStar.setVisibility(View.VISIBLE);
         }
-        else if (tag.equals("0")){
+        else {
             favouriteStar.setVisibility(View.INVISIBLE);
         }
-
         favouriteStarOnClick(i);
-
     return view;
     }
 
@@ -117,15 +136,14 @@ class LessonsVocabularyListAdapter extends BaseAdapter {
                 cursor.moveToPosition(i);
                 String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
                 if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 0) {
-                    vocabularyDatabase.updateValuesInDatabase(index, 1, levelLanguage);
+                    vocabularyDatabase.updateValuesInDatabase(index, 1, getLevelLanguage());
                     favouriteStar.setImageResource(android.R.drawable.star_big_on);
                 }
                 else if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 1){
-                    vocabularyDatabase.updateValuesInDatabase(index, 0, levelLanguage);
+                    vocabularyDatabase.updateValuesInDatabase(index, 0, getLevelLanguage());
                     favouriteStar.setImageResource(android.R.drawable.star_big_off);
                 }
-                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                setCursor(vocabularyDatabase.showVocabularyForLessons(levelLanguage, categoryName, lessonsVocabularyList.getAlphabeticalSortSP(sharedPreferences)));
+                setCursor(vocabularyDatabase.showVocabularyForLessons(getLevelLanguage(), getCategoryName(), isAlphabeticalSort()));
                 notifyDataSetChanged();
             }
         });

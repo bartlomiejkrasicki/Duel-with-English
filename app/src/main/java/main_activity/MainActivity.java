@@ -1,6 +1,5 @@
 package main_activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import about_author.AuthorInformation;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.duel_with_english.R;
+import tenses.TensesList;
 import vocabulary_level_category.VocabularyCategory;
 import vocabulary_test.VocabularyTestPreference;
 
@@ -23,20 +22,17 @@ import vocabulary_test.VocabularyTestPreference;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button vocabularyButton;
-    Context context;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);     // wyświetla xml activity_main
-        vocabularyButton = (Button) findViewById(R.id.button_vocabulary);
-        context = getApplicationContext();
+        setContentView(R.layout.activity_main);
         configurationToolbar();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {                 // menu
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -81,23 +77,28 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mainMenuToolbar);
     }
 
-    public void vocabularyButtonOnClick(View view){         //klikniecie przycisku słownictwo
-        Intent intent = new Intent(this, VocabularyCategory.class);
+    public void vocabularyButtonOnClick(View view){
+        intent = new Intent(this, VocabularyCategory.class);
         startActivity(intent);
     }
 
-    public void favouriteButtonOnClick(View view){          //kliknięcie przycisku ulubione
-        Intent intent = new Intent(this, FavouriteList.class);
+    public void favouriteButtonOnClick(View view){
+        intent = new Intent(this, FavouriteList.class);
         startActivity(intent);
     }
 
-    public void aboutAuthorButtonOnClick(View view){        //kliknięcie przycisku o autorze
-        Intent intent = new Intent(this, AuthorInformation.class);
+    public void aboutAuthorButtonOnClick(View view){        
+        intent = new Intent(this, AuthorInformation.class);
         startActivity(intent);
     }
 
     public void testButtonOnClick (View view) {
-        Intent intent = new Intent(this, VocabularyTestPreference.class);
+        intent = new Intent(this, VocabularyTestPreference.class);
+        startActivity(intent);
+    }
+
+    public void grammarButtonOnClick(View view) {
+        intent = new Intent(this, TensesList.class);
         startActivity(intent);
     }
 }

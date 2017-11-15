@@ -16,7 +16,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,7 +41,7 @@
             android:label="@string/favourite_list_label_text"
             android:parentActivityName="main_activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="main_activity.MainActivity" />
@@ -86,6 +85,16 @@
             android:label="@string/title_activity_lessons_vocabulary_list"
             android:parentActivityName="main_activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="main_activity.MainActivity" />
+        </activity>
+        <activity
+            android:name="tenses.TensesList"
+            android:label="@string/tenses_list_activity_label"
+            android:parentActivityName="main_activity.MainActivity"
+            android:theme="@style/AppTheme"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="main_activity.MainActivity" />

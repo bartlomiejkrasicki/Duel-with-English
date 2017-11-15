@@ -17,13 +17,13 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
     }
 
         public boolean updateValuesInDatabase(String id, int favouriteImageOn, final String TABLE_NAME) {          //umieszczanie danych w tablicy
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON, favouriteImageOn);
-        sqLiteDatabase.update(TABLE_NAME, values, DatabaseColumnNames.COLUMN_NAME_ID + " = ?", new String[]{id});
-        sqLiteDatabase.close();
-        return true;
-    }
+            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(DatabaseColumnNames.COLUMN_NAME_FAVOURITE_IMAGE_ON, favouriteImageOn);
+            sqLiteDatabase.update(TABLE_NAME, values, DatabaseColumnNames.COLUMN_NAME_ID + " = ?", new String[]{id});
+            sqLiteDatabase.close();
+            return true;
+        }
 
     public Cursor getFavouriteValues(final String TABLE_NAME, final boolean isAlphabetical) {                           //pobieranie wszystkich danych
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();

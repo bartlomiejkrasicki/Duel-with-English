@@ -67,7 +67,10 @@
     <string name="b2_lvl">Poziom B2</string>
     <string name="c1_lvl">Poziom C1</string>
     <string name="c2_lvl">Poziom C2</string>
-    <string name="show_only">Pokaż z zakresu:</string>
+    <string name="show_only">Pokaż wszystkie</string>
     <string name="personalize_test">Personalizuj</string>
     <string name="close">Zamknij</string>
+    <string name="grammar">Gramatyka</string>
+    <string name="tenses_list_activity_label">Wybierz temat</string>
+    <string name="fav_bar_button_delete">Usuń z listy</string>
 </resources>
