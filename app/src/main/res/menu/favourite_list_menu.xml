@@ -21,7 +21,8 @@
                 android:id="@+id/favouriteLvlListMenu">
                 <item
                     android:title="@string/show_only"
-                    android:checkable="false" />
+                    android:checkable="false"
+                    android:id="@+id/menuIconShowAllFavourites"/>
                 <item
                     android:id="@+id/menuIconSortA1"
                     android:title="@string/a1_lvl"

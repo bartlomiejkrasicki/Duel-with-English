@@ -2,7 +2,6 @@ package favourite_list;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
 
-class FavouriteResAdapted extends BaseAdapter {
+class FavouriteResAdapter extends BaseAdapter {
 
     private Cursor cursor;
     private Context context;
@@ -23,14 +22,27 @@ class FavouriteResAdapted extends BaseAdapter {
     private VocabularyDatabase database;
     private boolean isEnabledDeleteMode = false;
     private boolean isAlphabeticalSort = false;
+    private String lvlOfFavouriteWords = "A1";
+    private boolean allFavouritesWords = true;
 
-    public FavouriteResAdapted(Cursor cursor, Context context){
-        this.cursor = cursor;
+    public FavouriteResAdapter(Context context){
         this.context = context;
     }
 
-    public FavouriteResAdapted(Context context){
-        this.context = context;
+    public VocabularyDatabase getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(VocabularyDatabase database) {
+        this.database = database;
+    }
+
+    public String getLvlOfFavouriteWords() {
+        return lvlOfFavouriteWords;
+    }
+
+    public void setLvlOfFavouriteWords(String lvlOfFavouriteWords) {
+        this.lvlOfFavouriteWords = lvlOfFavouriteWords;
     }
 
     public boolean isEnabledDeleteMode() {
@@ -39,6 +51,14 @@ class FavouriteResAdapted extends BaseAdapter {
 
     public void setEnabledDeleteMode(boolean enabledDeleteMode) {
         isEnabledDeleteMode = enabledDeleteMode;
+    }
+
+    public void setShowAllFavouritesWords(boolean allFavouritesWords){
+        this.allFavouritesWords = allFavouritesWords;
+    }
+
+    public boolean getShowAllFavouritesWords(){
+        return allFavouritesWords;
     }
 
     public boolean isAlphabeticalSort() {
@@ -81,7 +101,7 @@ class FavouriteResAdapted extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View view, final ViewGroup viewGroup) {
+    public View getView(int i, View view, final ViewGroup viewGroup) {
         if (view == null) {                                                             //add view if is empty
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             view = layoutInflater.inflate(R.layout.favourite_listview_item, null);
@@ -91,6 +111,13 @@ class FavouriteResAdapted extends BaseAdapter {
         cursor.moveToPosition(i);
         engWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
         plWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+
+        onItemClickDelete(view);
+
+        return view;
+    }
+
+    private void onItemClickDelete(View view){
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -102,9 +129,12 @@ class FavouriteResAdapted extends BaseAdapter {
                         cursor.moveToPosition(favouriteList.getPositionForView(view));
                         String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
                         database = new VocabularyDatabase(context);
-                        database.updateValuesInDatabase(index, 0, "A1");
-                        setCursor(database.getFavouriteValues("A1", isAlphabeticalSort()));
-                        Log.d("ALPHA", ""+ isAlphabeticalSort());
+                        database.updateValuesInDatabase(index, 0);
+                        if (allFavouritesWords){
+                            setCursor(database.getAllFavouriteValues(isAlphabeticalSort()));
+                        } else {
+                            setCursor(database.getFavouriteValues(getLvlOfFavouriteWords(), isAlphabeticalSort()));
+                        }
                         notifyDataSetChanged();
                     } catch (NullPointerException exception) {
                         Toast.makeText(context, "Lista jest pusta" + exception.getMessage(), Toast.LENGTH_SHORT).show();
@@ -112,7 +142,5 @@ class FavouriteResAdapted extends BaseAdapter {
                 }
             }
         });
-        return view;
     }
-
 }

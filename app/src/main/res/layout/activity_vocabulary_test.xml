@@ -15,7 +15,7 @@
         app:navigationIcon="?attr/homeAsUpIndicator" />
 
     <fragment
-        android:id="@+id/testFragmentId"
+        android:id="@+id/testFragment"
         android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"

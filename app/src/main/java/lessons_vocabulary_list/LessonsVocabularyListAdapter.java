@@ -14,7 +14,7 @@ import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
 
 
-class LessonsVocabularyListAdapter extends BaseAdapter {
+public class LessonsVocabularyListAdapter extends BaseAdapter {
 
     private boolean isStarVisible = false;
     private Context context;
@@ -136,11 +136,11 @@ class LessonsVocabularyListAdapter extends BaseAdapter {
                 cursor.moveToPosition(i);
                 String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
                 if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 0) {
-                    vocabularyDatabase.updateValuesInDatabase(index, 1, getLevelLanguage());
+                    vocabularyDatabase.updateValuesInDatabase(index, 1);
                     favouriteStar.setImageResource(android.R.drawable.star_big_on);
                 }
                 else if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 1){
-                    vocabularyDatabase.updateValuesInDatabase(index, 0, getLevelLanguage());
+                    vocabularyDatabase.updateValuesInDatabase(index, 0);
                     favouriteStar.setImageResource(android.R.drawable.star_big_off);
                 }
                 setCursor(vocabularyDatabase.showVocabularyForLessons(getLevelLanguage(), getCategoryName(), isAlphabeticalSort()));

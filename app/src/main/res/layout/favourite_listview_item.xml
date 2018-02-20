@@ -2,21 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="0dp"
     android:layout_height="70dp"
+    android:layout_weight="12"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
+    android:layout_gravity="center_vertical"
+    android:paddingStart="10dp"
+    android:paddingEnd="15dp"
     tools:context="lessons_vocabulary_list.LessonsVocabularyList">
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:orientation="vertical"
-        android:layout_weight="12"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:layout_gravity="center_vertical"
-        android:paddingStart="10dp"
-        android:paddingEnd="15dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,7 +30,5 @@
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             android:textColor="@color/textColor"
             />
-
-    </LinearLayout>
 
 </LinearLayout>

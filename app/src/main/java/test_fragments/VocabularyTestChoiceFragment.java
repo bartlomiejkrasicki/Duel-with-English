@@ -1,10 +1,8 @@
 package test_fragments;
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -19,6 +17,8 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
+import java.util.Random;
+
 import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
@@ -29,24 +29,28 @@ import static vocabulary_test.VocabularyTest.manyGoodAnswer;
 import static vocabulary_test.VocabularyTest.manyTestWords;
 import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
-public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
+public class VocabularyTestChoiceFragment extends BaseTestFragments implements View.OnClickListener{
 
-    private String answerText;
+    private String answerText, categoryName;
     private Button[] guessButtons;
     private VocabularyTest vocabularyTest;
     private Cursor cursor;
     private VocabularyDatabase vocabularyDatabase;
-    private SharedPreferences sharedPreferences;
-    private int goodAnswer, numberOfWord, numberOfButtons;
-    private Animation trueAnswer, falseAnswer;
+    private int goodAnswer, numberOfWord, amountOfButtons, amountOfWords;
 
     public VocabularyTestChoiceFragment(){
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.vocabulary_test_choice_fragment, container, false);
+        amountOfButtons = this.getArguments().getInt("amountOfButtons");
+        amountOfWords = this.getArguments().getInt("wordsAmount");
+        try {
+            categoryName = this.getArguments().getString("testCategory");
+        } catch (NullPointerException nullPointerException){
+
+        }
         declarationVariables(view);
         setToolbar();
         setProgressBar();
@@ -57,14 +61,16 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private void declarationVariables(View view){                          //declaration layout elements and variables
         numberOfWord = randomNumberOfWords[manyTestWords];
         vocabularyTest = new VocabularyTest();
-        vocabularyDatabase = new VocabularyDatabase(getContext());
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        numberOfButtons = vocabularyTest.getSPamountOfButtons(sharedPreferences);
-        guessButtons = new Button[numberOfButtons];
+        vocabularyDatabase = new VocabularyDatabase(getActivity().getApplicationContext());
+        guessButtons = new Button[amountOfButtons];
         buttonsDeclaration(view);
-        cursor = vocabularyDatabase.getCategoryValues(DatabaseColumnNames.TABLE_NAME_A1);
+        if (categoryName != null) {
+            cursor = vocabularyDatabase.getCategoryValues(categoryName);
+        } else {
+            cursor = vocabularyDatabase.getAllValues();
+        }
         TextView testHint = (TextView) view.findViewById(R.id.testChoiceHint);
-        if (inEnglish[manyTestWords] == 1) {
+        if (inEnglish[manyTestWords]) {
             testHint.setText(R.string.test_choice_en_hint);
         } else {
             testHint.setText(R.string.test_choice_pl_hint);
@@ -72,7 +78,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     }
 
     private void buttonsDeclaration(View view){
-        switch (numberOfButtons){
+        switch (amountOfButtons){
             case 2:{
                 guessButtons[0] = (Button) view.findViewById(R.id.testChoice1);
                 guessButtons[1] = (Button) view.findViewById(R.id.testChoice2);
@@ -123,7 +129,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
         toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
-        toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + vocabularyTest.getSPnumberOfWords(sharedPreferences));
+        toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + amountOfWords);
     }
 
     private void setProgressBar(){
@@ -134,10 +140,10 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private void addWords(View view){                                       //add words and implement onClickListener to Buttons
         TextView guessWord = (TextView) view.findViewById(R.id.testWordChoice);
         int [] shuffleNumberButtonTable = new int[guessButtons.length];
-        shuffleNumberButtonTable = vocabularyTest.setRandomTableNumber(shuffleNumberButtonTable.length);    //add shuffle number button table
+        shuffleNumberButtonTable = setRandomTableNumber(shuffleNumberButtonTable.length);    //add shuffle number button table
 
         cursor.moveToPosition(numberOfWord);                                //add good answer to first button
-        if (inEnglish[manyTestWords] == 1) {
+        if (inEnglish[manyTestWords]) {
             guessWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
             guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(DatabaseColumnNames.plwordColumn));
         } else {
@@ -146,7 +152,7 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
         }
         goodAnswer = shuffleNumberButtonTable[0];
         guessButtons[shuffleNumberButtonTable[0]].setOnClickListener(this);
-        if (inEnglish[manyTestWords] == 1) {
+        if (inEnglish[manyTestWords]) {
             answerText = cursor.getString(DatabaseColumnNames.plwordColumn);
         } else {
             answerText = cursor.getString(DatabaseColumnNames.enwordColumn);
@@ -154,17 +160,17 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
 
         final int idWord = cursor.getInt(DatabaseColumnNames.idColumn);                                //id of first word
 
-        int category = cursor.getInt(DatabaseColumnNames.categoryColumn);                                    //set cursor to category
-        cursor = vocabularyDatabase.getSpecificValues(DatabaseColumnNames.TABLE_NAME_A1);        //change cursor to category words
+        final String category = cursor.getString(DatabaseColumnNames.categoryColumn);                                    //set cursor to category
+        cursor = vocabularyDatabase.getCategoryValues(category);        //change cursor to category words
 
         final int index = searchId(cursor, idWord);
-        int[] tableToShuffleWord = vocabularyTest.setRandomTableNumber(cursor.getCount(), index);
+        int[] tableToShuffleWord = setRandomTableNumber(cursor.getCount(), index, amountOfButtons);
 
         for (int j = 1, i = 0; j < guessButtons.length; i++, j++) {        //add onClick to buttons, and add text
             guessButtons[i].setOnClickListener(this);
             do {
                 cursor.moveToPosition(tableToShuffleWord[i]);
-                if (inEnglish[manyTestWords] == 1) {
+                if (inEnglish[manyTestWords]) {
                     guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(DatabaseColumnNames.plwordColumn));
                 } else {
                     guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(DatabaseColumnNames.enwordColumn));
@@ -211,10 +217,11 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private void setGoodAnswer(final Button thisButton){                                                                    //good answer handling
         manyGoodAnswer++;
         thisButton.setBackgroundResource(R.drawable.good_answer_change_color);
-        if (numberOfButtons > 5) {
-            trueAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test);
+        Animation trueAnswer;
+        if (amountOfButtons > 5) {
+            trueAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test);
         } else {
-            trueAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test_big_button);
+            trueAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
         }
         startAnimation(trueAnswer, thisButton, true);
     }
@@ -222,10 +229,11 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
     private void setBadAnswer(final Button thisButton){                                                                     //bad answer handling
         thisButton.setBackgroundResource(R.drawable.bad_answer_change_color);
         guessButtons[goodAnswer].setBackgroundResource(R.drawable.good_answer_change_color);
-        if (numberOfButtons > 5) {
-            falseAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test);
+        Animation falseAnswer;
+        if (amountOfButtons > 5) {
+            falseAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test);
         } else {
-            falseAnswer = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test_big_button);
+            falseAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test_big_button);
         }
         startAnimation(falseAnswer, thisButton, false);
     }
@@ -248,10 +256,8 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
                     e.printStackTrace();
                 }
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
+                loadNextWord(fragmentTransaction);
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -260,4 +266,56 @@ public class VocabularyTestChoiceFragment extends android.support.v4.app.Fragmen
         thisButton.startAnimation(answerAnimation);
     }
 
+    private int [] setRandomTableNumber(int maxRangeNumber, int index, int buttonsAmount){          //shuffle numbers and add to table of int, class check reply words
+        int [] tableRandomNumbers = new int[buttonsAmount];
+        Random random = new Random();
+        boolean numberIsntOther;
+        for(int i = 0; i < tableRandomNumbers.length; i++){
+            if(i==0){                                                                                       //add first value
+                do {
+                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+                } while (tableRandomNumbers[i] == index);
+            }
+            else {                                                                                          //add other values
+                do {
+                    do {
+                        tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+                    } while (tableRandomNumbers[i] == index);
+                    numberIsntOther = false;
+                    for(int j = 0; j < i; j++){
+                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
+                            numberIsntOther = true;
+                        }
+                    }
+                } while (numberIsntOther);
+            }
+        }
+        return tableRandomNumbers;
+    }
+
+    private int [] setRandomTableNumber(int maxRangeNumber){          //shuffle numbers and add to table of int
+        int [] tableRandomNumbers = new int[maxRangeNumber];
+        Random random = new Random();
+        boolean numberIsOther;
+        for(int i = 0; i < tableRandomNumbers.length; i++){
+            if(i==0){
+                tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+            }
+            else {
+                do {
+                    numberIsOther = true;
+                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
+                    for(int j = 0; j < i; j++){
+                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
+                            numberIsOther = true;
+                            break;
+                        } else {
+                            numberIsOther = false;
+                        }
+                    }
+                } while (numberIsOther);
+            }
+        }
+        return tableRandomNumbers;
+    }
 }

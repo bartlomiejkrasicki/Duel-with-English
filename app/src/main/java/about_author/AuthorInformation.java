@@ -20,9 +20,9 @@ public class AuthorInformation extends AppCompatActivity {
     }
 
     public void sendEmailOnClick(View view) {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.putExtra(Intent.EXTRA_EMAIL, "barkrasicki@gmail.com");
-        emailIntent.setType("text/plain");
-        startActivity(emailIntent);
+        emailIntent.addCategory(Intent.CATEGORY_APP_EMAIL);
+        startActivity(Intent.createChooser(emailIntent, "Wyślij wiadomość do autora"));
     }
 }

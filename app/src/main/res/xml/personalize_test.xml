@@ -7,7 +7,7 @@
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/list_language_level_array"
-            android:entryValues="@array/list_language_level_values"
+            android:entryValues="@array/list_language_level_array"
             android:icon="@android:drawable/ic_menu_today"
             android:key="levelOfLanguage"
             android:summary="Wybierz poziom testu A1-C2"
@@ -18,7 +18,7 @@
             android:entries="@array/list_of_words"
             android:entryValues="@array/list_of_words"
             android:icon="?android:attr/actionModePasteDrawable"
-            android:key="numberOfWords"
+            android:key="wordsAmount"
             android:summary="Wybierz ile słów ma zawierać test"
             android:title="Ilość słów" />
 

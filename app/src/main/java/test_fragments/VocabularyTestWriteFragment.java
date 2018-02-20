@@ -1,12 +1,9 @@
 package test_fragments;
 
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
@@ -33,15 +30,14 @@ import static vocabulary_test.VocabularyTest.manyTestWords;
 import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
 
-public class VocabularyTestWriteFragment extends Fragment {
+public class VocabularyTestWriteFragment extends BaseTestFragments {
 
     private VocabularyTest vocabularyTest;
     private Cursor cursor;
     private TextView wordtoGuess;
     private EditText userWordET;
     private VocabularyDatabase vocabularyDatabase;
-    private int numberOfWord;
-    private SharedPreferences sharedPreferences;
+    private int numberOfWord, amountOfWords;
     private String correctAnswer;
 
     public VocabularyTestWriteFragment() {
@@ -51,6 +47,7 @@ public class VocabularyTestWriteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_test_write, container, false);
+        amountOfWords = getArguments().getInt("wordsAmount");
         declarationVariables(view);
         setToolbar();
         setProgressBar();
@@ -62,14 +59,17 @@ public class VocabularyTestWriteFragment extends Fragment {
 
     private void declarationVariables(View view){
         vocabularyTest = new VocabularyTest();
-        vocabularyDatabase = vocabularyTest.getVocabularyDatabase(getContext());
+        vocabularyDatabase = vocabularyTest.getVocabularyDatabase(getActivity().getApplicationContext());
         cursor = vocabularyTest.getCursor(vocabularyDatabase);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         wordtoGuess = (TextView) view.findViewById(R.id.test_write_word);
         userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
         numberOfWord = randomNumberOfWords[manyTestWords];
+        declareTextHint(view);
+    }
+
+    private void declareTextHint(View view){
         TextView hint = (TextView) view.findViewById(R.id.test_write_hint);
-        if (inEnglish[manyTestWords] == 1) {
+        if (inEnglish[manyTestWords]) {
             hint.setText(R.string.test_write_pl_hint);
         } else {
             hint.setText(R.string.test_write_en_hint);
@@ -80,7 +80,7 @@ public class VocabularyTestWriteFragment extends Fragment {
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
         toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
-        toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + vocabularyTest.getSPnumberOfWords(sharedPreferences));
+        toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + amountOfWords);
     }
 
     private void setProgressBar(){
@@ -90,7 +90,7 @@ public class VocabularyTestWriteFragment extends Fragment {
 
     private void addWord(){
         cursor.moveToPosition(numberOfWord);
-        if (inEnglish[manyTestWords] == 1) {
+        if (inEnglish[manyTestWords]) {
             wordtoGuess.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
         } else {
             wordtoGuess.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
@@ -98,7 +98,7 @@ public class VocabularyTestWriteFragment extends Fragment {
     }
 
     private void configureEditText(){
-        if (inEnglish[manyTestWords] == 1) {
+        if (inEnglish[manyTestWords]) {
             userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(DatabaseColumnNames.enwordColumn).length())});
         } else {
             userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(DatabaseColumnNames.plwordColumn).length())});
@@ -116,13 +116,13 @@ public class VocabularyTestWriteFragment extends Fragment {
                 userWordET.setSelected(true);
                 final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 String userRealAnswer = userWordET.getText().toString();
-                if (inEnglish[manyTestWords] == 1) {
+                if (inEnglish[manyTestWords]) {
                     correctAnswer = cursor.getString(DatabaseColumnNames.enwordColumn);
                 } else {
                     correctAnswer = cursor.getString(DatabaseColumnNames.plwordColumn);
                 }
                 if (userRealAnswer.equalsIgnoreCase("")){
-                    Toast.makeText(getContext(), "Pole odpowiedzi jest puste", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Pole odpowiedzi jest puste", Toast.LENGTH_SHORT).show();
                 }
                 else if (userRealAnswer.equalsIgnoreCase(correctAnswer)){                                                                                            //good answer
                     view.setClickable(false);
@@ -137,7 +137,7 @@ public class VocabularyTestWriteFragment extends Fragment {
 
     private void goodAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
         manyGoodAnswer++;
-        Animation animationCorrect = AnimationUtils.loadAnimation(getContext(), R.anim.correct_answer_test_big_button);
+        Animation animationCorrect = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
         animationCorrect.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -149,8 +149,8 @@ public class VocabularyTestWriteFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 userWordET.setText("");
-                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
+
+                loadNextWord(fragmentTransaction);
             }
             @Override
             public void onAnimationRepeat(Animation animation) {
@@ -161,15 +161,15 @@ public class VocabularyTestWriteFragment extends Fragment {
     }
 
     private void badAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
-        Animation animationWrong = AnimationUtils.loadAnimation(getContext(), R.anim.wrong_answer_test_big_button);
+        Animation animationWrong = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test_big_button);
         animationWrong.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                Animation animationFadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_out);
-                Animation animationFadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.anim_fragment_fade_in);
+                Animation animationFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim_fragment_fade_out);
+                Animation animationFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim_fragment_fade_in);
                 userWordET.setEnabled(false);
                 userWordET.startAnimation(animationFadeOut);
-                if (inEnglish[manyTestWords] == 1) {
+                if (inEnglish[manyTestWords]) {
                     userWordET.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
                 } else {
                     userWordET.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
@@ -183,13 +183,11 @@ public class VocabularyTestWriteFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 userWordET.setText("");
-                RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-                vocabularyTest.loadNextWord(fragmentTransaction, getContext(), testProgressBar);
+                loadNextWord(fragmentTransaction);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
         });
         view.startAnimation(animationWrong);

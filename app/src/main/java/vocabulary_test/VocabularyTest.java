@@ -1,12 +1,9 @@
 package vocabulary_test;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -18,7 +15,6 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 import java.util.Random;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
 import test_fragments.VocabularyTestChoiceFragment;
@@ -27,118 +23,78 @@ import test_fragments.VocabularyTestWriteFragment;
 
 public class VocabularyTest extends FragmentActivity {
 
-    public static int manyGoodAnswer = 0;
-    public static int manyTestWords = 0;
-    public static int randomNumberOfWords[], inEnglish[];
+    public static int manyGoodAnswer = 0, manyTestWords = 0, randomNumberOfWords[];
+    public static boolean inEnglish[], isTestFromLesson;
     private Cursor cursor;
     private VocabularyDatabase vocabularyDatabase;
+    public static int amountOfWords, amountOfButtons;
+    public static String lvlOfLanguage = "", categoryName = "";
+    private RoundCornerProgressBar testProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary_test);
+        setDataFromIntent();
         declarationVariables();
         showFirstFragment();
     }
 
+    private void setDataFromIntent(){
+        amountOfWords = getIntent().getIntExtra("wordsAmount", 5);
+        amountOfButtons = getIntent().getIntExtra("amountOfButtons", 6);
+        lvlOfLanguage = getIntent().getStringExtra("lvlOfLanguage");
+        categoryName = getIntent().getStringExtra("testCategory");
+        isTestFromLesson = getIntent().getBooleanExtra("isTestFromLesson", false);
+    }
+
     private void declarationVariables() {
         vocabularyDatabase = getVocabularyDatabase(getApplicationContext());
-        cursor = getCursor(vocabularyDatabase);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        randomNumberOfWords = new int[getSPnumberOfWords(sharedPreferences)];
-        randomNumberOfWords = randomWordWithoutReply(randomNumberOfWords, cursor);
-        inEnglish = new int[getSPnumberOfWords(sharedPreferences)];
-        for (int i = 0; i < inEnglish.length; i++){
-            inEnglish[i] = randomNumber(2);
+        if (categoryName != null) {
+            cursor = vocabularyDatabase.getCategoryValues(categoryName);
+        } else {
+            cursor = vocabularyDatabase.getAllValues();
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.testVocabularyToolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
-        testProgressBar.setMax(getSPnumberOfWords(sharedPreferences));
-        testProgressBar.setProgress(0);
+        randomNumberOfWords = new int[amountOfWords];
+        randomNumberOfWords = randomWordWithoutReply(randomNumberOfWords);
+        setIsEnglishTable();
+        setToolbar();
+        setProgressBar();
     }
 
     private void showFirstFragment(){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
+        Bundle bundle = new Bundle();
+        bundle.putInt("wordsAmount", amountOfWords);
+        bundle.putInt("amountOfButtons", amountOfButtons);
+        bundle.putString("lvlOfLanguage" , lvlOfLanguage);
+        if (categoryName != null) {
+            bundle.putString("testCategory", categoryName);
+        }
         switch (randomNumber(3)){
             case 0:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestChoiceFragment()).commit();
+                VocabularyTestChoiceFragment choiceFragment = new VocabularyTestChoiceFragment();
+                choiceFragment.setArguments(bundle);
+                fragmentTransaction.add(R.id.testFragment, choiceFragment).commit();
                 break;
             }
             case 1:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestWriteFragment()).commit();
+                VocabularyTestWriteFragment writeFragment = new VocabularyTestWriteFragment();
+                writeFragment.setArguments(bundle);
+                fragmentTransaction.add(R.id.testFragment, writeFragment).commit();
                 break;
             }
             case 2:{
-                fragmentTransaction.add(R.id.testFragmentId, new VocabularyTestJigsawWordFragment()).commit();
+                VocabularyTestJigsawWordFragment jigsawWordFragment = new VocabularyTestJigsawWordFragment();
+                jigsawWordFragment.setArguments(bundle);
+                fragmentTransaction.add(R.id.testFragment, jigsawWordFragment).commit();
                 break;
             }
             default:{
                 Toast.makeText(this, "Błąd wczytywania testu. Uruchom go jeszcze raz :(", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    public void replaceFragment(FragmentTransaction fragmentTransaction){                 //show next fragment after answer
-        fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (randomNumber(3)){
-            case 0:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestChoiceFragment()).commit();
-                break;
-            }
-            case 1:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestWriteFragment()).commit();
-                break;
-            }
-            case 2:{
-                fragmentTransaction.replace(R.id.testFragmentId, new VocabularyTestJigsawWordFragment()).commit();
-                break;
-            }
-            default:{
-                Toast.makeText(this, "Błąd wczytywania testu. Uruchom go jeszcze raz :(", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public void loadNextWord(FragmentTransaction fragmentTransaction, Context context, RoundCornerProgressBar testProgressBar){
-        manyTestWords++;
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if(manyTestWords == getSPnumberOfWords(sharedPreferences)){
-            endTestAlertDialog(context, testProgressBar);
-        } else {
-            replaceFragment(fragmentTransaction);
-        }
-    }
-
-    public void endTestAlertDialog(final Context context, RoundCornerProgressBar testProgressBar){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        testProgressBar.setProgress(manyTestWords);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setTitle("Test został zakończony");
-        alertDialogBuilder.setMessage("Odpowiedziałeś poprawnie na " + manyGoodAnswer + " z " + getSPnumberOfWords(sharedPreferences) + " pytań.");
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton("Jeszcze raz", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Activity activity = (VocabularyTest) context;
-                activity.recreate();
-            }
-        });
-        alertDialogBuilder.setNegativeButton("Zakończ", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Activity activity = (VocabularyTest) context;
-                activity.finish();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
     public static int randomNumber(int i){
@@ -151,12 +107,36 @@ public class VocabularyTest extends FragmentActivity {
         }
     }
 
-    public int getSPnumberOfWords(SharedPreferences sharedPreferences) {
-        return Integer.parseInt(sharedPreferences.getString("numberOfWords", ""));
+    public static boolean randomBoolean(){
+        Random random = new Random();
+        return random.nextBoolean();
     }
 
-    public int getSPamountOfButtons(SharedPreferences sharedPreferences){
-        return Integer.parseInt(sharedPreferences.getString("amountOfButtons", ""));
+    private void setIsEnglishTable(){
+        inEnglish = new boolean[amountOfWords];
+        for (int i = 0; i < inEnglish.length; i++){
+            inEnglish[i] = randomBoolean();
+        }
+    }
+
+    public double calculatePercentage(){
+        return Math.round((VocabularyTest.manyGoodAnswer * 100)/VocabularyTest.amountOfWords);
+    }
+
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.testVocabularyToolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private void setProgressBar(){
+        testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
+        testProgressBar.setMax(amountOfWords);
+        testProgressBar.setProgress(0);
     }
 
     public VocabularyDatabase getVocabularyDatabase(Context context){
@@ -164,7 +144,12 @@ public class VocabularyTest extends FragmentActivity {
     }
 
     public Cursor getCursor(VocabularyDatabase vocabularyDatabase) {
-        return vocabularyDatabase.getCategoryValues(DatabaseColumnNames.TABLE_NAME_A1);
+        if (categoryName != null) {
+            return vocabularyDatabase.getCategoryValues(categoryName);
+        }
+        else {
+            return vocabularyDatabase.getAllValues();
+        }
     }
 
     @Override
@@ -187,7 +172,7 @@ public class VocabularyTest extends FragmentActivity {
         alertDialog.show();
     }
 
-    public int [] randomWordWithoutReply(int [] randomWordsWithoutReply, Cursor cursor){                //words to create test
+    private int [] randomWordWithoutReply(int [] randomWordsWithoutReply){                //words to create test
         Random random = new Random();
         boolean numberIsOther;
         for(int i = 0; i < randomWordsWithoutReply.length; i++){
@@ -213,60 +198,6 @@ public class VocabularyTest extends FragmentActivity {
     return randomWordsWithoutReply;
     }
 
-
-    public int [] setRandomTableNumber(int maxRangeNumber){          //shuffle numbers and add to table of int
-        int [] tableRandomNumbers = new int[maxRangeNumber];
-        Random random = new Random();
-        boolean numberIsOther;
-        for(int i = 0; i < tableRandomNumbers.length; i++){
-            if(i==0){
-                tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-            }
-            else {
-                do {
-                    numberIsOther = true;
-                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-                    for(int j = 0; j < i; j++){
-                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
-                            numberIsOther = true;
-                            break;
-                        } else {
-                            numberIsOther = false;
-                        }
-                    }
-                } while (numberIsOther);
-            }
-        }
-        return tableRandomNumbers;
-    }
-
-    public int [] setRandomTableNumber(int maxRangeNumber, int index){          //shuffle numbers and add to table of int, class check reply words
-        int [] tableRandomNumbers = new int[7];
-        Random random = new Random();
-        boolean numberIsntOther;
-        for(int i = 0; i < tableRandomNumbers.length; i++){
-            if(i==0){                                                                                       //add first value
-                do {
-                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-                } while (tableRandomNumbers[i] == index);
-            }
-            else {                                                                                          //add other values
-                do {
-                    do {
-                        tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-                    } while (tableRandomNumbers[i] == index);
-                    numberIsntOther = false;
-                    for(int j = 0; j < i; j++){
-                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
-                            numberIsntOther = true;
-                        }
-                    }
-                } while (numberIsntOther);
-            }
-        }
-        return tableRandomNumbers;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -279,10 +210,22 @@ public class VocabularyTest extends FragmentActivity {
     @Override
     public void recreate() {
         super.recreate();
+        testProgressBar.setProgress(0);
         manyGoodAnswer = 0;
         manyTestWords = 0;
         cursor.close();
         vocabularyDatabase.close();
+    }
 
+    public static int getIconResultNumber(double testResult){
+        if (testResult >= 65 && testResult < 75 ){
+            return 1;
+        } else if (testResult >= 75 && testResult < 90){
+            return 2;
+        } else if (testResult >= 90){
+            return 3;
+        } else {
+            return 0;
+        }
     }
 }

@@ -14,11 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-
+import database_vocabulary.CategoryDatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.duel_with_english.R;
@@ -31,19 +29,21 @@ public class LessonsVocabularyList extends AppCompatActivity
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private LessonsVocabularyListAdapter adapterVocabulary;
+    private CategoryListAdapter categoryListAdapter;
     private boolean isFirstListClick = true;
 
     public boolean isFirstListClick() {
         return isFirstListClick;
     }
 
-    public void setFirstListClick(boolean firstListClick) {
-        isFirstListClick = firstListClick;
+    public void setFalseFirstListClick() {
+        isFirstListClick = false;
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons_vocabulary_list);
+        categoryListAdapter = new CategoryListAdapter(getApplicationContext());
         adapterVocabulary = new LessonsVocabularyListAdapter(getApplicationContext());
         adapterVocabulary.setLevelLanguage(getIntent().getStringExtra("levelLanguage"));
         setToolbar();
@@ -51,9 +51,14 @@ public class LessonsVocabularyList extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        categoryListAdapter.setCursorCategory(vocabularyDatabase.showAllOfCategory(adapterVocabulary.getLevelLanguage()));
+        categoryListAdapter.notifyDataSetChanged();
+        super.onResume();
+    }
+
+    @Override
     protected void onDestroy() {
-        adapterVocabulary.getCursor().close();
-        adapterVocabulary.getVocabularyDatabase().close();
         vocabularyDatabase.close();
         super.onDestroy();
     }
@@ -80,24 +85,21 @@ public class LessonsVocabularyList extends AppCompatActivity
     private void setCategoryList(){                                                                 // set category list in nav drawer
         ListView categoryList = (ListView) findViewById(R.id.categoryListLessonDrawer);
         vocabularyDatabase = new VocabularyDatabase(getApplicationContext());
-        Cursor cursorCategory = vocabularyDatabase.showAllOfCategory(adapterVocabulary.getLevelLanguage());
+        categoryListAdapter.setCursorCategory(vocabularyDatabase.showAllOfCategory(adapterVocabulary.getLevelLanguage()));
+        categoryList.setAdapter(categoryListAdapter);
 
-        final ArrayList<String> categoryListValues = new ArrayList<>();                             //add categories to list
-        while (cursorCategory.moveToNext()){
-            categoryListValues.add(cursorCategory.getString(0));
-        }
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, categoryListValues);    //add categories to listview
-        categoryList.setAdapter(arrayAdapter);
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(isFirstListClick()){
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                setFirstListClick(false);
+                setFalseFirstListClick();
                 }
                 drawer.closeDrawer(GravityCompat.START);
-                adapterVocabulary.setCategoryName(categoryListValues.get(i));
+                Cursor tempCategoryCursor = categoryListAdapter.getCursorCategory();
+                tempCategoryCursor.moveToPosition(i);
+                adapterVocabulary.setCategoryName(tempCategoryCursor.getString(CategoryDatabaseColumnNames.categoryColumn));
+
                 toolbar.setTitle(adapterVocabulary.getCategoryName());
                 setVocabularyList();
             }
@@ -166,9 +168,11 @@ public class LessonsVocabularyList extends AppCompatActivity
 
     public void startTestFromLessonOnClick(View view) {
         Intent intent = new Intent(this, VocabularyTest.class);
-        intent.putExtra("wordsAmount", adapterVocabulary.getCount());
+        intent.putExtra("wordsAmount", adapterVocabulary.getCount()-2);
         intent.putExtra("lvlOfLanguage", adapterVocabulary.getLevelLanguage());
-        intent.putExtra("category", adapterVocabulary.getCategoryName());
+        intent.putExtra("amountOfButtons", 6);
+        intent.putExtra("testCategory", adapterVocabulary.getCategoryName());
+        intent.putExtra("isTestFromLesson", true);
         startActivity(intent);
     }
 }

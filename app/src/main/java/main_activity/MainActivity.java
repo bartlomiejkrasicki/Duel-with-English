@@ -1,7 +1,9 @@
 package main_activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,23 +14,24 @@ import android.view.MenuItem;
 import android.view.View;
 
 import about_author.AuthorInformation;
+import database_vocabulary.VocabularyDatabase;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.duel_with_english.R;
 import tenses.TensesList;
 import vocabulary_level_category.VocabularyCategory;
 import vocabulary_test.VocabularyTestPreference;
 
-//menu główne
-
 public class MainActivity extends AppCompatActivity {
 
     private Intent intent;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configurationToolbar();
+        firstLaunch();
     }
 
     @Override
@@ -40,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Log.d("TAG", "tat" +item.getItemId());
         switch (id){
             case R.id.mainMenuSettings:{
                 break;
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void aboutAuthorButtonOnClick(View view){        
+    public void aboutAuthorButtonOnClick(View view){
         intent = new Intent(this, AuthorInformation.class);
         startActivity(intent);
     }
@@ -101,4 +103,26 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(this, TensesList.class);
         startActivity(intent);
     }
+
+    private void firstLaunch() {
+        sharedPreferences = getSharedPreferences("pl.flanelowapopijava.duel_with_english", Context.MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("firstLaunch", true)){
+            Log.d("pierwsze uruchomienie", "pierwszy raz uruchamiam, kopiowanie bazy");
+            configureDatabase();
+            setFirstLaunch();
+        }
+    }
+
+    public void setFirstLaunch() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("firstLaunch", false);
+        editor.apply();
+    }
+
+    private void configureDatabase(){
+        VocabularyDatabase vocabularyDatabase = new VocabularyDatabase(getApplicationContext());
+        vocabularyDatabase.allCategoryFromVocabulary();
+        vocabularyDatabase.close();
+    }
+
 }

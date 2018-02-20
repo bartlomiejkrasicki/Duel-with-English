@@ -73,4 +73,5 @@
     <string name="grammar">Gramatyka</string>
     <string name="tenses_list_activity_label">Wybierz temat</string>
     <string name="fav_bar_button_delete">Usuń z listy</string>
+    <string name="category_learn_progress">Ikona postępu nauki danej kategorii</string>
 </resources>
