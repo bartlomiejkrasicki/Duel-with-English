@@ -4,11 +4,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.widget.ListView;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
 
@@ -18,7 +16,7 @@ public class TensesList extends AppCompatActivity {
     public final static String PLTOENTRANSLATESP = "pltoentranslate";
     private VocabularyDatabase vocabularyDatabase;
     private SearchHistAdapter searchHistAdapter;
-    private SearchView searchView;
+    private android.widget.SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,26 +33,26 @@ public class TensesList extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_activity_menu, menu);
-        searchView = (SearchView) menu.findItem(R.id.searchVocabularyMenuItem).getActionView();
+        searchView = (android.widget.SearchView) menu.findItem(R.id.searchVocabularyMenuItem).getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
     private void addSearchField(){
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String queryText) {
-                searchHistAdapter.setCursor(vocabularyDatabase.getValuesToSearch(DatabaseColumnNames.COLUMN_NAME_PLWORD, queryText));
-                searchHistAdapter.notifyDataSetChanged();
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String queryText) {
-                searchHistAdapter.setCursor(vocabularyDatabase.getValuesToSearch(DatabaseColumnNames.COLUMN_NAME_PLWORD, queryText));
-                searchHistAdapter.notifyDataSetChanged();
-                return true;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String queryText) {
+//                searchHistAdapter.setCursor(vocabularyDatabase.getValuesToSearch(DatabaseColumnNames.COLUMN_NAME_PLWORD, queryText));
+//                searchHistAdapter.notifyDataSetChanged();
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String queryText) {
+//                searchHistAdapter.setCursor(vocabularyDatabase.getValuesToSearch(DatabaseColumnNames.COLUMN_NAME_PLWORD, queryText));
+//                searchHistAdapter.notifyDataSetChanged();
+//                return true;
+//            }
+//        });
     }
 
     private void createTranslateSP(){

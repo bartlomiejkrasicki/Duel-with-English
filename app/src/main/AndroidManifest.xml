@@ -93,7 +93,7 @@
             android:name="tenses.TensesList"
             android:label="@string/tenses_list_activity_label"
             android:parentActivityName="main_activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="main_activity.MainActivity" />

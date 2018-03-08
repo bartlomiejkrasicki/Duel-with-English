@@ -10,7 +10,7 @@
         app:actionViewClass="android.widget.SearchView"/>
     <item
         android:id="@+id/changeTranslateLanguageIS"
+        android:icon="?android:attr/actionModeFindDrawable"
         android:title="Zmień język wyszukiwania"
-        app:showAsAction="ifRoom"
-        app:actionLayout="@layout/switch_item" />
+        app:showAsAction="ifRoom" />
 </menu>
