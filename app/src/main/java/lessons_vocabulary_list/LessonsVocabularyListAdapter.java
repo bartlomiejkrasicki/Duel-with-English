@@ -38,35 +38,35 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
         this.cursor = cursor;
     }
 
-    public boolean isStarVisible() {
+    boolean isStarVisible() {
         return isStarVisible;
     }
 
-    public void setStarVisible(boolean starVisible) {
+    void setStarVisible(boolean starVisible) {
         isStarVisible = starVisible;
     }
 
-    public String getLevelLanguage() {
+    String getLevelLanguage() {
         return levelLanguage;
     }
 
-    public void setLevelLanguage(String levelLanguage) {
+    void setLevelLanguage(String levelLanguage) {
         this.levelLanguage = levelLanguage;
     }
 
-    public String getCategoryName() {
+    String getCategoryName() {
         return categoryName;
     }
 
-    public void setCategoryName(String categoryName) {
+    void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
 
-    public boolean isAlphabeticalSort() {
+    boolean isAlphabeticalSort() {
         return isAlphabeticalSort;
     }
 
-    public void setAlphabeticalSort(boolean alphabeticalSort) {
+    void setAlphabeticalSort(boolean alphabeticalSort) {
         isAlphabeticalSort = alphabeticalSort;
     }
 

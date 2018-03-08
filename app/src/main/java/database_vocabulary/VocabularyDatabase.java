@@ -82,6 +82,12 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
         return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'", null);
     }
 
+    public Cursor getValuesToSearch(final String columnName, String textQuery) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+//        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + columnName + " = '" + textQuery + "%'", null);
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ENGWORD + " = '" + textQuery + "'", null);
+    }
+
     public Cursor getAllFavouriteValues(boolean isAlphabetical) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         if (isAlphabetical) {
