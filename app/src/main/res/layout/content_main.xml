@@ -62,8 +62,8 @@
             android:layout_height="match_parent"
             android:layout_column="1"
             android:layout_weight="1"
-            android:text="@string/grammar"
-            android:onClick="grammarButtonOnClick"/>
+            android:text="@string/translator"
+            android:onClick="translatorButtonOnClick"/>
 
     </TableRow>
 

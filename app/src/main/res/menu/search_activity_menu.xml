@@ -6,8 +6,8 @@
         android:id="@+id/searchVocabularyMenuItem"
         android:icon="@drawable/ic_search_black_24dp"
         app:showAsAction="ifRoom"
-        android:title="Wyszukaj słowo wpisując je tutaj"
-        app:actionViewClass="android.widget.SearchView"/>
+        android:title="@string/search_hint"
+        app:actionViewClass="android.widget.SearchView" />
     <item
         android:id="@+id/changeTranslateLanguageIS"
         android:icon="?android:attr/actionModeFindDrawable"

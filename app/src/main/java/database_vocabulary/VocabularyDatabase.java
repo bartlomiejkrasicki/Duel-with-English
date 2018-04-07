@@ -46,6 +46,11 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
         sqLiteDatabase.close();
     }
 
+    public Cursor getRowFromId(int id) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ID + " = '" + id + "'",null);
+    }
+
     public Cursor getFavouriteValues(String vocabularyLevel, boolean isAlphabetical) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         final int isFavouriteWord = 1;
@@ -82,10 +87,13 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
         return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'", null);
     }
 
-    public Cursor getValuesToSearch(final String columnName, String textQuery) {
+    public Cursor getValuesToSearch(final boolean plToEnTranslate, final String textQuery) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-//        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + columnName + " = '" + textQuery + "%'", null);
-        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ENGWORD + " = '" + textQuery + "'", null);
+        if (plToEnTranslate){
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_PLWORD + " LIKE '" + textQuery + "%'", null);
+        } else {
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ENGWORD + " LIKE '" + textQuery + "%'", null);
+        }
     }
 
     public Cursor getAllFavouriteValues(boolean isAlphabetical) {

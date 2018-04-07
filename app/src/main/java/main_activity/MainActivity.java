@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void grammarButtonOnClick(View view) {
+    public void translatorButtonOnClick(View view) {
         intent = new Intent(this, TensesList.class);
         startActivity(intent);
     }
@@ -124,5 +124,4 @@ public class MainActivity extends AppCompatActivity {
         vocabularyDatabase.allCategoryFromVocabulary();
         vocabularyDatabase.close();
     }
-
 }

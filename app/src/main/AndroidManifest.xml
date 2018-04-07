@@ -16,6 +16,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -91,12 +92,18 @@
         </activity>
         <activity
             android:name="tenses.TensesList"
-            android:label="@string/tenses_list_activity_label"
+            android:label="@string/dictionary_activity_label"
             android:parentActivityName="main_activity.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="main_activity.MainActivity" />
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
         </activity>
+        <activity android:name="main_activity.MainAppSettings"></activity>
     </application>
+
 </manifest>

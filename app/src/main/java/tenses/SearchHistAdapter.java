@@ -8,13 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
+import database_vocabulary.DatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 
-public class SearchHistAdapter extends BaseAdapter implements Filterable{
+public class SearchHistAdapter extends BaseAdapter {
 
     private Context context;
     private Cursor cursor;
@@ -22,14 +21,18 @@ public class SearchHistAdapter extends BaseAdapter implements Filterable{
     private TextView hintCategory, hintWord;
     private SharedPreferences sharedPreferences;
     private Boolean plToEnTranslate;
-    private ValueFilterSearch valueFilterSearch;
 
-    SearchHistAdapter(Context context){
+    SearchHistAdapter(Cursor cursor, Context context){
+        this.cursor = cursor;
         this.context = context;
     }
 
     public void setCursor(Cursor cursor) {
         this.cursor = cursor;
+    }
+
+    public Cursor getCursor() {
+        return cursor;
     }
 
     @Override
@@ -61,7 +64,7 @@ public class SearchHistAdapter extends BaseAdapter implements Filterable{
         declarationVaribles(view);
 
         if (cursor.moveToPosition(i)){
-            hintCategory.setText(cursor.getString(2));
+            hintCategory.setText(String.format("%s:", cursor.getString(2)));
             setHintWord();
         }
 
@@ -75,19 +78,16 @@ public class SearchHistAdapter extends BaseAdapter implements Filterable{
         plToEnTranslate = sharedPreferences.getBoolean(TensesList.PLTOENTRANSLATESP, true);
     }
 
-    private void setHintWord(){
-        if(plToEnTranslate){
-            hintWord.setText(cursor.getString(3));
+    private void setHintWord() {
+        if (plToEnTranslate) {
+            hintWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
         } else {
-            hintWord.setText(cursor.getString(4));
+            hintWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
         }
     }
 
-    @Override
-    public Filter getFilter() {
-        if (valueFilterSearch == null){
-            valueFilterSearch = new ValueFilterSearch();
-        }
-        return valueFilterSearch;
+    public int getDBItemId(int position) {
+        cursor.moveToPosition(position);
+        return cursor.getInt(0);
     }
 }

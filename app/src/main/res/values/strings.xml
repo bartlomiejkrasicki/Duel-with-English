@@ -74,4 +74,7 @@
     <string name="tenses_list_activity_label">Wybierz temat</string>
     <string name="fav_bar_button_delete">Usuń z listy</string>
     <string name="category_learn_progress">Ikona postępu nauki danej kategorii</string>
+    <string name="search_hint">Wyszukaj słowo wpisując je tutaj</string>
+    <string name="translator">Słownik</string>
+    <string name="dictionary_activity_label">Wyszukaj słowa</string>
 </resources>

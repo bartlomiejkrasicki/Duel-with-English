@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context="about_author.AuthorInformation">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/authorInfoToolbar"
             android:layout_width="match_parent"
@@ -22,7 +17,5 @@
             app:title="@string/title_activity_author_info" />
 
         <include layout="@layout/content_author_information" />
-
-    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
