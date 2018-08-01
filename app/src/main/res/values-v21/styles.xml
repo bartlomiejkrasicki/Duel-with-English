@@ -5,8 +5,9 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">?android:attr/colorPrimaryDark</item>
-        <item name="android:windowBackground">@android:color/background_light</item>
-        <item name="android:colorBackground">@android:color/background_light</item>
+        <item name="android:windowBackground">@color/Background</item>
+        <item name="android:colorBackground">@color/Background</item>
         <item name="android:textColorPrimary">@android:color/primary_text_light</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_black_24dp</item>
     </style>
 </resources>

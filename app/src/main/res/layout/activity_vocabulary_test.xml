@@ -8,11 +8,12 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:id="@+id/testVocabularyToolbar"
-        android:theme="?attr/actionBarTheme"
-        app:navigationIcon="?attr/homeAsUpIndicator" />
+        app:navigationIcon="?android:attr/homeAsUpIndicator"
+        app:titleTextColor="@android:color/white"
+        app:subtitleTextColor="@android:color/white"/>
 
     <fragment
         android:id="@+id/testFragment"
@@ -31,8 +32,8 @@
         android:layout_marginStart="10dp"
         app:rcBackgroundPadding="6dp"
         app:rcRadius="20dp"
-        app:rcBackgroundColor="@color/color_buttons_special"
-        app:rcSecondaryProgressColor="@color/colorAccent"
-        app:rcProgressColor="@color/colorPrimaryDark" />
+        app:rcBackgroundColor="@color/colorPrimaryDark"
+        app:rcSecondaryProgressColor="@color/colorPrimaryDark"
+        app:rcProgressColor="@color/Background" />
 
 </LinearLayout>

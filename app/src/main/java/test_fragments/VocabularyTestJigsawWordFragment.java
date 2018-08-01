@@ -109,11 +109,12 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
 
     private void addEditTexts(View view, String answerWord){        //add underlines to put word
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         LinearLayout answerLL = (LinearLayout) view.findViewById(R.id.answer_linear_layout_jigsaw);
         answerET = new EditText[answerWord.length()];
         for (int index = 0; index < answerWord.length(); index++) {                   //show EditText in LinearLayout
             answerET[index] = new EditText(getActivity().getApplicationContext());
+
+            answerET[index].setTextColor(getResources().getColor(android.R.color.white));
             answerET[index].setClickable(false);
             answerET[index].setFocusable(false);
             answerET[index].setEnabled(false);
@@ -173,6 +174,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
         for (int index = 0; index < answerWord.length(); index++){                          //add buttons and shuffle, set text
             buttonsLetters[index] = new Button(getActivity().getApplicationContext());
             buttonsLetters[index].setBackgroundResource(R.drawable.circle_button);
+            buttonsLetters[index].setTextColor(getResources().getColor(android.R.color.white));
             buttonsLetters[index].setLayoutParams(layoutButtonParams);
             buttonsLetters[index].setText(String.valueOf(answerWord.charAt(randomTable[index])));
             buttonsLetters[index].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -267,6 +269,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
             public void onAnimationStart(Animation animation) {
                 for (EditText completeWordET : answerET) {
                     completeWordET.setEnabled(false);
+                    completeWordET.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }
                 ((TransitionDrawable) view.getBackground()).startTransition(500);
             }

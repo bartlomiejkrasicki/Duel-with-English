@@ -39,16 +39,6 @@ public class FavouriteList extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     protected void onDestroy() {
         adapter.getCursor().close();
         database.close();

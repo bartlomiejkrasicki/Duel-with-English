@@ -6,12 +6,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="favourite_list.FavouriteList"
-    tools:showIn="@layout/activity_favourite_list">
+    tools:showIn="@layout/activity_favourite_list"
+    android:background="@color/colorPrimaryDark">
 
     <ListView
         android:id="@+id/favouriteListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="false" />
+        android:clickable="false"
+        android:background="@color/Background"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"/>
 
 </LinearLayout>

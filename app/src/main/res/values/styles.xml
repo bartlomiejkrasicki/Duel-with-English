@@ -6,10 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorBackground">@color/background_material_light</item>
+        <item name="android:colorBackground">@color/Background</item>
         <item name="android:textColorPrimary">@android:color/black</item>
         <item name="android:textColorSecondary">@color/textColor</item>
         <item name="android:actionModeBackground">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/Background</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat">
@@ -18,32 +19,32 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
-        <item name="android:windowBackground">@android:color/background_light</item>
-        <item name="android:colorBackground">@android:color/background_light</item>
-        <item name="android:statusBarColor">?android:attr/colorPrimaryDark</item>
-        <item name="android:textColorPrimary">@android:color/primary_text_light</item>
+        <item name="android:windowBackground">@color/Background</item>
+        <item name="android:colorBackground">@color/Background</item>
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:actionModeBackground">@color/colorAccent</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Button.Custom" parent="Base.TextAppearance.AppCompat.Button">
         <item name="android:background">@color/color_buttons_special</item>
         <item name="android:elevation">15dp</item>
-        <item name="android:layout_margin">3dp</item>
+        <item name="android:layout_margin">1dp</item>
         <item name="android:textColor">@color/textButtonsColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+    </style>
 
-    <style name="CustomProgressBar" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:radius">5dp</item>
-        <item name="android:minHeight">10dp</item>
-        <item name="android:maxHeight">20dp</item>
+    <style name="VocabularyCategoryButton">
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">@color/textButtonsColor</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
     </style>
 
 </resources>

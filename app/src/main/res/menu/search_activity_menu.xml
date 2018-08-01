@@ -4,13 +4,15 @@
 
     <item
         android:id="@+id/searchVocabularyMenuItem"
-        android:icon="@drawable/ic_search_black_24dp"
-        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_magnifier_icon"
         android:title="@string/search_hint"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom"
+        app:searchIcon="@drawable/ic_magnifier_icon"/>
     <item
         android:id="@+id/changeTranslateLanguageIS"
-        android:icon="?android:attr/actionModeFindDrawable"
-        android:title="Zmień język wyszukiwania"
-        app:showAsAction="ifRoom" />
+        android:icon="@drawable/ic_pl_to_en_icon"
+        android:title="@string/changeSearchLanguage"
+        app:showAsAction="ifRoom"
+        />
 </menu>

@@ -8,7 +8,7 @@
             android:defaultValue="0"
             android:entries="@array/list_language_level_array"
             android:entryValues="@array/list_language_level_array"
-            android:icon="@android:drawable/ic_menu_today"
+            android:icon="@drawable/ic_crown_icon"
             android:key="levelOfLanguage"
             android:summary="Wybierz poziom testu A1-C2"
             android:title="Poziom testu" />
@@ -17,7 +17,7 @@
             android:defaultValue="20"
             android:entries="@array/list_of_words"
             android:entryValues="@array/list_of_words"
-            android:icon="?android:attr/actionModePasteDrawable"
+            android:icon="@drawable/ic_info_icon_no_shadow"
             android:key="wordsAmount"
             android:summary="Wybierz ile słów ma zawierać test"
             android:title="Ilość słów" />
@@ -32,7 +32,7 @@
             android:defaultValue="6"
             android:entries="@array/amount_of_buttons"
             android:entryValues="@array/amount_of_buttons"
-            android:icon="@android:drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_number_hints_icon"
             android:key="amountOfButtons"
             android:summary="Ilość przycisków podczas testu wyboru"
             android:title="Ilość podpowiedzi" />

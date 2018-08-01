@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/LessonMenuSortIcon"
+        android:checkable="false"
+        android:icon="@drawable/ic_alphabetical_sort_icon"
+        android:title="@string/sort"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/goToFavouriteFromMenu"
+        android:icon="@drawable/ic_to_favourite_list_icon"
+        android:title="@string/list_of_favourite_menu_item"
+        app:showAsAction="always" />
+
+    <item android:title="@string/add_words_to_favourite"
+        android:icon="@drawable/ic_favourite_list_icon"
+        app:showAsAction="ifRoom"
+        android:id="@+id/addToFavouriteWordsStar" />
+
+
+</menu>

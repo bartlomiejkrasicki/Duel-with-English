@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import static database_vocabulary.DatabaseColumnNames.COLUMN_NAME_LANGUAGELVL;
 import static database_vocabulary.DatabaseColumnNames.DATABASE_NAME;
 import static database_vocabulary.DatabaseColumnNames.DATABASE_VERSION;
 import static database_vocabulary.DatabaseColumnNames.TABLE_NAME_CATEGORY;
@@ -82,9 +83,9 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
         return newResult > oldResult;
     }
 
-    public Cursor getCategoryValues(final String categoryName) {
+    public Cursor getCategoryValues(final String categoryName, final String lvlLanguage) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'", null);
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "' AND " + COLUMN_NAME_LANGUAGELVL + " = '" + lvlLanguage + "'", null);
     }
 
     public Cursor getValuesToSearch(final boolean plToEnTranslate, final String textQuery) {

@@ -6,7 +6,10 @@
         />
 
     <stroke
-        android:color="@color/colorPrimaryDark"
+        android:color="@color/textColor"
         android:width="1.5dp"
+        />
+    <solid
+        android:color="@color/colorPrimaryDark"
         />
 </shape>

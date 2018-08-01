@@ -50,10 +50,16 @@ public class VocabularyTest extends FragmentActivity {
 
     private void declarationVariables() {
         vocabularyDatabase = getVocabularyDatabase(getApplicationContext());
-        if (categoryName != null) {
-            cursor = vocabularyDatabase.getCategoryValues(categoryName);
+        if (categoryName != null) {                                             // do przerobienia
+            cursor = vocabularyDatabase.getCategoryValues(categoryName, lvlOfLanguage);
         } else {
             cursor = vocabularyDatabase.getAllValues();
+        }
+        if (cursor.getCount() < amountOfWords){
+            amountOfWords = cursor.getCount();
+        }
+        if (cursor.getCount() < amountOfButtons){
+            amountOfButtons = cursor.getCount() - cursor.getCount()%2;
         }
         randomNumberOfWords = new int[amountOfWords];
         randomNumberOfWords = randomWordWithoutReply(randomNumberOfWords);
@@ -145,7 +151,7 @@ public class VocabularyTest extends FragmentActivity {
 
     public Cursor getCursor(VocabularyDatabase vocabularyDatabase) {
         if (categoryName != null) {
-            return vocabularyDatabase.getCategoryValues(categoryName);
+            return vocabularyDatabase.getCategoryValues(categoryName, lvlOfLanguage);
         }
         else {
             return vocabularyDatabase.getAllValues();

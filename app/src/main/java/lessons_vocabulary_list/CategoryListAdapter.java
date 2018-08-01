@@ -59,7 +59,6 @@ public class CategoryListAdapter extends BaseAdapter {
             if (resultMode != 0){
                 categoryProgressImageView.setImageDrawable(view.getResources().getDrawable(resultMode));
             }
-
         }
         return view;
     }
@@ -71,11 +70,11 @@ public class CategoryListAdapter extends BaseAdapter {
 
     private int setCategoryProgressImageView(int mode) {
         if (mode == 1){
-            return R.drawable.ic_star_bronze;
+            return R.drawable.ic_crown_bronze_icon;
         } else if (mode == 2) {
-            return R.drawable.ic_star_silver;
+            return R.drawable.ic_crown_silver_icon;
         } else if (mode == 3) {
-            return R.drawable.ic_star_gold;
+            return R.drawable.ic_crown_gold_icon;
         } else {
             return 0;
         }

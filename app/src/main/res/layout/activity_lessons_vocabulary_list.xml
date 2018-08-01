@@ -22,7 +22,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/colorPrimaryDark">
 
             <include layout="@layout/nav_header_lessons_vocabulary_list"
                 />
@@ -30,8 +31,9 @@
             <ListView
                 android:id="@+id/categoryListLessonDrawer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:entries="@array/amount_of_buttons" />
+                android:layout_height="wrap_content"
+                android:entries="@array/amount_of_buttons"
+                android:background="@color/Background"/>
         </LinearLayout>
     </android.support.design.widget.NavigationView>
 

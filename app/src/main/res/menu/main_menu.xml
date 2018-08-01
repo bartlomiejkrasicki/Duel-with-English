@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mainMenuInfoIcon"
+        android:icon="@drawable/ic_info_icon"
+        android:title="Informacje"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group>
+                <item
+                    android:title="@string/about_application"
+                    android:id="@+id/mainMenuAboutApp"
+                    app:showAsAction="ifRoom" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Ustawienia"
+        android:icon="@drawable/ic_settings_icon"
+        app:showAsAction="ifRoom"
+        android:id="@+id/mainMenuSettingsIcon"/>
+
+</menu>

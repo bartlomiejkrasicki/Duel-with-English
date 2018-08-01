@@ -8,16 +8,14 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import about_author.AuthorInformation;
 import database_vocabulary.VocabularyDatabase;
+import dictionary.Dictionary;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.duel_with_english.R;
-import tenses.TensesList;
 import vocabulary_level_category.VocabularyCategory;
 import vocabulary_test.VocabularyTestPreference;
 
@@ -36,17 +34,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
-            case R.id.mainMenuSettings:{
-                break;
-            }
+        if(id == R.id.mainMenuInfoIcon){
+
+        } else if (id == R.id.mainMenuSettingsIcon){
+            intent = new Intent(this, MainAppSettings.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -72,11 +72,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configurationToolbar(){
-        Toolbar mainMenuToolbar = (Toolbar) findViewById(R.id.mainMenuToolbar);
-        mainMenuToolbar.setTitle(R.string.mainMenuSubtitle);
-        mainMenuToolbar.setSubtitle(R.string.app_name);
-        mainMenuToolbar.setLogo(R.mipmap.icon);
-        setSupportActionBar(mainMenuToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.mainMenuToolbar);
+        setSupportActionBar(toolbar);
     }
 
     public void vocabularyButtonOnClick(View view){
@@ -89,25 +86,19 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void aboutAuthorButtonOnClick(View view){
-        intent = new Intent(this, AuthorInformation.class);
-        startActivity(intent);
-    }
-
     public void testButtonOnClick (View view) {
         intent = new Intent(this, VocabularyTestPreference.class);
         startActivity(intent);
     }
 
-    public void translatorButtonOnClick(View view) {
-        intent = new Intent(this, TensesList.class);
+    public void dictionaryButtonOnClick(View view) {
+        intent = new Intent(this, Dictionary.class);
         startActivity(intent);
     }
 
     private void firstLaunch() {
         sharedPreferences = getSharedPreferences("pl.flanelowapopijava.duel_with_english", Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean("firstLaunch", true)){
-            Log.d("pierwsze uruchomienie", "pierwszy raz uruchamiam, kopiowanie bazy");
             configureDatabase();
             setFirstLaunch();
         }

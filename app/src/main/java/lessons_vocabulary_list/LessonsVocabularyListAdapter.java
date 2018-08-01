@@ -20,7 +20,7 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
     private Context context;
     private Cursor cursor;
     private VocabularyDatabase vocabularyDatabase;
-    private ImageButton favouriteStar;
+    private ImageButton favouriteIcon;
     private TextView polishWord;
     private TextView englishWord;
     private String levelLanguage = "", categoryName = "";
@@ -75,11 +75,6 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
     }
 
     @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-    }
-
-    @Override
     public int getCount() {
         return cursor.getCount();
     }
@@ -108,40 +103,40 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
             englishWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
             int addFavOrNot = cursor.getInt(DatabaseColumnNames.isfavouriteColumn);
             if (addFavOrNot == 1) {
-                favouriteStar.setImageResource(android.R.drawable.star_big_on);
+                favouriteIcon.setImageResource(R.drawable.ic_favouriteiconon);
             } else
-                favouriteStar.setImageResource(android.R.drawable.star_big_off);
+                favouriteIcon.setImageResource(R.drawable.ic_favouriteiconoff);
         }
         if (isStarVisible()){                                     //star button is visible or not
-            favouriteStar.setVisibility(View.VISIBLE);
+            favouriteIcon.setVisibility(View.VISIBLE);
         }
         else {
-            favouriteStar.setVisibility(View.INVISIBLE);
+            favouriteIcon.setVisibility(View.INVISIBLE);
         }
         favouriteStarOnClick(i);
     return view;
     }
 
     private void declarationVariables(View view){
-        favouriteStar = (ImageButton) view.findViewById(R.id.favourite_star_lv);
+        favouriteIcon = (ImageButton) view.findViewById(R.id.favourite_star_lv);
         polishWord = (TextView) view.findViewById(R.id.plWord);
         englishWord = (TextView) view.findViewById(R.id.engWord);
         vocabularyDatabase = new VocabularyDatabase(context);
     }
 
     private void favouriteStarOnClick(final int i){
-        favouriteStar.setOnClickListener(new View.OnClickListener() {
+        favouriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cursor.moveToPosition(i);
                 String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
                 if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 0) {
                     vocabularyDatabase.updateValuesInDatabase(index, 1);
-                    favouriteStar.setImageResource(android.R.drawable.star_big_on);
+                    favouriteIcon.setImageResource(R.drawable.ic_favouriteiconon);
                 }
                 else if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 1){
                     vocabularyDatabase.updateValuesInDatabase(index, 0);
-                    favouriteStar.setImageResource(android.R.drawable.star_big_off);
+                    favouriteIcon.setImageResource(R.drawable.ic_favouriteiconoff);
                 }
                 setCursor(vocabularyDatabase.showVocabularyForLessons(getLevelLanguage(), getCategoryName(), isAlphabeticalSort()));
                 notifyDataSetChanged();

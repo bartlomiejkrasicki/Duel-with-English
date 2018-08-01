@@ -7,12 +7,12 @@
     <item
         android:id="@+id/favouriteMenuSortIcon"
         android:checkable="false"
-        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:icon="@drawable/ic_alphabetical_sort_icon"
         android:title="@string/sort"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/favouriteMenuLvlSortIcon"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/ic_mage_hat_icon_shadow"
         android:title="@string/expandable_activity_label"
         app:showAsAction="ifRoom">
         <menu>
@@ -52,7 +52,7 @@
     </item>
     <item
         android:id="@+id/favBarDeleteIcon"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@drawable/ic_remove_icon"
         android:title="@string/fav_bar_button_delete"
         app:showAsAction="ifRoom" />
 </menu>

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.flanelowapopijava.duel_with_english">
 
+    <uses-permission android:name="android.permission.SET_ALARM"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/icon"
@@ -91,7 +93,7 @@
                 android:value="main_activity.MainActivity" />
         </activity>
         <activity
-            android:name="tenses.TensesList"
+            android:name="dictionary.Dictionary"
             android:label="@string/dictionary_activity_label"
             android:parentActivityName="main_activity.MainActivity"
             android:theme="@style/AppTheme">
@@ -103,7 +105,17 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name="main_activity.MainAppSettings"></activity>
+        <activity android:name="main_activity.MainAppSettings"
+            android:label="@string/app_settings"
+            android:parentActivityName="main_activity.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="main_activity.MainActivity" />
+        </activity>
+
+        <receiver android:name="main_activity.NotificationReceiver" />
+
     </application>
 
 </manifest>

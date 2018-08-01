@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -25,9 +26,7 @@ public class VocabularyTestPreference extends FragmentActivity {
 
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.preferenceTestToolbar);
-        toolbar.setLogo(R.drawable.a_one_level);
         toolbar.setTitle("Personalizuj test");
-        toolbar.setTitleMarginStart(10);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +43,11 @@ public class VocabularyTestPreference extends FragmentActivity {
             addPreferencesFromResource(R.xml.personalize_test);
         }
 
+        @Override
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            view.setBackgroundColor(getResources().getColor(R.color.Background));
+        }
     }
 
     public void startTestClick(View view){

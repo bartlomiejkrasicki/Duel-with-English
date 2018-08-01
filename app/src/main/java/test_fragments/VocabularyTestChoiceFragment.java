@@ -25,6 +25,7 @@ import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.inEnglish;
+import static vocabulary_test.VocabularyTest.lvlOfLanguage;
 import static vocabulary_test.VocabularyTest.manyGoodAnswer;
 import static vocabulary_test.VocabularyTest.manyTestWords;
 import static vocabulary_test.VocabularyTest.randomNumberOfWords;
@@ -65,7 +66,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         guessButtons = new Button[amountOfButtons];
         buttonsDeclaration(view);
         if (categoryName != null) {
-            cursor = vocabularyDatabase.getCategoryValues(categoryName);
+            cursor = vocabularyDatabase.getCategoryValues(categoryName, lvlOfLanguage);
         } else {
             cursor = vocabularyDatabase.getAllValues();
         }
@@ -161,7 +162,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         final int idWord = cursor.getInt(DatabaseColumnNames.idColumn);                                //id of first word
 
         final String category = cursor.getString(DatabaseColumnNames.categoryColumn);                                    //set cursor to category
-        cursor = vocabularyDatabase.getCategoryValues(category);        //change cursor to category words
+        cursor = vocabularyDatabase.getCategoryValues(category, lvlOfLanguage);        //change cursor to category words
 
         final int index = searchId(cursor, idWord);
         int[] tableToShuffleWord = setRandomTableNumber(cursor.getCount(), index, amountOfButtons);

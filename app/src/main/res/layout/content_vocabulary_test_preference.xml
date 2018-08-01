@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/preferenceTestToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="?android:attr/actionBarSize"
         app:titleMargin="10dp"
         android:title="@string/personalize_test"
-        android:logo="@drawable/a_one_level"
-        android:theme="?attr/actionBarTheme"
-        app:navigationIcon="?attr/homeAsUpIndicator"/>
+        app:navigationIcon="?android:attr/homeAsUpIndicator"
+        app:titleTextColor="@color/textButtonsColor"/>
 
     <fragment
         android:id="@+id/customizationTestFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment" />
+        android:layout_height="wrap_content"
+        android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment"
+        android:layout_below="@id/preferenceTestToolbar"/>
 
     <Button
         android:id="@+id/startTestButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="10"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="10%"
         style="@style/Button.Custom"
         android:text="@string/start_test_button"
-        android:onClick="startTestClick"/>
+        android:onClick="startTestClick"
+        android:layout_alignParentBottom="true"/>
 
-</LinearLayout>
+</android.support.percent.PercentRelativeLayout>

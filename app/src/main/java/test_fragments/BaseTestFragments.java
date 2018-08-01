@@ -122,11 +122,11 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
         int progressPercent = (int) vocabularyTest.calculatePercentage();
         ImageView endTestIcon = (ImageView) view.findViewById(R.id.endTestIcon);
         if (progressPercent >= 65 && progressPercent < 75 ){
-            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_star_bronze));
+            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_crown_bronze_icon));
         } else if (progressPercent >= 75 && progressPercent < 90){
-            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_star_silver));
+            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_crown_silver_icon));
         } else if (progressPercent >= 90){
-            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_star_gold));
+            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_crown_gold_icon));
         } else {
             endTestIcon.setVisibility(View.INVISIBLE);
         }

@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <SwitchPreference
+        android:id="@+id/notificationSwitchPreference"
         android:defaultValue="true"
         android:key="notificationsSettingsSwitch"
-        android:title="Powiadomienia" />
-
-    <Switch
-        android:id="@+id/notificationsSettingsSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Powiadomienia" />
+        android:title="Powiadomienia"
+        android:summary="Włącz/wyłącz powiadomienia"
+        android:icon="@drawable/ic_info_icon_no_shadow"
+        android:background="@color/Background"/>
 
 </PreferenceScreen>

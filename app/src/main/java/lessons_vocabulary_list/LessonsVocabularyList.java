@@ -46,6 +46,7 @@ public class LessonsVocabularyList extends AppCompatActivity
         categoryListAdapter = new CategoryListAdapter(getApplicationContext());
         adapterVocabulary = new LessonsVocabularyListAdapter(getApplicationContext());
         adapterVocabulary.setLevelLanguage(getIntent().getStringExtra("levelLanguage"));
+        adapterVocabulary.setCategoryName(getIntent().getStringExtra("categoryName"));
         setToolbar();
         setDrawer();
     }
@@ -65,6 +66,7 @@ public class LessonsVocabularyList extends AppCompatActivity
 
     private void setToolbar(){
         toolbar = (Toolbar) findViewById(R.id.vocabularyListToolbar);
+        toolbar.setTitle("");
         toolbar.setSubtitle(adapterVocabulary.getLevelLanguage());
         setSupportActionBar(toolbar);
     }
@@ -124,7 +126,7 @@ public class LessonsVocabularyList extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.lessons_vocabulary_list2, menu);
+        getMenuInflater().inflate(R.menu.lessons_vocabulary_list, menu);
         return true;
     }
 
@@ -159,9 +161,6 @@ public class LessonsVocabularyList extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-        }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

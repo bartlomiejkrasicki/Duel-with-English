@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<android.support.percent.PercentRelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimaryDark"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:id="@+id/splashScreenParent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true">
     <ImageView
-        android:contentDescription="@string/logo_description"
         android:id="@+id/splashScreenLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/logo" />
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="30%"
+        android:contentDescription="@string/logo_description"
+        app:srcCompat="@drawable/ic_logowithblackbackground"
+        android:layout_centerHorizontal="true"/>
 
-        <ImageView
-            android:id="@+id/splashScreenTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/title_description"
-            app:srcCompat="@drawable/app_name" />
-    </LinearLayout>
+    <TextView
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="30%"
+        android:gravity="center_horizontal|top"
+        android:fontFamily="serif"
+        android:text="@string/main_menu_app_name"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="40sp"
+        android:layout_below="@id/splashScreenLogo"/>
 
-</RelativeLayout>
+</android.support.percent.PercentRelativeLayout>
+
+
