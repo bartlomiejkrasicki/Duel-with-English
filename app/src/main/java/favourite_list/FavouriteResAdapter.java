@@ -10,8 +10,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
+import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 
 class FavouriteResAdapter extends BaseAdapter {
@@ -19,7 +19,7 @@ class FavouriteResAdapter extends BaseAdapter {
     private Cursor cursor;
     private Context context;
     private ListView favouriteList;
-    private VocabularyDatabase database;
+    private VocabularyDatabase dbInstance;
     private boolean isEnabledDeleteMode = false;
     private boolean isAlphabeticalSort = false;
     private String lvlOfFavouriteWords = "A1";
@@ -30,11 +30,11 @@ class FavouriteResAdapter extends BaseAdapter {
     }
 
     public VocabularyDatabase getDatabase() {
-        return database;
+        return dbInstance;
     }
 
-    public void setDatabase(VocabularyDatabase database) {
-        this.database = database;
+    public void setDatabase(VocabularyDatabase dbInstance) {
+        this.dbInstance = dbInstance;
     }
 
     public String getLvlOfFavouriteWords() {
@@ -109,8 +109,8 @@ class FavouriteResAdapter extends BaseAdapter {
         TextView engWord = (TextView) view.findViewById(R.id.engFavWord);
         TextView plWord = (TextView) view.findViewById(R.id.plFavWord);
         cursor.moveToPosition(i);
-        engWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
-        plWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+        engWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
+        plWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
 
         onItemClickDelete(view);
 
@@ -127,13 +127,13 @@ class FavouriteResAdapter extends BaseAdapter {
                         View listView = (View) view.getParent();
                         favouriteList = (ListView) listView;
                         cursor.moveToPosition(favouriteList.getPositionForView(view));
-                        String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
-                        database = new VocabularyDatabase(context);
-                        database.updateValuesInDatabase(index, 0);
+                        String index = String.valueOf(cursor.getInt(VocabularyDatabaseColumnNames.idColumn));
+                        dbInstance = VocabularyDatabase.getInstance(context);
+                        dbInstance.updateValuesInDatabase(index, 0);
                         if (allFavouritesWords){
-                            setCursor(database.getAllFavouriteValues(isAlphabeticalSort()));
+                            setCursor(dbInstance.getAllFavouriteValues(isAlphabeticalSort()));
                         } else {
-                            setCursor(database.getFavouriteValues(getLvlOfFavouriteWords(), isAlphabeticalSort()));
+                            setCursor(dbInstance.getFavouriteValues(getLvlOfFavouriteWords(), isAlphabeticalSort()));
                         }
                         notifyDataSetChanged();
                     } catch (NullPointerException exception) {

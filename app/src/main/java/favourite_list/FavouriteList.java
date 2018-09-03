@@ -16,7 +16,7 @@ import static pl.flanelowapopijava.duel_with_english.R.id.favouriteListView;
 
 public class FavouriteList extends AppCompatActivity {
 
-    private VocabularyDatabase database;
+    private VocabularyDatabase dbInstance;
     private FavouriteResAdapter adapter;
     private ListView favouritelist;
     private Context context;
@@ -41,7 +41,7 @@ public class FavouriteList extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         adapter.getCursor().close();
-        database.close();
+        dbInstance.close();
         super.onDestroy();
     }
 
@@ -62,9 +62,9 @@ public class FavouriteList extends AppCompatActivity {
                     adapter.setAlphabeticalSort(true);
                 }
                 if (adapter.getShowAllFavouritesWords()){
-                    adapter.setCursor(database.getAllFavouriteValues(adapter.isAlphabeticalSort()));
+                    adapter.setCursor(dbInstance.getAllFavouriteValues(adapter.isAlphabeticalSort()));
                 } else {
-                    adapter.setCursor(database.getFavouriteValues(adapter.getLvlOfFavouriteWords(), adapter.isAlphabeticalSort()));
+                    adapter.setCursor(dbInstance.getFavouriteValues(adapter.getLvlOfFavouriteWords(), adapter.isAlphabeticalSort()));
                 }
                 refreshList();
                 break;
@@ -113,7 +113,7 @@ public class FavouriteList extends AppCompatActivity {
                 break;
             }
             case R.id.menuIconShowAllFavourites:{
-                adapter.setCursor(database.getAllFavouriteValues(adapter.isAlphabeticalSort()));
+                adapter.setCursor(dbInstance.getAllFavouriteValues(adapter.isAlphabeticalSort()));
                 adapter.setShowAllFavouritesWords(true);
                 break;
             }
@@ -135,16 +135,16 @@ public class FavouriteList extends AppCompatActivity {
         favouritelist = (ListView) findViewById(favouriteListView);
         favouritelist.setClickable(false);
         context = getApplicationContext();
-        database = new VocabularyDatabase(context);
+        dbInstance = VocabularyDatabase.getInstance(context);
         adapter = new FavouriteResAdapter(context);
-        adapter.setCursor(database.getAllFavouriteValues(adapter.isAlphabeticalSort()));
+        adapter.setCursor(dbInstance.getAllFavouriteValues(adapter.isAlphabeticalSort()));
         favouritelist.setAdapter(adapter);
     }
 
     private void setCursorToShowFavList(String vocabularyLvl){
         adapter.setShowAllFavouritesWords(false);
         adapter.setLvlOfFavouriteWords(vocabularyLvl);
-        adapter.setCursor(database.getFavouriteValues(adapter.getLvlOfFavouriteWords(), adapter.isAlphabeticalSort()));
+        adapter.setCursor(dbInstance.getFavouriteValues(adapter.getLvlOfFavouriteWords(), adapter.isAlphabeticalSort()));
     }
 
     public void refreshList(){

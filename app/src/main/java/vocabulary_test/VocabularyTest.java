@@ -1,6 +1,5 @@
 package vocabulary_test;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -26,7 +25,7 @@ public class VocabularyTest extends FragmentActivity {
     public static int manyGoodAnswer = 0, manyTestWords = 0, randomNumberOfWords[];
     public static boolean inEnglish[], isTestFromLesson;
     private Cursor cursor;
-    private VocabularyDatabase vocabularyDatabase;
+    private VocabularyDatabase dbInstance;
     public static int amountOfWords, amountOfButtons;
     public static String lvlOfLanguage = "", categoryName = "";
     private RoundCornerProgressBar testProgressBar;
@@ -49,11 +48,11 @@ public class VocabularyTest extends FragmentActivity {
     }
 
     private void declarationVariables() {
-        vocabularyDatabase = getVocabularyDatabase(getApplicationContext());
+        dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
         if (categoryName != null) {                                             // do przerobienia
-            cursor = vocabularyDatabase.getCategoryValues(categoryName, lvlOfLanguage);
+            cursor = dbInstance.getCategoryValues(categoryName, lvlOfLanguage);
         } else {
-            cursor = vocabularyDatabase.getAllValues();
+            cursor = dbInstance.getAllValues();
         }
         if (cursor.getCount() < amountOfWords){
             amountOfWords = cursor.getCount();
@@ -145,10 +144,6 @@ public class VocabularyTest extends FragmentActivity {
         testProgressBar.setProgress(0);
     }
 
-    public VocabularyDatabase getVocabularyDatabase(Context context){
-        return new VocabularyDatabase(context);
-    }
-
     public Cursor getCursor(VocabularyDatabase vocabularyDatabase) {
         if (categoryName != null) {
             return vocabularyDatabase.getCategoryValues(categoryName, lvlOfLanguage);
@@ -210,7 +205,7 @@ public class VocabularyTest extends FragmentActivity {
         manyGoodAnswer = 0;
         manyTestWords = 0;
         cursor.close();
-        vocabularyDatabase.close();
+        dbInstance.close();
     }
 
     @Override
@@ -220,7 +215,7 @@ public class VocabularyTest extends FragmentActivity {
         manyGoodAnswer = 0;
         manyTestWords = 0;
         cursor.close();
-        vocabularyDatabase.close();
+        dbInstance.close();
     }
 
     public static int getIconResultNumber(double testResult){

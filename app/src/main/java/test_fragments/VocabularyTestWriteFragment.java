@@ -19,8 +19,8 @@ import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
+import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.VocabularyTest;
 
@@ -32,11 +32,10 @@ import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
 public class VocabularyTestWriteFragment extends BaseTestFragments {
 
-    private VocabularyTest vocabularyTest;
     private Cursor cursor;
     private TextView wordtoGuess;
     private EditText userWordET;
-    private VocabularyDatabase vocabularyDatabase;
+    private VocabularyDatabase dbInstance;
     private int numberOfWord, amountOfWords;
     private String correctAnswer;
 
@@ -58,9 +57,9 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     }
 
     private void declarationVariables(View view){
-        vocabularyTest = new VocabularyTest();
-        vocabularyDatabase = vocabularyTest.getVocabularyDatabase(getActivity().getApplicationContext());
-        cursor = vocabularyTest.getCursor(vocabularyDatabase);
+        VocabularyTest vocabularyTest = new VocabularyTest();
+        dbInstance = VocabularyDatabase.getInstance(getActivity().getApplicationContext());
+        cursor = vocabularyTest.getCursor(dbInstance);
         wordtoGuess = (TextView) view.findViewById(R.id.test_write_word);
         userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
         numberOfWord = randomNumberOfWords[manyTestWords];
@@ -79,7 +78,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     private void setToolbar(){
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
+        toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
         toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + amountOfWords);
     }
 
@@ -91,17 +90,17 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     private void addWord(){
         cursor.moveToPosition(numberOfWord);
         if (inEnglish[manyTestWords]) {
-            wordtoGuess.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+            wordtoGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
-            wordtoGuess.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+            wordtoGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         }
     }
 
     private void configureEditText(){
         if (inEnglish[manyTestWords]) {
-            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(DatabaseColumnNames.enwordColumn).length())});
+            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn).length())});
         } else {
-            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(DatabaseColumnNames.plwordColumn).length())});
+            userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn).length())});
         }
         userWordET.setText("");
     }
@@ -117,9 +116,9 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
                 final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 String userRealAnswer = userWordET.getText().toString();
                 if (inEnglish[manyTestWords]) {
-                    correctAnswer = cursor.getString(DatabaseColumnNames.enwordColumn);
+                    correctAnswer = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
                 } else {
-                    correctAnswer = cursor.getString(DatabaseColumnNames.plwordColumn);
+                    correctAnswer = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
                 }
                 if (userRealAnswer.equalsIgnoreCase("")){
                     Toast.makeText(getActivity().getApplicationContext(), "Pole odpowiedzi jest puste", Toast.LENGTH_SHORT).show();
@@ -170,9 +169,9 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
                 userWordET.setEnabled(false);
                 userWordET.startAnimation(animationFadeOut);
                 if (inEnglish[manyTestWords]) {
-                    userWordET.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+                    userWordET.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
                 } else {
-                    userWordET.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+                    userWordET.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
                 }
                 userWordET.startAnimation(animationFadeIn);
                 userWordET.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -197,6 +196,6 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     public void onDestroy() {                                                                                   //close cursor and database
         super.onDestroy();
         cursor.close();
-        vocabularyDatabase.close();
+        dbInstance.close();
     }
 }

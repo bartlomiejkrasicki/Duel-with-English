@@ -25,7 +25,7 @@ import vocabulary_test.VocabularyTest;
 public class LessonsVocabularyList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private VocabularyDatabase vocabularyDatabase;
+    private VocabularyDatabase dbInstance;
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private LessonsVocabularyListAdapter adapterVocabulary;
@@ -53,14 +53,14 @@ public class LessonsVocabularyList extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        categoryListAdapter.setCursorCategory(vocabularyDatabase.showAllOfCategory(adapterVocabulary.getLevelLanguage()));
+        categoryListAdapter.setCursorCategory(dbInstance.showAllOfCategory(adapterVocabulary.getLevelLanguage()));
         categoryListAdapter.notifyDataSetChanged();
         super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        vocabularyDatabase.close();
+        dbInstance.close();
         super.onDestroy();
     }
 
@@ -86,8 +86,8 @@ public class LessonsVocabularyList extends AppCompatActivity
 
     private void setCategoryList(){                                                                 // set category list in nav drawer
         ListView categoryList = (ListView) findViewById(R.id.categoryListLessonDrawer);
-        vocabularyDatabase = new VocabularyDatabase(getApplicationContext());
-        categoryListAdapter.setCursorCategory(vocabularyDatabase.showAllOfCategory(adapterVocabulary.getLevelLanguage()));
+        dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
+        categoryListAdapter.setCursorCategory(dbInstance.showAllOfCategory(adapterVocabulary.getLevelLanguage()));
         categoryList.setAdapter(categoryListAdapter);
 
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -110,7 +110,7 @@ public class LessonsVocabularyList extends AppCompatActivity
 
     private void setVocabularyList(){                                                               //set list of words lesson --> adapter to listview
         ListView vocabularyList = (ListView) findViewById(R.id.vocabularyListView);
-        adapterVocabulary.setCursor(vocabularyDatabase.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
+        adapterVocabulary.setCursor(dbInstance.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
         vocabularyList.setAdapter(adapterVocabulary);
     }
 
@@ -139,7 +139,7 @@ public class LessonsVocabularyList extends AppCompatActivity
             } else {
                 adapterVocabulary.setStarVisible(true);
             }
-            adapterVocabulary.setCursor(vocabularyDatabase.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
+            adapterVocabulary.setCursor(dbInstance.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
             adapterVocabulary.notifyDataSetChanged();
         } else if (id == R.id.goToFavouriteFromMenu) {
             Intent intent = new Intent(this, FavouriteList.class);
@@ -151,7 +151,7 @@ public class LessonsVocabularyList extends AppCompatActivity
             } else {
                 adapterVocabulary.setAlphabeticalSort(true);
             }
-            adapterVocabulary.setCursor(vocabularyDatabase.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
+            adapterVocabulary.setCursor(dbInstance.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
             adapterVocabulary.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
@@ -160,7 +160,6 @@ public class LessonsVocabularyList extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

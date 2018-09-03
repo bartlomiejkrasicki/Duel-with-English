@@ -2,7 +2,7 @@ package database_vocabulary;
 
 import android.provider.BaseColumns;
 
-public interface DatabaseColumnNames extends BaseColumns {
+public interface VocabularyDatabaseColumnNames extends BaseColumns {
 
     String DATABASE_NAME = "vocabularydb.db";
     String COLUMN_NAME_ID = "id";

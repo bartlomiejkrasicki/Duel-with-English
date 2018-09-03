@@ -22,8 +22,8 @@ import com.wefika.flowlayout.FlowLayout;
 
 import java.util.Random;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
+import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.VocabularyTest;
 
@@ -34,13 +34,12 @@ import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
 public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
 
-    private VocabularyTest vocabularyTest;
     private Cursor cursor;
     private EditText[] answerET;
     private Button[] buttonsLetters;
     private String answerWord;
     private int randomTable[], numberOfWord, amountOfWords;
-    private VocabularyDatabase vocabularyDatabase;
+    private VocabularyDatabase dbInstance;
     private Button checkButton;
 
     public VocabularyTestJigsawWordFragment() {
@@ -62,9 +61,9 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
 
     private void declarationVariables(View view){                          //declaration layout elements and variables
         numberOfWord = randomNumberOfWords[manyTestWords];
-        vocabularyTest = new VocabularyTest();
-        vocabularyDatabase = new VocabularyDatabase(getContext());
-        cursor = vocabularyTest.getCursor(vocabularyDatabase);
+        VocabularyTest vocabularyTest = new VocabularyTest();
+        dbInstance = VocabularyDatabase.getInstance(getContext());
+        cursor = vocabularyTest.getCursor(dbInstance);
         checkButton = (Button) view.findViewById(R.id.jigsawButtonToCheck);
         TextView hintText = (TextView) view.findViewById(R.id.test_jigsaw_hint);
         if (inEnglish[manyTestWords]) {
@@ -77,7 +76,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     private void setToolbar(){
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
+        toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
         toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + amountOfWords);
     }
 
@@ -90,17 +89,17 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
         TextView testWord = (TextView) view.findViewById(R.id.test_jigsaw_word);
         cursor.moveToPosition(numberOfWord);
         if (inEnglish[manyTestWords]) {
-            testWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+            testWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         } else {
-            testWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+            testWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         }
     }
 
     private void configureAnswer(View view){                    //configure EditText table (word to write)
         if (inEnglish[manyTestWords]) {
-            answerWord = cursor.getString(DatabaseColumnNames.plwordColumn);
+            answerWord = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
         } else {
-            answerWord = cursor.getString(DatabaseColumnNames.enwordColumn);
+            answerWord = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
         }
         shuffleTable();
         addEditTexts(view, answerWord);
@@ -341,6 +340,6 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     public void onDestroy() {
         super.onDestroy();
         cursor.close();
-        vocabularyDatabase.close();
+        dbInstance.close();
     }
 }

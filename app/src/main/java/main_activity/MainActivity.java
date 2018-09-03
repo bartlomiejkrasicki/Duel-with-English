@@ -53,22 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("Czy na pewno chcesz zamknąć aplikację?");
-        alertDialogBuilder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        alertDialogBuilder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        exitApp();
     }
 
     private void configurationToolbar(){
@@ -96,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void exitButtonOnClick(View view) {
+        exitApp();
+    }
+
     private void firstLaunch() {
         sharedPreferences = getSharedPreferences("pl.flanelowapopijava.duel_with_english", Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean("firstLaunch", true)){
@@ -111,8 +100,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configureDatabase(){
-        VocabularyDatabase vocabularyDatabase = new VocabularyDatabase(getApplicationContext());
-        vocabularyDatabase.allCategoryFromVocabulary();
-        vocabularyDatabase.close();
+        VocabularyDatabase dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
+        dbInstance.allCategoryFromVocabulary();
+        dbInstance.close();
+    }
+
+    private void exitApp(){
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Czy na pewno chcesz zamknąć aplikację?");
+        alertDialogBuilder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        alertDialogBuilder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

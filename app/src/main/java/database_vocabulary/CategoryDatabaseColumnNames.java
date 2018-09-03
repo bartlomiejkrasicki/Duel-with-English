@@ -1,6 +1,6 @@
 package database_vocabulary;
 
-public interface CategoryDatabaseColumnNames extends DatabaseColumnNames {
+public interface CategoryDatabaseColumnNames extends VocabularyDatabaseColumnNames {
 
     String CAT_COLUMN_NAME_LANGUAGELVL = "languageLvl";
     String CAT_COLUMN_NAME_CATEGORY = "category";

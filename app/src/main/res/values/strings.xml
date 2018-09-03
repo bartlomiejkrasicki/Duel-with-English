@@ -15,7 +15,7 @@
     <string name="title_activity_author_info">Informacje o autorze</string>
 
     <!--VocabularyTestPreference-->
-    <string name="start_test_button">Uruchom test</string>
+    <string name="start_test_button">Rozpocznij test</string>
     <string name="customize_vocabulary_test">Personalizacja testu</string>
 
     <!--Vocabulary test fragments-->

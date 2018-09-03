@@ -9,8 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
+import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 
 
@@ -19,7 +19,7 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
     private boolean isStarVisible = false;
     private Context context;
     private Cursor cursor;
-    private VocabularyDatabase vocabularyDatabase;
+    private VocabularyDatabase dbInstance;
     private ImageButton favouriteIcon;
     private TextView polishWord;
     private TextView englishWord;
@@ -70,10 +70,6 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
         isAlphabeticalSort = alphabeticalSort;
     }
 
-    public VocabularyDatabase getVocabularyDatabase() {
-        return vocabularyDatabase;
-    }
-
     @Override
     public int getCount() {
         return cursor.getCount();
@@ -99,9 +95,9 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
         declarationVariables(view);
 
         if(cursor.moveToPosition(i)) {                                                  //add values to listView
-            polishWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
-            englishWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
-            int addFavOrNot = cursor.getInt(DatabaseColumnNames.isfavouriteColumn);
+            polishWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
+            englishWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
+            int addFavOrNot = cursor.getInt(VocabularyDatabaseColumnNames.isfavouriteColumn);
             if (addFavOrNot == 1) {
                 favouriteIcon.setImageResource(R.drawable.ic_favouriteiconon);
             } else
@@ -121,7 +117,7 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
         favouriteIcon = (ImageButton) view.findViewById(R.id.favourite_star_lv);
         polishWord = (TextView) view.findViewById(R.id.plWord);
         englishWord = (TextView) view.findViewById(R.id.engWord);
-        vocabularyDatabase = new VocabularyDatabase(context);
+        dbInstance = VocabularyDatabase.getInstance(context);
     }
 
     private void favouriteStarOnClick(final int i){
@@ -129,16 +125,16 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 cursor.moveToPosition(i);
-                String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
-                if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 0) {
-                    vocabularyDatabase.updateValuesInDatabase(index, 1);
+                String index = String.valueOf(cursor.getInt(VocabularyDatabaseColumnNames.idColumn));
+                if(cursor.getInt(VocabularyDatabaseColumnNames.isfavouriteColumn) == 0) {
+                    dbInstance.updateValuesInDatabase(index, 1);
                     favouriteIcon.setImageResource(R.drawable.ic_favouriteiconon);
                 }
-                else if(cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 1){
-                    vocabularyDatabase.updateValuesInDatabase(index, 0);
+                else if(cursor.getInt(VocabularyDatabaseColumnNames.isfavouriteColumn) == 1){
+                    dbInstance.updateValuesInDatabase(index, 0);
                     favouriteIcon.setImageResource(R.drawable.ic_favouriteiconoff);
                 }
-                setCursor(vocabularyDatabase.showVocabularyForLessons(getLevelLanguage(), getCategoryName(), isAlphabeticalSort()));
+                setCursor(dbInstance.showVocabularyForLessons(getLevelLanguage(), getCategoryName(), isAlphabeticalSort()));
                 notifyDataSetChanged();
             }
         });

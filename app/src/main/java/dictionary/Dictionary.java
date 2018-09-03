@@ -21,15 +21,15 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
+import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 
 public class Dictionary extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     public final static String PLTOENTRANSLATESP = "pltoentranslate";
-    private VocabularyDatabase vocabularyDatabase;
+    private VocabularyDatabase dbInstance;
     private SearchHistAdapter searchHistAdapter;
     private Cursor cursor;
     private int currentDbID = 0;
@@ -48,8 +48,8 @@ public class Dictionary extends AppCompatActivity {
 
     private void declareVariables() {
         wordCardView = (CardView) findViewById(R.id.translateCardView);
-        vocabularyDatabase = new VocabularyDatabase(getApplicationContext());
-        searchHistAdapter = new SearchHistAdapter(vocabularyDatabase.getAllValues(), getApplicationContext());
+        dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
+        searchHistAdapter = new SearchHistAdapter(dbInstance.getAllValues(), getApplicationContext());
         searchListView = (ListView) findViewById(R.id.searchHintList);
         searchListView.setAdapter(searchHistAdapter);
     }
@@ -101,7 +101,7 @@ public class Dictionary extends AppCompatActivity {
                     s = s.substring(0, s.length()-1);
                     searchView.setQuery(s.toLowerCase(),false);
                 } else {
-                    searchHistAdapter.setCursor(vocabularyDatabase.getValuesToSearch(sharedPreferences.getBoolean(PLTOENTRANSLATESP, true), s));
+                    searchHistAdapter.setCursor(dbInstance.getValuesToSearch(sharedPreferences.getBoolean(PLTOENTRANSLATESP, true), s));
                     searchHistAdapter.notifyDataSetChanged();
                 }
                 return true;
@@ -157,23 +157,22 @@ public class Dictionary extends AppCompatActivity {
     }
 
     private void fillCardViewData(int position) {
-        VocabularyDatabase vocabularyDatabase = new VocabularyDatabase(getApplicationContext());
         int id = searchHistAdapter.getDBItemId(position);
         currentDbID = id;
-        cursor = vocabularyDatabase.getRowFromId(id);
+        cursor = dbInstance.getRowFromId(id);
         cursor.moveToFirst();
         boolean isPlToEn = sharedPreferences.getBoolean(PLTOENTRANSLATESP, true);
         TextView mainSearchWord = (TextView) findViewById(R.id.searchCardViewMainWord);
         TextView secondarySearchWord = (TextView) findViewById(R.id.searchCardViewSecondaryWord);
         if (isPlToEn){
-            mainSearchWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
-            secondarySearchWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+            mainSearchWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
+            secondarySearchWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
-            mainSearchWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
-            secondarySearchWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+            mainSearchWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
+            secondarySearchWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         }
         ImageView searchWordFavouriteStar = (ImageView) findViewById(R.id.searchCardViewFavouriteStar);
-        if (cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 1) {
+        if (cursor.getInt(VocabularyDatabaseColumnNames.isfavouriteColumn) == 1) {
             searchWordFavouriteStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_favouriteiconon));
         } else {
             searchWordFavouriteStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_favouriteiconoff));
@@ -192,14 +191,14 @@ public class Dictionary extends AppCompatActivity {
     }
 
     public void favouriteStarOnClick(View view) {
-        String index = String.valueOf(cursor.getInt(DatabaseColumnNames.idColumn));
+        String index = String.valueOf(cursor.getInt(VocabularyDatabaseColumnNames.idColumn));
         ImageView searchWordFavouriteStar = (ImageView) findViewById(R.id.searchCardViewFavouriteStar);
-        if (cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 0) {
-            vocabularyDatabase.updateValuesInDatabase(index, 1);
+        if (cursor.getInt(VocabularyDatabaseColumnNames.isfavouriteColumn) == 0) {
+            dbInstance.updateValuesInDatabase(index, 1);
             searchWordFavouriteStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_favouriteiconon));
             Toast.makeText(getApplicationContext(), "Słowo zostało dodane do listy ulubionych", Toast.LENGTH_SHORT).show();
-        } else if (cursor.getInt(DatabaseColumnNames.isfavouriteColumn) == 1) {
-            vocabularyDatabase.updateValuesInDatabase(index, 0);
+        } else if (cursor.getInt(VocabularyDatabaseColumnNames.isfavouriteColumn) == 1) {
+            dbInstance.updateValuesInDatabase(index, 0);
             searchWordFavouriteStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_favouriteiconoff));
             Toast.makeText(getApplicationContext(), "Słowo zostało usunięte z listy ulubionych", Toast.LENGTH_SHORT).show();
         }
@@ -207,7 +206,7 @@ public class Dictionary extends AppCompatActivity {
     }
 
     private void refreshCursor() {
-        cursor = vocabularyDatabase.getRowFromId(currentDbID);
+        cursor = dbInstance.getRowFromId(currentDbID);
         cursor.moveToFirst();
     }
 

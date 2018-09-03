@@ -19,10 +19,9 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 import java.util.Random;
 
-import database_vocabulary.DatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
+import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
-import vocabulary_test.VocabularyTest;
 
 import static vocabulary_test.VocabularyTest.inEnglish;
 import static vocabulary_test.VocabularyTest.lvlOfLanguage;
@@ -34,9 +33,8 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
 
     private String answerText, categoryName;
     private Button[] guessButtons;
-    private VocabularyTest vocabularyTest;
     private Cursor cursor;
-    private VocabularyDatabase vocabularyDatabase;
+    private VocabularyDatabase dbInstance;
     private int goodAnswer, numberOfWord, amountOfButtons, amountOfWords;
 
     public VocabularyTestChoiceFragment(){
@@ -61,14 +59,13 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
 
     private void declarationVariables(View view){                          //declaration layout elements and variables
         numberOfWord = randomNumberOfWords[manyTestWords];
-        vocabularyTest = new VocabularyTest();
-        vocabularyDatabase = new VocabularyDatabase(getActivity().getApplicationContext());
+        dbInstance = VocabularyDatabase.getInstance(getActivity().getApplicationContext());
         guessButtons = new Button[amountOfButtons];
         buttonsDeclaration(view);
         if (categoryName != null) {
-            cursor = vocabularyDatabase.getCategoryValues(categoryName, lvlOfLanguage);
+            cursor = dbInstance.getCategoryValues(categoryName, lvlOfLanguage);
         } else {
-            cursor = vocabularyDatabase.getAllValues();
+            cursor = dbInstance.getAllValues();
         }
         TextView testHint = (TextView) view.findViewById(R.id.testChoiceHint);
         if (inEnglish[manyTestWords]) {
@@ -129,7 +126,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
     private void setToolbar(){
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getString(DatabaseColumnNames.categoryColumn));
+        toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
         toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + amountOfWords);
     }
 
@@ -145,24 +142,24 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
 
         cursor.moveToPosition(numberOfWord);                                //add good answer to first button
         if (inEnglish[manyTestWords]) {
-            guessWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
-            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+            guessWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
+            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
-            guessWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
-            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+            guessWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
+            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         }
         goodAnswer = shuffleNumberButtonTable[0];
         guessButtons[shuffleNumberButtonTable[0]].setOnClickListener(this);
         if (inEnglish[manyTestWords]) {
-            answerText = cursor.getString(DatabaseColumnNames.plwordColumn);
+            answerText = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
         } else {
-            answerText = cursor.getString(DatabaseColumnNames.enwordColumn);
+            answerText = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
         }
 
-        final int idWord = cursor.getInt(DatabaseColumnNames.idColumn);                                //id of first word
+        final int idWord = cursor.getInt(VocabularyDatabaseColumnNames.idColumn);                                //id of first word
 
-        final String category = cursor.getString(DatabaseColumnNames.categoryColumn);                                    //set cursor to category
-        cursor = vocabularyDatabase.getCategoryValues(category, lvlOfLanguage);        //change cursor to category words
+        final String category = cursor.getString(VocabularyDatabaseColumnNames.categoryColumn);                                    //set cursor to category
+        cursor = dbInstance.getCategoryValues(category, lvlOfLanguage);        //change cursor to category words
 
         final int index = searchId(cursor, idWord);
         int[] tableToShuffleWord = setRandomTableNumber(cursor.getCount(), index, amountOfButtons);
@@ -172,9 +169,9 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
             do {
                 cursor.moveToPosition(tableToShuffleWord[i]);
                 if (inEnglish[manyTestWords]) {
-                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
                 } else {
-                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
                 }
             } while (false);
         }
@@ -196,7 +193,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
     public void onDestroy() {
         super.onDestroy();
         cursor.close();
-        vocabularyDatabase.close();
+        dbInstance.close();
     }
 
     @Override

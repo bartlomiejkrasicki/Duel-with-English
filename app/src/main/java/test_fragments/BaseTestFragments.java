@@ -143,8 +143,8 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
     }
 
     private void saveTestResults(){
-        VocabularyDatabase vocabularyDatabase = new VocabularyDatabase(getContext());
-        vocabularyDatabase.saveTestResult(getIconResultNumber(vocabularyTest.calculatePercentage()), VocabularyTest.lvlOfLanguage, VocabularyTest.categoryName);
+        VocabularyDatabase dbInstance = VocabularyDatabase.getInstance(getContext());
+        dbInstance.saveTestResult(getIconResultNumber(vocabularyTest.calculatePercentage()), VocabularyTest.lvlOfLanguage, VocabularyTest.categoryName);
     }
 
     private int getIconResultNumber(double testResult){

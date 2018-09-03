@@ -1,5 +1,6 @@
 package database_vocabulary;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,16 +8,26 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-import static database_vocabulary.DatabaseColumnNames.COLUMN_NAME_LANGUAGELVL;
-import static database_vocabulary.DatabaseColumnNames.DATABASE_NAME;
-import static database_vocabulary.DatabaseColumnNames.DATABASE_VERSION;
-import static database_vocabulary.DatabaseColumnNames.TABLE_NAME_CATEGORY;
-import static database_vocabulary.DatabaseColumnNames.TABLE_NAME_VOCABULARY;
+import static database_vocabulary.VocabularyDatabaseColumnNames.COLUMN_NAME_LANGUAGELVL;
+import static database_vocabulary.VocabularyDatabaseColumnNames.DATABASE_NAME;
+import static database_vocabulary.VocabularyDatabaseColumnNames.DATABASE_VERSION;
+import static database_vocabulary.VocabularyDatabaseColumnNames.TABLE_NAME_CATEGORY;
+import static database_vocabulary.VocabularyDatabaseColumnNames.TABLE_NAME_VOCABULARY;
 
 public class VocabularyDatabase extends SQLiteAssetHelper {
 
-    public VocabularyDatabase(Context context) {
+    @SuppressLint("StaticFieldLeak")
+    private static VocabularyDatabase dbInstance = null;
+
+    private VocabularyDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static VocabularyDatabase getInstance(Context context){
+        if(dbInstance == null){
+            dbInstance = new VocabularyDatabase(context);
+        }
+        return dbInstance;
     }
 
     @Override
@@ -26,7 +37,7 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
 
     public void allCategoryFromVocabulary() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT DISTINCT " + DatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + "," + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " FROM " + TABLE_NAME_VOCABULARY, null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT DISTINCT " + VocabularyDatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + "," + VocabularyDatabaseColumnNames.COLUMN_NAME_CATEGORY + " FROM " + TABLE_NAME_VOCABULARY, null);
         if(cursor != null) {
             while (cursor.moveToNext()) {
                 ContentValues values = new ContentValues();
@@ -42,23 +53,23 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
     public void updateValuesInDatabase(String id, int favouriteImageOn) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DatabaseColumnNames.COLUMN_NAME_ISFAVOURITE, favouriteImageOn);
-        sqLiteDatabase.update(DatabaseColumnNames.TABLE_NAME_VOCABULARY, values, DatabaseColumnNames.COLUMN_NAME_ID + " = ?", new String[]{id});
+        values.put(VocabularyDatabaseColumnNames.COLUMN_NAME_ISFAVOURITE, favouriteImageOn);
+        sqLiteDatabase.update(VocabularyDatabaseColumnNames.TABLE_NAME_VOCABULARY, values, VocabularyDatabaseColumnNames.COLUMN_NAME_ID + " = ?", new String[]{id});
         sqLiteDatabase.close();
     }
 
     public Cursor getRowFromId(int id) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ID + " = '" + id + "'",null);
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_ID + " = '" + id + "'",null);
     }
 
     public Cursor getFavouriteValues(String vocabularyLevel, boolean isAlphabetical) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         final int isFavouriteWord = 1;
         if (isAlphabetical){
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLevel + "' AND " + DatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = " + isFavouriteWord + " ORDER BY " + DatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLevel + "' AND " + VocabularyDatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = " + isFavouriteWord + " ORDER BY " + VocabularyDatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
         } else {
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLevel + "' AND " + DatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = " + isFavouriteWord,  null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLevel + "' AND " + VocabularyDatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = " + isFavouriteWord,  null);
         }
     }
 
@@ -85,38 +96,38 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
 
     public Cursor getCategoryValues(final String categoryName, final String lvlLanguage) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "' AND " + COLUMN_NAME_LANGUAGELVL + " = '" + lvlLanguage + "'", null);
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "' AND " + COLUMN_NAME_LANGUAGELVL + " = '" + lvlLanguage + "'", null);
     }
 
     public Cursor getValuesToSearch(final boolean plToEnTranslate, final String textQuery) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         if (plToEnTranslate){
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_PLWORD + " LIKE '" + textQuery + "%'", null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_PLWORD + " LIKE '" + textQuery + "%'", null);
         } else {
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ENGWORD + " LIKE '" + textQuery + "%'", null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_ENGWORD + " LIKE '" + textQuery + "%'", null);
         }
     }
 
     public Cursor getAllFavouriteValues(boolean isAlphabetical) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         if (isAlphabetical) {
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = 1  ORDER BY " + DatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = 1  ORDER BY " + VocabularyDatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
         } else {
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = 1",null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_ISFAVOURITE + " = 1",null);
         }
     }
 
     public Cursor showVocabularyForLessons(String vocabularyLvl, String categoryName, boolean isAlphabetical) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         if (isAlphabetical){
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLvl + "' AND " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'" + " ORDER BY " + DatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + VocabularyDatabaseColumnNames.TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLvl + "' AND " + VocabularyDatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'" + " ORDER BY " + VocabularyDatabaseColumnNames.COLUMN_NAME_ENGWORD, null);
         } else {
-            return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME_VOCABULARY + " WHERE " + DatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLvl + "' AND " + DatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'", null);
+            return sqLiteDatabase.rawQuery("SELECT * FROM " + VocabularyDatabaseColumnNames.TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLvl + "' AND " + VocabularyDatabaseColumnNames.COLUMN_NAME_CATEGORY + " = '" + categoryName + "'", null);
         }
     }
 
     public Cursor showAllOfCategory (String vocabularyLvl) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseColumnNames.TABLE_NAME_CATEGORY + " WHERE " + CategoryDatabaseColumnNames.CAT_COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLvl + "'", null);
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + VocabularyDatabaseColumnNames.TABLE_NAME_CATEGORY + " WHERE " + CategoryDatabaseColumnNames.CAT_COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLvl + "'", null);
     }
 }

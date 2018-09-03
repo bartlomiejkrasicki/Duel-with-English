@@ -16,7 +16,7 @@
         android:orientation="vertical">
 
         <Button
-
+            android:layout_margin="1dp"
             style="@style/VocabularyCategoryButton"
             android:id="@+id/button_category_A1"
             android:layout_column="0"
@@ -24,6 +24,7 @@
             android:text="@string/vocabulary_category_a1_text" />
 
         <Button
+            android:layout_margin="1dp"
             style="@style/VocabularyCategoryButton"
             android:id="@+id/button_category_A2"
             android:layout_column="1"
@@ -39,6 +40,7 @@
         android:layout_below="@id/vocabularyCategoryRow1">
 
         <Button
+            android:layout_margin="1dp"
             style="@style/VocabularyCategoryButton"
             android:id="@+id/button_category_B1"
             android:layout_weight="1"
@@ -46,6 +48,7 @@
             android:text="@string/vocabulary_category_b1_text" />
 
         <Button
+            android:layout_margin="1dp"
             style="@style/VocabularyCategoryButton"
             android:id="@+id/button_category_B2"
             android:layout_column="1"
@@ -60,6 +63,7 @@
         android:layout_below="@id/vocabularyCategoryRow2">
 
         <Button
+            android:layout_margin="1dp"
             style="@style/VocabularyCategoryButton"
             android:id="@+id/button_category_C1"
             android:layout_column="0"
@@ -67,6 +71,7 @@
             android:text="@string/vocabulary_category_c1_text" />
 
         <Button
+            android:layout_margin="1dp"
             style="@style/VocabularyCategoryButton"
             android:id="@+id/button_category_C2"
             android:layout_column="1"

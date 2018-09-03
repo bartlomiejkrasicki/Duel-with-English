@@ -178,4 +178,24 @@
             </RelativeLayout>
         </TableRow>
     </TableLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:background="@color/colorAccent"
+            android:id="@+id/exitAppButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:src="@android:drawable/ic_delete"
+            android:onClick="exitButtonOnClick"
+            android:padding="10dp"
+            android:layout_margin="1dp"/>
+
+    </RelativeLayout>
+
+
 </LinearLayout>

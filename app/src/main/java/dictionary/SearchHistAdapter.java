@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import database_vocabulary.DatabaseColumnNames;
+import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 
 public class SearchHistAdapter extends BaseAdapter {
@@ -19,7 +19,6 @@ public class SearchHistAdapter extends BaseAdapter {
     private Cursor cursor;
 
     private TextView hintCategory, hintWord;
-    private SharedPreferences sharedPreferences;
     private Boolean plToEnTranslate;
 
     SearchHistAdapter(Cursor cursor, Context context){
@@ -74,15 +73,15 @@ public class SearchHistAdapter extends BaseAdapter {
     private void declarationVaribles(View view){
         hintCategory = (TextView) view.findViewById(R.id.hintListCategory);
         hintWord = (TextView) view.findViewById(R.id.hintListWord);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         plToEnTranslate = sharedPreferences.getBoolean(Dictionary.PLTOENTRANSLATESP, true);
     }
 
     private void setHintWord() {
         if (plToEnTranslate) {
-            hintWord.setText(cursor.getString(DatabaseColumnNames.plwordColumn));
+            hintWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
-            hintWord.setText(cursor.getString(DatabaseColumnNames.enwordColumn));
+            hintWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         }
     }
 
