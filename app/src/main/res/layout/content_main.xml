@@ -192,8 +192,7 @@
             android:layout_centerInParent="true"
             android:src="@android:drawable/ic_delete"
             android:onClick="exitButtonOnClick"
-            android:padding="10dp"
-            android:layout_margin="1dp"/>
+            android:padding="10dp" />
 
     </RelativeLayout>
 

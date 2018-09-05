@@ -20,6 +20,7 @@ import database_vocabulary.CategoryDatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
 import favourite_list.FavouriteList;
 import pl.flanelowapopijava.duel_with_english.R;
+import vocabulary_test.TestDataHelper;
 import vocabulary_test.VocabularyTest;
 
 public class LessonsVocabularyList extends AppCompatActivity
@@ -165,6 +166,7 @@ public class LessonsVocabularyList extends AppCompatActivity
     }
 
     public void startTestFromLessonOnClick(View view) {
+        TestDataHelper.amountOfWords = adapterVocabulary.getCount()-2;
         Intent intent = new Intent(this, VocabularyTest.class);
         intent.putExtra("wordsAmount", adapterVocabulary.getCount()-2);
         intent.putExtra("lvlOfLanguage", adapterVocabulary.getLevelLanguage());

@@ -7,11 +7,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import database_vocabulary.VocabularyDatabase;
@@ -22,46 +26,56 @@ import test_fragments.VocabularyTestWriteFragment;
 
 public class VocabularyTest extends FragmentActivity {
 
-    public static int manyGoodAnswer = 0, manyTestWords = 0, randomNumberOfWords[];
-    public static boolean inEnglish[], isTestFromLesson;
     private Cursor cursor;
     private VocabularyDatabase dbInstance;
-    public static int amountOfWords, amountOfButtons;
-    public static String lvlOfLanguage = "", categoryName = "";
     private RoundCornerProgressBar testProgressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary_test);
+
         setDataFromIntent();
         declarationVariables();
         showFirstFragment();
     }
 
     private void setDataFromIntent(){
-        amountOfWords = getIntent().getIntExtra("wordsAmount", 5);
-        amountOfButtons = getIntent().getIntExtra("amountOfButtons", 6);
-        lvlOfLanguage = getIntent().getStringExtra("lvlOfLanguage");
-        categoryName = getIntent().getStringExtra("testCategory");
-        isTestFromLesson = getIntent().getBooleanExtra("isTestFromLesson", false);
+        TestDataHelper.amountOfWords = getIntent().getIntExtra("wordsAmount", 5);
+        TestDataHelper.amountOfButtons = getIntent().getIntExtra("amountOfButtons", 6);
+        TestDataHelper.lvlOfLanguage = getIntent().getStringExtra("lvlOfLanguage");
     }
 
     private void declarationVariables() {
-        dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
-        if (categoryName != null) {                                             // do przerobienia
-            cursor = dbInstance.getCategoryValues(categoryName, lvlOfLanguage);
+        TestDataHelper.isTestFromLesson = getIntent().getBooleanExtra("isTestFromLesson", false);
+        if (TestDataHelper.isTestFromLesson){
+            dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
+
+            if (TestDataHelper.categoryName.equals("")) {                                             // do przerobienia
+                cursor = dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
+            } else {
+                cursor = dbInstance.getAllValues();
+            }
+
+            if (TestDataHelper.amountOfButtons != 0) {
+                TestDataHelper.amountOfWords = getAmountOfWords(cursor.getCount());
+            }
+
+            if (cursor.getCount() < TestDataHelper.amountOfButtons){
+                TestDataHelper.amountOfButtons = cursor.getCount() - cursor.getCount()%2;
+            }
         } else {
-            cursor = dbInstance.getAllValues();
+            setDataFromIntent();
+
         }
-        if (cursor.getCount() < amountOfWords){
-            amountOfWords = cursor.getCount();
-        }
-        if (cursor.getCount() < amountOfButtons){
-            amountOfButtons = cursor.getCount() - cursor.getCount()%2;
-        }
-        randomNumberOfWords = new int[amountOfWords];
-        randomNumberOfWords = randomWordWithoutReply(randomNumberOfWords);
+        Log.d("words", TestDataHelper.amountOfWords + "");
+        Log.d("buttons", TestDataHelper.amountOfButtons + "");
+        Log.d("lvl", TestDataHelper.lvlOfLanguage + "");
+        Log.d("category", TestDataHelper.categoryName+ "");
+        TestDataHelper.manyTestWords = TestDataHelper.amountOfWords;
+        TestDataHelper.randomNumberOfWords = new int[TestDataHelper.amountOfWords];
+        TestDataHelper.randomNumberOfWords = randomWordWithoutReply(TestDataHelper.randomNumberOfWords);
         setIsEnglishTable();
         setToolbar();
         setProgressBar();
@@ -71,11 +85,11 @@ public class VocabularyTest extends FragmentActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
         Bundle bundle = new Bundle();
-        bundle.putInt("wordsAmount", amountOfWords);
-        bundle.putInt("amountOfButtons", amountOfButtons);
-        bundle.putString("lvlOfLanguage" , lvlOfLanguage);
-        if (categoryName != null) {
-            bundle.putString("testCategory", categoryName);
+        bundle.putInt("wordsAmount", TestDataHelper.amountOfWords);
+        bundle.putInt("amountOfButtons", TestDataHelper.amountOfButtons);
+        bundle.putString("lvlOfLanguage" , TestDataHelper.lvlOfLanguage);
+        if (TestDataHelper.categoryName != null) {
+            bundle.putString("testCategory", TestDataHelper.categoryName);
         }
         switch (randomNumber(3)){
             case 0:{
@@ -118,15 +132,13 @@ public class VocabularyTest extends FragmentActivity {
     }
 
     private void setIsEnglishTable(){
-        inEnglish = new boolean[amountOfWords];
-        for (int i = 0; i < inEnglish.length; i++){
-            inEnglish[i] = randomBoolean();
+        TestDataHelper.inEnglish = new boolean[TestDataHelper.amountOfWords];
+        for (int i = 0; i < TestDataHelper.inEnglish.length; i++){
+            TestDataHelper.inEnglish[i] = randomBoolean();
         }
     }
 
-    public double calculatePercentage(){
-        return Math.round((VocabularyTest.manyGoodAnswer * 100)/VocabularyTest.amountOfWords);
-    }
+
 
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.testVocabularyToolbar);
@@ -140,13 +152,13 @@ public class VocabularyTest extends FragmentActivity {
 
     private void setProgressBar(){
         testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
-        testProgressBar.setMax(amountOfWords);
+        testProgressBar.setMax(TestDataHelper.amountOfWords);
         testProgressBar.setProgress(0);
     }
 
     public Cursor getCursor(VocabularyDatabase vocabularyDatabase) {
-        if (categoryName != null) {
-            return vocabularyDatabase.getCategoryValues(categoryName, lvlOfLanguage);
+        if (TestDataHelper.categoryName != null) {
+            return vocabularyDatabase.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
         }
         else {
             return vocabularyDatabase.getAllValues();
@@ -174,36 +186,68 @@ public class VocabularyTest extends FragmentActivity {
     }
 
     private int [] randomWordWithoutReply(int [] randomWordsWithoutReply){                //words to create test
-        Random random = new Random();
-        boolean numberIsOther;
-        for(int i = 0; i < randomWordsWithoutReply.length; i++){
-            if(i==0){
-                randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
-            }
-            else {
-                do {
-                    numberIsOther = true;
-                    randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
-                    for(int j = 0; j < i; j++){
-                        if(randomWordsWithoutReply[j]==randomWordsWithoutReply[i]){
-                            numberIsOther = true;
-                            break;
-                        } else {
-                           numberIsOther = false;
-                        }
-                    }
-                } while (numberIsOther);
-            }
+
+        Integer[] numberTable = new Integer[TestDataHelper.amountOfWords];
+
+        for (int i = 0; i< TestDataHelper.amountOfWords; i++){
+            numberTable[i] = i;
         }
+
+        List<Integer> numberList = Arrays.asList(numberTable);
+        
+        Collections.shuffle(numberList);
+
+        Log.d("dupa", "" + numberList.get(1));
+
+        for (Integer i : numberList) {
+            Log.d("int", "" + i.toString());
+        }
+
+//        Random random = new Random();
+//        boolean numberIsOther;
+//        for(int i = 0; i < randomWordsWithoutReply.length; i++){
+//            if(i==0){
+//                randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
+//            }
+//            else {
+//                do {
+//                    numberIsOther = true;
+//                    randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
+//                    for(int j = 0; j < i; j++){
+//                        if(randomWordsWithoutReply[j]==randomWordsWithoutReply[i]){
+//                            numberIsOther = true;
+//                            break;
+//                        } else {
+//                           numberIsOther = false;
+//                        }
+//                    }
+//                } while (numberIsOther);
+//            }
+//        }
     cursor.close();
     return randomWordsWithoutReply;
+    }
+
+    private int getAmountOfWords(int itemsCount){
+        if (itemsCount <= 5){
+            return itemsCount;
+        }
+        else if (itemsCount <= 10 && itemsCount > 5){
+            return 5;
+        }
+        else if (itemsCount > 10 && itemsCount <=20){
+            return 10;
+        }
+        else {
+            return 15;
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        manyGoodAnswer = 0;
-        manyTestWords = 0;
+        TestDataHelper.manyGoodAnswer = 0;
+        TestDataHelper.manyTestWords = 0;
         cursor.close();
         dbInstance.close();
     }
@@ -212,21 +256,9 @@ public class VocabularyTest extends FragmentActivity {
     public void recreate() {
         super.recreate();
         testProgressBar.setProgress(0);
-        manyGoodAnswer = 0;
-        manyTestWords = 0;
+        TestDataHelper.manyGoodAnswer = 0;
+        TestDataHelper.manyTestWords = 0;
         cursor.close();
         dbInstance.close();
-    }
-
-    public static int getIconResultNumber(double testResult){
-        if (testResult >= 65 && testResult < 75 ){
-            return 1;
-        } else if (testResult >= 75 && testResult < 90){
-            return 2;
-        } else if (testResult >= 90){
-            return 3;
-        } else {
-            return 0;
-        }
     }
 }
