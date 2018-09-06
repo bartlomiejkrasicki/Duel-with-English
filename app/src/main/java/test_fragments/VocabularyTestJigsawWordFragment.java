@@ -25,12 +25,8 @@ import java.util.Random;
 import database_vocabulary.VocabularyDatabase;
 import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
+import vocabulary_test.TestDataHelper;
 import vocabulary_test.VocabularyTest;
-
-import static vocabulary_test.VocabularyTest.inEnglish;
-import static vocabulary_test.VocabularyTest.manyGoodAnswer;
-import static vocabulary_test.VocabularyTest.manyTestWords;
-import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
 public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
 
@@ -60,13 +56,13 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     }
 
     private void declarationVariables(View view){                          //declaration layout elements and variables
-        numberOfWord = randomNumberOfWords[manyTestWords];
+        numberOfWord = TestDataHelper.wordTable[TestDataHelper.manyTestWords];
         VocabularyTest vocabularyTest = new VocabularyTest();
         dbInstance = VocabularyDatabase.getInstance(getContext());
         cursor = vocabularyTest.getCursor(dbInstance);
         checkButton = (Button) view.findViewById(R.id.jigsawButtonToCheck);
         TextView hintText = (TextView) view.findViewById(R.id.test_jigsaw_hint);
-        if (inEnglish[manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
             hintText.setText(R.string.test_jigsaw_word_en_hint);
         } else {
             hintText.setText(R.string.test_jigsaw_word_pl_hint);
@@ -77,18 +73,18 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
         toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
-        toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + amountOfWords);
+        toolbar.setSubtitle("Postęp: " + (TestDataHelper.manyTestWords + 1) + "/" + amountOfWords);
     }
 
     private void setProgressBar(){
         RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-        testProgressBar.setProgress(manyTestWords);
+        testProgressBar.setProgress(TestDataHelper.manyTestWords);
     }
 
     private void addWord(View view){                            //add word in english or polish
         TextView testWord = (TextView) view.findViewById(R.id.test_jigsaw_word);
         cursor.moveToPosition(numberOfWord);
-        if (inEnglish[manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
             testWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         } else {
             testWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
@@ -96,7 +92,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     }
 
     private void configureAnswer(View view){                    //configure EditText table (word to write)
-        if (inEnglish[manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
             answerWord = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
         } else {
             answerWord = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
@@ -259,7 +255,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     private void goodAnswer(final View view){
         disableButtons();
         disableEditText();
-        manyGoodAnswer++;
+        TestDataHelper.manyGoodAnswer++;
         Animation animationCorrect = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
         view.setBackgroundResource(R.drawable.good_answer_change_color);
 

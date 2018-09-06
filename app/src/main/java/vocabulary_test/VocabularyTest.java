@@ -13,9 +13,6 @@ import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 import database_vocabulary.VocabularyDatabase;
@@ -75,7 +72,7 @@ public class VocabularyTest extends FragmentActivity {
         Log.d("category", TestDataHelper.categoryName+ "");
         TestDataHelper.manyTestWords = TestDataHelper.amountOfWords;
         TestDataHelper.randomNumberOfWords = new int[TestDataHelper.amountOfWords];
-        TestDataHelper.randomNumberOfWords = randomWordWithoutReply(TestDataHelper.randomNumberOfWords);
+        TestDataHelper.wordTable = TestDataHelper.prepareWordRandomTable();
         setIsEnglishTable();
         setToolbar();
         setProgressBar();
@@ -185,48 +182,7 @@ public class VocabularyTest extends FragmentActivity {
         alertDialog.show();
     }
 
-    private int [] randomWordWithoutReply(int [] randomWordsWithoutReply){                //words to create test
 
-        Integer[] numberTable = new Integer[TestDataHelper.amountOfWords];
-
-        for (int i = 0; i< TestDataHelper.amountOfWords; i++){
-            numberTable[i] = i;
-        }
-
-        List<Integer> numberList = Arrays.asList(numberTable);
-        
-        Collections.shuffle(numberList);
-
-        Log.d("dupa", "" + numberList.get(1));
-
-        for (Integer i : numberList) {
-            Log.d("int", "" + i.toString());
-        }
-
-//        Random random = new Random();
-//        boolean numberIsOther;
-//        for(int i = 0; i < randomWordsWithoutReply.length; i++){
-//            if(i==0){
-//                randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
-//            }
-//            else {
-//                do {
-//                    numberIsOther = true;
-//                    randomWordsWithoutReply[i] = random.nextInt(cursor.getCount());
-//                    for(int j = 0; j < i; j++){
-//                        if(randomWordsWithoutReply[j]==randomWordsWithoutReply[i]){
-//                            numberIsOther = true;
-//                            break;
-//                        } else {
-//                           numberIsOther = false;
-//                        }
-//                    }
-//                } while (numberIsOther);
-//            }
-//        }
-    cursor.close();
-    return randomWordsWithoutReply;
-    }
 
     private int getAmountOfWords(int itemsCount){
         if (itemsCount <= 5){
