@@ -13,20 +13,19 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
+import vocabulary_test.TestDataHelper;
 import vocabulary_test.VocabularyTest;
 
 public class BaseTestFragments extends android.support.v4.app.Fragment{
 
-    private VocabularyTest vocabularyTest = new VocabularyTest();
-
     protected void replaceFragment(FragmentTransaction fragmentTransaction){                 //show next fragment after answer
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
         Bundle bundle = new Bundle();
-        bundle.putInt("wordsAmount", VocabularyTest.amountOfWords);
-        bundle.putInt("amountOfButtons", VocabularyTest.amountOfButtons);
-        bundle.putString("lvlOfLanguage" , VocabularyTest.lvlOfLanguage);
-        if (VocabularyTest.categoryName != null) {
-            bundle.putString("testCategory", VocabularyTest.categoryName);
+        bundle.putInt("wordsAmount", TestDataHelper.amountOfWords);
+        bundle.putInt("amountOfButtons", TestDataHelper.amountOfButtons);
+        bundle.putString("lvlOfLanguage" , TestDataHelper.lvlOfLanguage);
+        if (TestDataHelper.categoryName != null) {
+            bundle.putString("testCategory", TestDataHelper.categoryName);
         }
         switch (VocabularyTest.randomNumber(3)){
             case 0:{
@@ -54,8 +53,8 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
     }
 
     protected void loadNextWord(FragmentTransaction fragmentTransaction){
-        VocabularyTest.manyTestWords++;
-        if(VocabularyTest.manyTestWords == VocabularyTest.amountOfWords){
+        TestDataHelper.manyTestWords++;
+        if(TestDataHelper.manyTestWords == TestDataHelper.amountOfWords){
             endTestAlertDialog();
         } else {
             replaceFragment(fragmentTransaction);
@@ -64,19 +63,19 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
 
     private void endTestAlertDialog(){
         final RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-        if (VocabularyTest.isTestFromLesson){
+        if (TestDataHelper.isTestFromLesson){
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             final View view = getActivity().getLayoutInflater().inflate(R.layout.test_from_lesson_custom_dialog, null);
             setTestResultIcon(view);
             TextView testResultPercent = (TextView) view.findViewById(R.id.testResultPercentDialog);
-            testResultPercent.setText(String.format("%s %%", vocabularyTest.calculatePercentage()));
+            testResultPercent.setText(String.format("%s %%", TestDataHelper.calculatePercentage()));
             builder.setView(view);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     saveResultsTest();
-                    VocabularyTest.manyGoodAnswer = 0;
-                    VocabularyTest.manyTestWords = 0;
+                    TestDataHelper.manyGoodAnswer = 0;
+                    TestDataHelper.manyTestWords = 0;
                     getActivity().finish();
                 }
             });
@@ -85,25 +84,25 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
                 public void onClick(DialogInterface dialogInterface, int i) {
                     testProgressBar.setProgress(0);
                     saveAndReplayTest();
-                    VocabularyTest.manyGoodAnswer = 0;
-                    VocabularyTest.manyTestWords = 0;
+                    TestDataHelper.manyGoodAnswer = 0;
+                    TestDataHelper.manyTestWords = 0;
                     getActivity().recreate();
                 }
             });
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } else {
-            testProgressBar.setProgress(VocabularyTest.manyTestWords);
+            testProgressBar.setProgress(TestDataHelper.manyTestWords);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
             alertDialogBuilder.setTitle("Test został zakończony");
-            alertDialogBuilder.setMessage("Odpowiedziałeś poprawnie na " + VocabularyTest.manyGoodAnswer + " z " + VocabularyTest.amountOfWords + " pytań, co stanowi " + vocabularyTest.calculatePercentage() + "% wszystkich odpowiedzi.");
+            alertDialogBuilder.setMessage("Odpowiedziałeś poprawnie na " + TestDataHelper.manyGoodAnswer + " z " + TestDataHelper.amountOfWords + " pytań, co stanowi " + TestDataHelper.calculatePercentage() + "% wszystkich odpowiedzi.");
             alertDialogBuilder.setCancelable(false);
             alertDialogBuilder.setPositiveButton("Jeszcze raz", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     testProgressBar.setProgress(0);
-                    VocabularyTest.manyGoodAnswer = 0;
-                    VocabularyTest.manyTestWords = 0;
+                    TestDataHelper.manyGoodAnswer = 0;
+                    TestDataHelper.manyTestWords = 0;
                     getActivity().recreate();
                 }
             });
@@ -119,7 +118,7 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
     }
 
     private void setTestResultIcon(View view) {
-        int progressPercent = (int) vocabularyTest.calculatePercentage();
+        int progressPercent = (int) TestDataHelper.calculatePercentage();
         ImageView endTestIcon = (ImageView) view.findViewById(R.id.endTestIcon);
         if (progressPercent >= 65 && progressPercent < 75 ){
             endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_crown_bronze_icon));
@@ -144,7 +143,7 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
 
     private void saveTestResults(){
         VocabularyDatabase dbInstance = VocabularyDatabase.getInstance(getContext());
-        dbInstance.saveTestResult(getIconResultNumber(vocabularyTest.calculatePercentage()), VocabularyTest.lvlOfLanguage, VocabularyTest.categoryName);
+        dbInstance.saveTestResult(getIconResultNumber(TestDataHelper.calculatePercentage()), TestDataHelper.lvlOfLanguage, TestDataHelper.categoryName);
     }
 
     private int getIconResultNumber(double testResult){

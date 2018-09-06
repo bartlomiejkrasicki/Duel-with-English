@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -167,12 +168,14 @@ public class LessonsVocabularyList extends AppCompatActivity
 
     public void startTestFromLessonOnClick(View view) {
         TestDataHelper.amountOfWords = adapterVocabulary.getCount()-2;
+        TestDataHelper.amountOfButtons = 6;
+        TestDataHelper.lvlOfLanguage = adapterVocabulary.getLevelLanguage();
+        TestDataHelper.categoryName = adapterVocabulary.getCategoryName();
+        TestDataHelper.isTestFromLesson = true;
+
+        Log.d("dupa", "" + TestDataHelper.amountOfWords + "" + TestDataHelper.amountOfButtons + "" + TestDataHelper.lvlOfLanguage + "" + TestDataHelper.categoryName + "" + TestDataHelper.isTestFromLesson);
+
         Intent intent = new Intent(this, VocabularyTest.class);
-        intent.putExtra("wordsAmount", adapterVocabulary.getCount()-2);
-        intent.putExtra("lvlOfLanguage", adapterVocabulary.getLevelLanguage());
-        intent.putExtra("amountOfButtons", 6);
-        intent.putExtra("testCategory", adapterVocabulary.getCategoryName());
-        intent.putExtra("isTestFromLesson", true);
         startActivity(intent);
     }
 }

@@ -22,12 +22,8 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import database_vocabulary.VocabularyDatabase;
 import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
+import vocabulary_test.TestDataHelper;
 import vocabulary_test.VocabularyTest;
-
-import static vocabulary_test.VocabularyTest.inEnglish;
-import static vocabulary_test.VocabularyTest.manyGoodAnswer;
-import static vocabulary_test.VocabularyTest.manyTestWords;
-import static vocabulary_test.VocabularyTest.randomNumberOfWords;
 
 
 public class VocabularyTestWriteFragment extends BaseTestFragments {
@@ -62,13 +58,13 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
         cursor = vocabularyTest.getCursor(dbInstance);
         wordtoGuess = (TextView) view.findViewById(R.id.test_write_word);
         userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
-        numberOfWord = randomNumberOfWords[manyTestWords];
+        numberOfWord = TestDataHelper.wordTable[TestDataHelper.manyTestWords];
         declareTextHint(view);
     }
 
     private void declareTextHint(View view){
         TextView hint = (TextView) view.findViewById(R.id.test_write_hint);
-        if (inEnglish[manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
             hint.setText(R.string.test_write_pl_hint);
         } else {
             hint.setText(R.string.test_write_en_hint);
@@ -79,17 +75,17 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
         cursor.moveToPosition(numberOfWord);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
         toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
-        toolbar.setSubtitle("Postęp: " + (manyTestWords + 1) + "/" + amountOfWords);
+        toolbar.setSubtitle("Postęp: " + (TestDataHelper.manyTestWords + 1) + "/" + amountOfWords);
     }
 
     private void setProgressBar(){
         RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-        testProgressBar.setProgress(manyTestWords);
+        testProgressBar.setProgress(TestDataHelper.manyTestWords);
     }
 
     private void addWord(){
         cursor.moveToPosition(numberOfWord);
-        if (inEnglish[manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
             wordtoGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
             wordtoGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
@@ -97,7 +93,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     }
 
     private void configureEditText(){
-        if (inEnglish[manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
             userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn).length())});
         } else {
             userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn).length())});
@@ -115,7 +111,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
                 userWordET.setSelected(true);
                 final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 String userRealAnswer = userWordET.getText().toString();
-                if (inEnglish[manyTestWords]) {
+                if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
                     correctAnswer = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
                 } else {
                     correctAnswer = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
@@ -135,7 +131,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     }
 
     private void goodAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
-        manyGoodAnswer++;
+        TestDataHelper.manyGoodAnswer++;
         Animation animationCorrect = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
         animationCorrect.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -168,7 +164,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
                 Animation animationFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim_fragment_fade_in);
                 userWordET.setEnabled(false);
                 userWordET.startAnimation(animationFadeOut);
-                if (inEnglish[manyTestWords]) {
+                if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
                     userWordET.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
                 } else {
                     userWordET.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
