@@ -27,32 +27,22 @@ public class VocabularyTest extends FragmentActivity {
     private VocabularyDatabase dbInstance;
     private RoundCornerProgressBar testProgressBar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary_test);
-
-        setDataFromIntent();
         declarationVariables();
         showFirstFragment();
     }
 
-    private void setDataFromIntent(){
-        TestDataHelper.amountOfWords = getIntent().getIntExtra("wordsAmount", 5);
-        TestDataHelper.amountOfButtons = getIntent().getIntExtra("amountOfButtons", 6);
-        TestDataHelper.lvlOfLanguage = getIntent().getStringExtra("lvlOfLanguage");
-    }
-
     private void declarationVariables() {
-        TestDataHelper.isTestFromLesson = getIntent().getBooleanExtra("isTestFromLesson", false);
         if (TestDataHelper.isTestFromLesson){
             dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
 
             if (TestDataHelper.categoryName.equals("")) {                                             // do przerobienia
-                cursor = dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
-            } else {
                 cursor = dbInstance.getAllValues();
+            } else {
+                cursor = dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
             }
 
             if (TestDataHelper.amountOfButtons != 0) {
@@ -62,18 +52,15 @@ public class VocabularyTest extends FragmentActivity {
             if (cursor.getCount() < TestDataHelper.amountOfButtons){
                 TestDataHelper.amountOfButtons = cursor.getCount() - cursor.getCount()%2;
             }
-        } else {
-            setDataFromIntent();
-
         }
+        TestDataHelper.currentWordNumber = 0;
         Log.d("words", TestDataHelper.amountOfWords + "");
         Log.d("buttons", TestDataHelper.amountOfButtons + "");
         Log.d("lvl", TestDataHelper.lvlOfLanguage + "");
-        Log.d("category", TestDataHelper.categoryName+ "");
-        TestDataHelper.manyTestWords = TestDataHelper.amountOfWords;
+        Log.d("category", TestDataHelper.categoryName + "");
         TestDataHelper.randomNumberOfWords = new int[TestDataHelper.amountOfWords];
         TestDataHelper.wordTable = TestDataHelper.prepareWordRandomTable();
-        setIsEnglishTable();
+        TestDataHelper.setIsEnglishTable();
         setToolbar();
         setProgressBar();
     }
@@ -81,29 +68,19 @@ public class VocabularyTest extends FragmentActivity {
     private void showFirstFragment(){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        Bundle bundle = new Bundle();
-        bundle.putInt("wordsAmount", TestDataHelper.amountOfWords);
-        bundle.putInt("amountOfButtons", TestDataHelper.amountOfButtons);
-        bundle.putString("lvlOfLanguage" , TestDataHelper.lvlOfLanguage);
-        if (TestDataHelper.categoryName != null) {
-            bundle.putString("testCategory", TestDataHelper.categoryName);
-        }
         switch (randomNumber(3)){
             case 0:{
                 VocabularyTestChoiceFragment choiceFragment = new VocabularyTestChoiceFragment();
-                choiceFragment.setArguments(bundle);
                 fragmentTransaction.add(R.id.testFragment, choiceFragment).commit();
                 break;
             }
             case 1:{
                 VocabularyTestWriteFragment writeFragment = new VocabularyTestWriteFragment();
-                writeFragment.setArguments(bundle);
                 fragmentTransaction.add(R.id.testFragment, writeFragment).commit();
                 break;
             }
             case 2:{
                 VocabularyTestJigsawWordFragment jigsawWordFragment = new VocabularyTestJigsawWordFragment();
-                jigsawWordFragment.setArguments(bundle);
                 fragmentTransaction.add(R.id.testFragment, jigsawWordFragment).commit();
                 break;
             }
@@ -122,20 +99,6 @@ public class VocabularyTest extends FragmentActivity {
             return random.nextInt(i);
         }
     }
-
-    public static boolean randomBoolean(){
-        Random random = new Random();
-        return random.nextBoolean();
-    }
-
-    private void setIsEnglishTable(){
-        TestDataHelper.inEnglish = new boolean[TestDataHelper.amountOfWords];
-        for (int i = 0; i < TestDataHelper.inEnglish.length; i++){
-            TestDataHelper.inEnglish[i] = randomBoolean();
-        }
-    }
-
-
 
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.testVocabularyToolbar);
@@ -182,8 +145,6 @@ public class VocabularyTest extends FragmentActivity {
         alertDialog.show();
     }
 
-
-
     private int getAmountOfWords(int itemsCount){
         if (itemsCount <= 5){
             return itemsCount;
@@ -203,7 +164,7 @@ public class VocabularyTest extends FragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         TestDataHelper.manyGoodAnswer = 0;
-        TestDataHelper.manyTestWords = 0;
+        TestDataHelper.currentWordNumber = 0;
         cursor.close();
         dbInstance.close();
     }
@@ -213,7 +174,7 @@ public class VocabularyTest extends FragmentActivity {
         super.recreate();
         testProgressBar.setProgress(0);
         TestDataHelper.manyGoodAnswer = 0;
-        TestDataHelper.manyTestWords = 0;
+        TestDataHelper.currentWordNumber = 0;
         cursor.close();
         dbInstance.close();
     }

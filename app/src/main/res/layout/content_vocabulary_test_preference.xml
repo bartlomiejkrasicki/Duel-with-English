@@ -25,7 +25,6 @@
         android:layout_below="@id/preferenceTestToolbar"/>
 
     <Button
-        android:id="@+id/startTestButton"
         app:layout_widthPercent="100%"
         app:layout_heightPercent="10%"
         style="@style/Button.Custom"

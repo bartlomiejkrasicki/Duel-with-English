@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,13 +33,14 @@ public class LessonsVocabularyList extends AppCompatActivity
     private CategoryListAdapter categoryListAdapter;
     private boolean isFirstListClick = true;
 
-    public boolean isFirstListClick() {
+    private boolean isFirstListClick() {
         return isFirstListClick;
     }
 
-    public void setFalseFirstListClick() {
+    private  void setFalseFirstListClick() {
         isFirstListClick = false;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,14 +167,11 @@ public class LessonsVocabularyList extends AppCompatActivity
     }
 
     public void startTestFromLessonOnClick(View view) {
-        TestDataHelper.amountOfWords = adapterVocabulary.getCount()-2;
+        TestDataHelper.amountOfWords = adapterVocabulary.getCount();
         TestDataHelper.amountOfButtons = 6;
         TestDataHelper.lvlOfLanguage = adapterVocabulary.getLevelLanguage();
         TestDataHelper.categoryName = adapterVocabulary.getCategoryName();
         TestDataHelper.isTestFromLesson = true;
-
-        Log.d("dupa", "" + TestDataHelper.amountOfWords + "" + TestDataHelper.amountOfButtons + "" + TestDataHelper.lvlOfLanguage + "" + TestDataHelper.categoryName + "" + TestDataHelper.isTestFromLesson);
-
         Intent intent = new Intent(this, VocabularyTest.class);
         startActivity(intent);
     }

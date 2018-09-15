@@ -22,7 +22,6 @@
             android:padding="3dp" />
 
         <TextView
-            android:id="@+id/mainMenuNameApp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -88,7 +87,6 @@
                 android:elevation="5dp">
 
                 <Button
-                    android:id="@+id/favouriteListButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/transparentColor"
@@ -126,7 +124,6 @@
                 android:elevation="5dp">
 
                 <Button
-                    android:id="@+id/testButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/transparentColor"
@@ -156,7 +153,6 @@
                 android:elevation="5dp">
 
                 <Button
-                    android:id="@+id/dictionaryButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/transparentColor"
@@ -185,7 +181,6 @@
 
         <ImageView
             android:background="@color/colorAccent"
-            android:id="@+id/exitAppButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

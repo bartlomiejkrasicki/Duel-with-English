@@ -1,7 +1,6 @@
 package test_fragments;
 
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -20,29 +19,19 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
 
     protected void replaceFragment(FragmentTransaction fragmentTransaction){                 //show next fragment after answer
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        Bundle bundle = new Bundle();
-        bundle.putInt("wordsAmount", TestDataHelper.amountOfWords);
-        bundle.putInt("amountOfButtons", TestDataHelper.amountOfButtons);
-        bundle.putString("lvlOfLanguage" , TestDataHelper.lvlOfLanguage);
-        if (TestDataHelper.categoryName != null) {
-            bundle.putString("testCategory", TestDataHelper.categoryName);
-        }
         switch (VocabularyTest.randomNumber(3)){
             case 0:{
                 VocabularyTestChoiceFragment choiceFragment = new VocabularyTestChoiceFragment();
-                choiceFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.testFragment, choiceFragment).commit();
                 break;
             }
             case 1:{
                 VocabularyTestWriteFragment writeFragment = new VocabularyTestWriteFragment();
-                writeFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.testFragment, writeFragment).commit();
                 break;
             }
             case 2:{
                 VocabularyTestJigsawWordFragment jigsawWordFragment = new VocabularyTestJigsawWordFragment();
-                jigsawWordFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.testFragment, jigsawWordFragment).commit();
                 break;
             }
@@ -53,8 +42,8 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
     }
 
     protected void loadNextWord(FragmentTransaction fragmentTransaction){
-        TestDataHelper.manyTestWords++;
-        if(TestDataHelper.manyTestWords == TestDataHelper.amountOfWords){
+        TestDataHelper.currentWordNumber++;
+        if(TestDataHelper.currentWordNumber == TestDataHelper.amountOfWords){
             endTestAlertDialog();
         } else {
             replaceFragment(fragmentTransaction);
@@ -75,7 +64,7 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
                 public void onClick(DialogInterface dialogInterface, int i) {
                     saveResultsTest();
                     TestDataHelper.manyGoodAnswer = 0;
-                    TestDataHelper.manyTestWords = 0;
+                    TestDataHelper.currentWordNumber = 0;
                     getActivity().finish();
                 }
             });
@@ -85,14 +74,14 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
                     testProgressBar.setProgress(0);
                     saveAndReplayTest();
                     TestDataHelper.manyGoodAnswer = 0;
-                    TestDataHelper.manyTestWords = 0;
+                    TestDataHelper.currentWordNumber = 0;
                     getActivity().recreate();
                 }
             });
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } else {
-            testProgressBar.setProgress(TestDataHelper.manyTestWords);
+            testProgressBar.setProgress(TestDataHelper.currentWordNumber);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
             alertDialogBuilder.setTitle("Test został zakończony");
             alertDialogBuilder.setMessage("Odpowiedziałeś poprawnie na " + TestDataHelper.manyGoodAnswer + " z " + TestDataHelper.amountOfWords + " pytań, co stanowi " + TestDataHelper.calculatePercentage() + "% wszystkich odpowiedzi.");
@@ -102,7 +91,7 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
                 public void onClick(DialogInterface dialogInterface, int i) {
                     testProgressBar.setProgress(0);
                     TestDataHelper.manyGoodAnswer = 0;
-                    TestDataHelper.manyTestWords = 0;
+                    TestDataHelper.currentWordNumber = 0;
                     getActivity().recreate();
                 }
             });

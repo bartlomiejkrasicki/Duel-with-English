@@ -4,7 +4,6 @@
     android:layout_height="wrap_content">
 
     <SwitchPreference
-        android:id="@+id/notificationSwitchPreference"
         android:defaultValue="true"
         android:key="notificationsSettingsSwitch"
         android:title="Powiadomienia"

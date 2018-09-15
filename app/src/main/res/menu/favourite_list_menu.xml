@@ -11,14 +11,12 @@
         android:title="@string/sort"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/favouriteMenuLvlSortIcon"
         android:icon="@drawable/ic_mage_hat_icon_shadow"
         android:title="@string/expandable_activity_label"
         app:showAsAction="ifRoom">
         <menu>
             <group
-                android:checkableBehavior="single"
-                android:id="@+id/favouriteLvlListMenu">
+                android:checkableBehavior="single">
                 <item
                     android:title="@string/show_only"
                     android:checkable="false"

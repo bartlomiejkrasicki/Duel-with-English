@@ -19,7 +19,7 @@ public class CategoryListAdapter extends BaseAdapter {
     private TextView categoryTextView;
     private ImageView categoryProgressImageView;
 
-    public CategoryListAdapter(Context context) {
+    CategoryListAdapter(Context context) {
         this.context = context;
     }
 

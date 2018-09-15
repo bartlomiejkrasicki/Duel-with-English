@@ -21,12 +21,12 @@
     <!--Vocabulary test fragments-->
     <string name="vocabulary_test_write_check_answer">Sprawdź</string>
     <string name="test_write_et_hint">Tutaj wpisz słowo</string>
-    <string name="test_choice_en_hint">Przetłumacz poniższe słowo na język angielski klikając w poprawne tłumaczenie:</string>
-    <string name="test_choice_pl_hint">Przetłumacz poniższe słowo na język polski klikając w poprawne tłumaczenie:</string>
-    <string name="test_write_en_hint">Przetłumacz na język angielski słowo wpisując je w poniższym polu: </string>
-    <string name="test_write_pl_hint">Przetłumacz na język polski słowo wpisując je w poniższym polu: </string>
-    <string name="test_jigsaw_word_pl_hint">Przetłumacz poniższe słowo na język polski, układając je z rozsypanych liter:</string>
-    <string name="test_jigsaw_word_en_hint">Przetłumacz poniższe słowo na język angielski, układając je z rozsypanych liter:</string>
+    <string name="test_choice_en_hint">Przetłumacz słowo na język angielski wybierając prawidłowe tłumaczenie:</string>
+    <string name="test_choice_pl_hint">Przetłumacz słowo na język polski wybierając prawidłowe tłumaczenie:</string>
+    <string name="test_write_en_hint">Przetłumacz słowo na język angielski  wpisując je w polu poniżej: </string>
+    <string name="test_write_pl_hint">Przetłumacz słowo na język polski wpisując je w polu poniżej: </string>
+    <string name="test_jigsaw_word_pl_hint">Przetłumacz słowo na język polski, układając je z rozsypanych liter:</string>
+    <string name="test_jigsaw_word_en_hint">Przetłumacz słowo na język angielski, układając je z rozsypanych liter:</string>
     <string name="jigsaw_fragment_check_button">Sprawdź</string>
     <string name="Test">Test</string>
     <string name="vocabulary_category_a1_text">A1</string>
@@ -36,7 +36,6 @@
     <string name="vocabulary_category_c1_text">C1</string>
     <string name="vocabulary_category_c2_text">C2</string>
     <string name="logo_description">Logo aplikacji</string>
-    <string name="title_description">Nazwa aplikacji - Duel with English</string>
     <string name="rate_app_text">Oceń aplikację</string>
     <string name="send_email_to_author">Napisz do mnie</string>
     <string name="author_info_who_made">Aplikacja stworzona przez: \nBartłomiej Krasicki</string>

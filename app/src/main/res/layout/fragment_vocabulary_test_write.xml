@@ -5,17 +5,6 @@
     android:orientation="vertical"
     tools:context="test_fragments.VocabularyTestWriteFragment">
 
-    <TextView
-        android:id="@+id/test_write_hint"
-        android:layout_marginTop="@dimen/space_edittext"
-        android:layout_marginStart="@dimen/space_edittext"
-        android:layout_marginEnd="@dimen/space_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/textColor"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
     <LinearLayout
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
@@ -30,6 +19,7 @@
             android:gravity="center"
             android:textColor="@color/textColor"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -58,6 +48,7 @@
             android:layout_alignParentBottom="true"
             style="@style/Button.Custom"
             android:text="@string/vocabulary_test_write_check_answer" />
+
     </RelativeLayout>
 
 </LinearLayout>

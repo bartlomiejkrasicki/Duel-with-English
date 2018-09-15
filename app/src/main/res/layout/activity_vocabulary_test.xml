@@ -15,6 +15,18 @@
         app:titleTextColor="@android:color/white"
         app:subtitleTextColor="@android:color/white"/>
 
+    <TextView
+        android:id="@+id/testHint"
+        android:layout_marginTop="@dimen/space_edittext"
+        android:layout_marginStart="@dimen/space_edittext"
+        android:layout_marginEnd="@dimen/space_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:gravity="center_horizontal"
+        android:textColor="@color/textColor"
+        style="@style/TextAppearance.AppCompat.Medium"/>
+
     <fragment
         android:id="@+id/testFragment"
         android:name="vocabulary_test.VocabularyTestPreference$VocabularyTestPreferenceFragment"

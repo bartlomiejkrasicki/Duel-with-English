@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,52 +25,40 @@ import vocabulary_test.TestDataHelper;
 
 public class VocabularyTestChoiceFragment extends BaseTestFragments implements View.OnClickListener{
 
-    private String answerText, categoryName;
+    private String answerText;
     private Button[] guessButtons;
     private Cursor cursor;
     private VocabularyDatabase dbInstance;
-    private int goodAnswer, numberOfWord, amountOfButtons, amountOfWords;
+    private int goodAnswer, numberOfWord;
 
     public VocabularyTestChoiceFragment(){
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.vocabulary_test_choice_fragment, container, false);
-        amountOfButtons = this.getArguments().getInt("amountOfButtons");
-        amountOfWords = this.getArguments().getInt("wordsAmount");
-        try {
-            categoryName = this.getArguments().getString("testCategory");
-        } catch (NullPointerException nullPointerException){
-
-        }
+        View view = inflater.inflate(R.layout.fragment_vocabulary_test_choice, container, false);
         declarationVariables(view);
-        setToolbar();
+        TestDataHelper.setToolbarHeader(cursor, getActivity());
+        TestDataHelper.setTestHint(R.string.test_choice_en_hint, R.string.test_choice_pl_hint, getActivity());
         setProgressBar();
         addWords(view);
         return view;
     }
 
     private void declarationVariables(View view){                          //declaration layout elements and variables
-        numberOfWord = TestDataHelper.wordTable[TestDataHelper.manyTestWords];
+        numberOfWord = TestDataHelper.wordTable[TestDataHelper.currentWordNumber];
         dbInstance = VocabularyDatabase.getInstance(getActivity().getApplicationContext());
-        guessButtons = new Button[amountOfButtons];
+        guessButtons = new Button[TestDataHelper.amountOfButtons];
         buttonsDeclaration(view);
-        if (categoryName != null) {
-            cursor = dbInstance.getCategoryValues(categoryName, TestDataHelper.lvlOfLanguage);
+        if (TestDataHelper.categoryName != null) {
+            cursor = dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
         } else {
             cursor = dbInstance.getAllValues();
-        }
-        TextView testHint = (TextView) view.findViewById(R.id.testChoiceHint);
-        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
-            testHint.setText(R.string.test_choice_en_hint);
-        } else {
-            testHint.setText(R.string.test_choice_pl_hint);
         }
     }
 
     private void buttonsDeclaration(View view){
-        switch (amountOfButtons){
+        switch (TestDataHelper.amountOfButtons){
             case 2:{
                 guessButtons[0] = (Button) view.findViewById(R.id.testChoice1);
                 guessButtons[1] = (Button) view.findViewById(R.id.testChoice2);
@@ -118,16 +105,9 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         }
     }
 
-    private void setToolbar(){
-        cursor.moveToPosition(numberOfWord);
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
-        toolbar.setSubtitle("Postęp: " + (TestDataHelper.manyTestWords + 1) + "/" + amountOfWords);
-    }
-
     private void setProgressBar(){
         RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-        testProgressBar.setProgress(TestDataHelper.manyTestWords);
+        testProgressBar.setProgress(TestDataHelper.currentWordNumber);
     }
 
     private void addWords(View view){                                       //add words and implement onClickListener to Buttons
@@ -136,7 +116,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         shuffleNumberButtonTable = setRandomTableNumber(shuffleNumberButtonTable.length);    //add shuffle number button table
 
         cursor.moveToPosition(numberOfWord);                                //add good answer to first button
-        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
             guessWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
             guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
@@ -145,7 +125,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         }
         goodAnswer = shuffleNumberButtonTable[0];
         guessButtons[shuffleNumberButtonTable[0]].setOnClickListener(this);
-        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
             answerText = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
         } else {
             answerText = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
@@ -157,13 +137,13 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         cursor = dbInstance.getCategoryValues(category, TestDataHelper.lvlOfLanguage);        //change cursor to category words
 
         final int index = searchId(cursor, idWord);
-        int[] tableToShuffleWord = setRandomTableNumber(cursor.getCount(), index, amountOfButtons);
+        int[] tableToShuffleWord = setRandomTableNumber(cursor.getCount(), index, TestDataHelper.amountOfButtons);
 
         for (int j = 1, i = 0; j < guessButtons.length; i++, j++) {        //add onClick to buttons, and add text
             guessButtons[i].setOnClickListener(this);
             do {
                 cursor.moveToPosition(tableToShuffleWord[i]);
-                if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
+                if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
                     guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
                 } else {
                     guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
@@ -211,7 +191,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         TestDataHelper.manyGoodAnswer++;
         thisButton.setBackgroundResource(R.drawable.good_answer_change_color);
         Animation trueAnswer;
-        if (amountOfButtons > 5) {
+        if (TestDataHelper.amountOfButtons > 5) {
             trueAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test);
         } else {
             trueAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
@@ -223,7 +203,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         thisButton.setBackgroundResource(R.drawable.bad_answer_change_color);
         guessButtons[goodAnswer].setBackgroundResource(R.drawable.good_answer_change_color);
         Animation falseAnswer;
-        if (amountOfButtons > 5) {
+        if (TestDataHelper.amountOfButtons > 5) {
             falseAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test);
         } else {
             falseAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test_big_button);

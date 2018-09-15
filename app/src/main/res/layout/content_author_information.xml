@@ -6,7 +6,6 @@
     android:gravity="bottom">
 
     <TextView
-        android:id="@+id/authorAppTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/author_info_who_made"
@@ -14,7 +13,6 @@
         android:textAlignment="center"/>
 
     <Button
-        android:id="@+id/SendMessageToMe"
         style="@style/Button.Custom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,7 +24,6 @@
         android:text="@string/send_email_to_author" />
 
     <Button
-        android:id="@+id/rateAppButton"
         style="@style/Button.Custom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

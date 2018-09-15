@@ -1,29 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/testChoiceHint"
-        android:layout_marginTop="@dimen/space_edittext"
-        android:layout_marginStart="@dimen/space_edittext"
-        android:layout_marginEnd="@dimen/space_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
-
-    <LinearLayout
-        android:id="@+id/enToPlChoiceLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@id/testChoiceHint">
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     
         <TextView
             android:id="@+id/testWordChoice"
@@ -87,7 +66,6 @@
             android:visibility="gone">
 
         <TableRow
-            android:id="@+id/testChoiceButtonRow1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="2dp"
@@ -113,7 +91,6 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/testChoiceButtonRow2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="2dp"
@@ -139,7 +116,6 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/testChoiceButtonRow3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="2dp"
@@ -165,7 +141,6 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/testChoiceButtonRow4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="2dp"
@@ -189,8 +164,6 @@
                 style="@style/Button.Custom"
                 android:visibility="gone"/>
 
-            </TableRow>
+        </TableRow>
         </TableLayout>
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

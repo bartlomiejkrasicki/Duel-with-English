@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +33,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     private EditText[] answerET;
     private Button[] buttonsLetters;
     private String answerWord;
-    private int randomTable[], numberOfWord, amountOfWords;
+    private int randomTable[], numberOfWord;
     private VocabularyDatabase dbInstance;
     private Button checkButton;
 
@@ -45,9 +44,9 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_test_jigsaw, container, false);
-        amountOfWords = this.getArguments().getInt("wordsAmount");
         declarationVariables(view);
-        setToolbar();
+        TestDataHelper.setToolbarHeader(cursor, getActivity());
+        TestDataHelper.setTestHint(R.string.test_jigsaw_word_en_hint, R.string.test_jigsaw_word_pl_hint, getActivity());
         setProgressBar();
         addWord(view);
         configureAnswer(view);
@@ -56,35 +55,22 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     }
 
     private void declarationVariables(View view){                          //declaration layout elements and variables
-        numberOfWord = TestDataHelper.wordTable[TestDataHelper.manyTestWords];
+        numberOfWord = TestDataHelper.wordTable[TestDataHelper.currentWordNumber];
         VocabularyTest vocabularyTest = new VocabularyTest();
         dbInstance = VocabularyDatabase.getInstance(getContext());
         cursor = vocabularyTest.getCursor(dbInstance);
         checkButton = (Button) view.findViewById(R.id.jigsawButtonToCheck);
-        TextView hintText = (TextView) view.findViewById(R.id.test_jigsaw_hint);
-        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
-            hintText.setText(R.string.test_jigsaw_word_en_hint);
-        } else {
-            hintText.setText(R.string.test_jigsaw_word_pl_hint);
-        }
-    }
-
-    private void setToolbar(){
-        cursor.moveToPosition(numberOfWord);
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.testVocabularyToolbar);
-        toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
-        toolbar.setSubtitle("Postęp: " + (TestDataHelper.manyTestWords + 1) + "/" + amountOfWords);
     }
 
     private void setProgressBar(){
         RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-        testProgressBar.setProgress(TestDataHelper.manyTestWords);
+        testProgressBar.setProgress(TestDataHelper.currentWordNumber);
     }
 
     private void addWord(View view){                            //add word in english or polish
         TextView testWord = (TextView) view.findViewById(R.id.test_jigsaw_word);
         cursor.moveToPosition(numberOfWord);
-        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
             testWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         } else {
             testWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
@@ -92,7 +78,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     }
 
     private void configureAnswer(View view){                    //configure EditText table (word to write)
-        if (TestDataHelper.inEnglish[TestDataHelper.manyTestWords]) {
+        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
             answerWord = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
         } else {
             answerWord = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
