@@ -47,7 +47,7 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
         declarationVariables(view);
         TestDataHelper.setToolbarHeader(cursor, getActivity());
         TestDataHelper.setTestHint(R.string.test_jigsaw_word_en_hint, R.string.test_jigsaw_word_pl_hint, getActivity());
-        setProgressBar();
+        TestDataHelper.setProgressBar(getActivity());
         addWord(view);
         configureAnswer(view);
         setButtonsClick();

@@ -15,8 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-
 import database_vocabulary.VocabularyDatabase;
 import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
@@ -29,7 +27,6 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     private TextView wordtoGuess;
     private EditText userWordET;
     private VocabularyDatabase dbInstance;
-    private int numberOfWord;
     private String correctAnswer;
 
     public VocabularyTestWriteFragment() {
@@ -42,7 +39,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
         declarationVariables(view);
         TestDataHelper.setToolbarHeader(cursor, getActivity());
         TestDataHelper.setTestHint(R.string.test_write_en_hint, R.string.test_write_pl_hint, getActivity());
-        setProgressBar();
+        TestDataHelper.setProgressBar(getActivity());
         addWord();
         configureEditText();
         configureCheckButton(view);
@@ -55,16 +52,10 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
         cursor = vocabularyTest.getCursor(dbInstance);
         wordtoGuess = (TextView) view.findViewById(R.id.test_write_word);
         userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
-        numberOfWord = TestDataHelper.wordTable[TestDataHelper.currentWordNumber];
-    }
-
-    private void setProgressBar(){
-        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-        testProgressBar.setProgress(TestDataHelper.currentWordNumber);
     }
 
     private void addWord(){
-        cursor.moveToPosition(numberOfWord);
+        cursor.moveToPosition(TestDataHelper.wordTable[TestDataHelper.currentWordNumber]);
         if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
             wordtoGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
@@ -82,8 +73,8 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     }
 
     private void configureCheckButton(View view){
-        Button testWriteButtonCheckEn = (Button) view.findViewById(R.id.testWriteCheckButton);
-        testWriteButtonCheckEn.setOnClickListener(new View.OnClickListener() {
+        Button testWriteButtonCheck = (Button) view.findViewById(R.id.testWriteCheckButton);
+        testWriteButtonCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 userWordET.setFocusableInTouchMode(true);
@@ -112,6 +103,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
 
     private void goodAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
         TestDataHelper.manyGoodAnswer++;
+//        Flubber.with().animation(Flubber.AnimationPreset.SHAKE).duration(2000).createFor(view).start();
         Animation animationCorrect = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
         animationCorrect.setAnimationListener(new Animation.AnimationListener() {
             @Override

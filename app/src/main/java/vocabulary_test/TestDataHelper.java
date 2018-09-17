@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,9 +28,9 @@ public class TestDataHelper {
     }
 
     public static void setIsEnglishTable(){
-        TestDataHelper.inEnglish = new boolean[TestDataHelper.amountOfWords];
-        for (int i = 0; i < TestDataHelper.inEnglish.length; i++){
-            TestDataHelper.inEnglish[i] = randomBoolean();
+        inEnglish = new boolean[amountOfWords];
+        for (int i = 0; i < inEnglish.length; i++){
+            inEnglish[i] = randomBoolean();
         }
     }
 
@@ -48,18 +50,23 @@ public class TestDataHelper {
     }
 
     public static void setToolbarHeader(Cursor cursor, Activity currentActivity){
-    cursor.moveToPosition(currentWordNumber);
-    Toolbar toolbar = (Toolbar) currentActivity.findViewById(R.id.testVocabularyToolbar);
+        cursor.moveToPosition(currentWordNumber);
+        Toolbar toolbar = (Toolbar) currentActivity.findViewById(R.id.testVocabularyToolbar);
         toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
-        toolbar.setSubtitle("Postęp: " + (TestDataHelper.currentWordNumber + 1) + "/" + TestDataHelper.amountOfWords);
+        toolbar.setSubtitle("Postęp: " + (currentWordNumber + 1) + "/" + amountOfWords);
     }
 
     public static void setTestHint(int enHint, int plHint, Activity currentActivity) {
         TextView hintText = (TextView) currentActivity.findViewById(R.id.testHint);
-        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
+        if (inEnglish[currentWordNumber]) {
             hintText.setText(enHint);
         } else {
             hintText.setText(plHint);
         }
+    }
+
+    public static void setProgressBar(Activity currentActivity){
+        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) currentActivity.findViewById(R.id.testProgressBar);
+        testProgressBar.setProgress(TestDataHelper.currentWordNumber);
     }
 }

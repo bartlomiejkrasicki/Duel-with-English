@@ -40,7 +40,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         declarationVariables(view);
         TestDataHelper.setToolbarHeader(cursor, getActivity());
         TestDataHelper.setTestHint(R.string.test_choice_en_hint, R.string.test_choice_pl_hint, getActivity());
-        setProgressBar();
+        TestDataHelper.setProgressBar(getActivity());
         addWords(view);
         return view;
     }
