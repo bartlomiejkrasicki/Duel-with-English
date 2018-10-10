@@ -1,19 +1,19 @@
 package vocabulary_test;
 
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-
-import java.util.Random;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
@@ -31,44 +31,42 @@ public class VocabularyTest extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary_test);
+        setToolbarOnClick();
         declarationVariables();
+        prepareProgressBar();
         showFirstFragment();
     }
 
+    private void setToolbarOnClick() {
+        Toolbar toolbar = (Toolbar)findViewById(R.id.testVocabularyToolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getEndTestDialog().show();
+            }
+        });
+    }
+
     private void declarationVariables() {
-        if (TestDataHelper.isTestFromLesson){
-            dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
-
-            if (TestDataHelper.categoryName.equals("")) {                                             // do przerobienia
-                cursor = dbInstance.getAllValues();
-            } else {
-                cursor = dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
-            }
-
-            if (TestDataHelper.amountOfButtons != 0) {
-                TestDataHelper.amountOfWords = getAmountOfWords(cursor.getCount());
-            }
-
-            if (cursor.getCount() < TestDataHelper.amountOfButtons){
-                TestDataHelper.amountOfButtons = cursor.getCount() - cursor.getCount()%2;
-            }
+        dbInstance = VocabularyDatabase.getInstance(getApplicationContext());
+        if (TestDataHelper.isTestFromLesson && !TestDataHelper.categoryName.equals("")) {
+            cursor = dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
+            TestDataHelper.amountOfButtons = 6;
+        } else {
+            cursor = dbInstance.getAllLvlValues(TestDataHelper.lvlOfLanguage);
         }
-        TestDataHelper.currentWordNumber = 0;
-        Log.d("words", TestDataHelper.amountOfWords + "");
-        Log.d("buttons", TestDataHelper.amountOfButtons + "");
-        Log.d("lvl", TestDataHelper.lvlOfLanguage + "");
-        Log.d("category", TestDataHelper.categoryName + "");
-        TestDataHelper.randomNumberOfWords = new int[TestDataHelper.amountOfWords];
+
+        if (cursor.getCount() < TestDataHelper.amountOfButtons) {
+            TestDataHelper.amountOfButtons = cursor.getCount() - cursor.getCount() % 2;
+        }
         TestDataHelper.wordTable = TestDataHelper.prepareWordRandomTable();
-        TestDataHelper.setIsEnglishTable();
-        setToolbar();
-        setProgressBar();
+        TestDataHelper.inEnglishSetRandom();
     }
 
     private void showFirstFragment(){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (randomNumber(3)){
+        switch (TestDataHelper.getRandomNumber(3)){
             case 0:{
                 VocabularyTestChoiceFragment choiceFragment = new VocabularyTestChoiceFragment();
                 fragmentTransaction.add(R.id.testFragment, choiceFragment).commit();
@@ -85,32 +83,12 @@ public class VocabularyTest extends FragmentActivity {
                 break;
             }
             default:{
-                Toast.makeText(this, "Błąd wczytywania testu. Uruchom go jeszcze raz :(", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Błąd wczytywania testu. Spróbuj ponownie", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public static int randomNumber(int i){
-        if(i==0){
-            return 1;
-        }
-        else {
-            Random random = new Random();
-            return random.nextInt(i);
-        }
-    }
-
-    private void setToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.testVocabularyToolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-    }
-
-    private void setProgressBar(){
+    private void prepareProgressBar(){
         testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
         testProgressBar.setMax(TestDataHelper.amountOfWords);
         testProgressBar.setProgress(0);
@@ -121,50 +99,37 @@ public class VocabularyTest extends FragmentActivity {
             return vocabularyDatabase.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
         }
         else {
-            return vocabularyDatabase.getAllValues();
+            return vocabularyDatabase.getAllLvlValues(TestDataHelper.lvlOfLanguage);
         }
+    }
+
+    private MaterialStyledDialog.Builder getEndTestDialog(){
+        return new MaterialStyledDialog.Builder(this)
+                .setTitle("Zakończyć test?")
+                .setDescription("Spowoduje to utratę bieżących postępów.")
+                .withDialogAnimation(true)
+                .withDivider(true)
+                .setPositiveText("Tak")
+                .setNegativeText("Nie")
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setHeaderColor(R.color.colorAccent)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        TestDataHelper.cleanVariablesAfterFinish();
+                        finish();
+                    }
+                });
     }
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Czy chcesz zakończyć test i utracić wszystkie postępy?");
-        builder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        builder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    private int getAmountOfWords(int itemsCount){
-        if (itemsCount <= 5){
-            return itemsCount;
-        }
-        else if (itemsCount <= 10 && itemsCount > 5){
-            return 5;
-        }
-        else if (itemsCount > 10 && itemsCount <=20){
-            return 10;
-        }
-        else {
-            return 15;
-        }
+        getEndTestDialog().show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TestDataHelper.manyGoodAnswer = 0;
-        TestDataHelper.currentWordNumber = 0;
         cursor.close();
         dbInstance.close();
     }
@@ -173,8 +138,6 @@ public class VocabularyTest extends FragmentActivity {
     public void recreate() {
         super.recreate();
         testProgressBar.setProgress(0);
-        TestDataHelper.manyGoodAnswer = 0;
-        TestDataHelper.currentWordNumber = 0;
         cursor.close();
         dbInstance.close();
     }

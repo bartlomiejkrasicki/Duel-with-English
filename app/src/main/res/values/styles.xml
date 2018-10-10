@@ -27,7 +27,7 @@
     </style>
 
     <style name="Button.Custom" parent="Base.TextAppearance.AppCompat.Button">
-        <item name="android:background">@color/color_buttons_special</item>
+        <item name="android:background">@color/colorAccent</item>
         <item name="android:elevation">15dp</item>
         <item name="android:layout_margin">1dp</item>
         <item name="android:textColor">@color/textButtonsColor</item>

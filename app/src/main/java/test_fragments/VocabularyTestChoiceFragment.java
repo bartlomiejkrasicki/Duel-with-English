@@ -14,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import database_vocabulary.VocabularyDatabase;
@@ -29,7 +29,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
     private Button[] guessButtons;
     private Cursor cursor;
     private VocabularyDatabase dbInstance;
-    private int goodAnswer, numberOfWord;
+    private int goodAnswer;
 
     public VocabularyTestChoiceFragment(){
     }
@@ -37,122 +37,108 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_test_choice, container, false);
-        declarationVariables(view);
-        TestDataHelper.setToolbarHeader(cursor, getActivity());
-        TestDataHelper.setTestHint(R.string.test_choice_en_hint, R.string.test_choice_pl_hint, getActivity());
-        TestDataHelper.setProgressBar(getActivity());
+        declarationVariables();
+        setDataOnView();
+        buttonsDeclaration(view);
+        setGuessText(view);
         addWords(view);
         return view;
     }
 
-    private void declarationVariables(View view){                          //declaration layout elements and variables
-        numberOfWord = TestDataHelper.wordTable[TestDataHelper.currentWordNumber];
+    private void declarationVariables(){
         dbInstance = VocabularyDatabase.getInstance(getActivity().getApplicationContext());
         guessButtons = new Button[TestDataHelper.amountOfButtons];
-        buttonsDeclaration(view);
-        if (TestDataHelper.categoryName != null) {
-            cursor = dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
+        cursor = setCursor();
+    }
+
+    private void setDataOnView(){
+        TestDataHelper.setToolbarHeader(cursor, getActivity());
+        TestDataHelper.setTestHint(R.string.test_choice_en_hint, R.string.test_choice_pl_hint, getActivity());
+        TestDataHelper.setProgressBar(getActivity());
+    }
+
+    private Cursor setCursor(){
+        if (TestDataHelper.isTestFromLesson) {
+            return dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
         } else {
-            cursor = dbInstance.getAllValues();
+            return dbInstance.getAllValues();
         }
     }
 
     private void buttonsDeclaration(View view){
-        switch (TestDataHelper.amountOfButtons){
-            case 2:{
-                guessButtons[0] = (Button) view.findViewById(R.id.testChoice1);
-                guessButtons[1] = (Button) view.findViewById(R.id.testChoice2);
-                LinearLayout buttonLayout = (LinearLayout) view.findViewById(R.id.testChoiceButtonsLL);
-                buttonLayout.setVisibility(View.VISIBLE);
-                break;
-            }
-            case 4:{
-                guessButtons[0] = (Button) view.findViewById(R.id.testChoice1);
-                guessButtons[1] = (Button) view.findViewById(R.id.testChoice2);
-                guessButtons[2] = (Button) view.findViewById(R.id.testChoice3);
-                guessButtons[3] = (Button) view.findViewById(R.id.testChoice4);
-                LinearLayout buttonLayout = (LinearLayout) view.findViewById(R.id.testChoiceButtonsLL);
-                buttonLayout.setVisibility(View.VISIBLE);
-                break;
-            }
-            case 6:{
-                guessButtons[0] = (Button) view.findViewById(R.id.testChoiceOption1);
-                guessButtons[1] = (Button) view.findViewById(R.id.testChoiceOption2);
-                guessButtons[2] = (Button) view.findViewById(R.id.testChoiceOption3);
-                guessButtons[3] = (Button) view.findViewById(R.id.testChoiceOption4);
-                guessButtons[4] = (Button) view.findViewById(R.id.testChoiceOption5);
-                guessButtons[5] = (Button) view.findViewById(R.id.testChoiceOption6);
-                TableLayout tableLayout = (TableLayout) view.findViewById(R.id.testChoiceButtonsTable);
-                tableLayout.setVisibility(View.VISIBLE);
-                break;
-            }
-            case 8:{
-                guessButtons[0] = (Button) view.findViewById(R.id.testChoiceOption1);
-                guessButtons[1] = (Button) view.findViewById(R.id.testChoiceOption2);
-                guessButtons[2] = (Button) view.findViewById(R.id.testChoiceOption3);
-                guessButtons[3] = (Button) view.findViewById(R.id.testChoiceOption4);
-                guessButtons[4] = (Button) view.findViewById(R.id.testChoiceOption5);
-                guessButtons[5] = (Button) view.findViewById(R.id.testChoiceOption6);
-                guessButtons[6] = (Button) view.findViewById(R.id.testChoiceOption7);
-                guessButtons[7] = (Button) view.findViewById(R.id.testChoiceOption8);
-                TableLayout tableLayout = (TableLayout) view.findViewById(R.id.testChoiceButtonsTable);
-                tableLayout.setVisibility(View.VISIBLE);
-                break;
-            }
+        for(int i = 0; i < TestDataHelper.amountOfButtons; i++){
+            String buttonId = getButtonIdString(TestDataHelper.amountOfButtons, i);
+            int resourceButtonId = getResources().getIdentifier(buttonId, "id", getActivity().getPackageName());
+            guessButtons[i] = ((Button) view.findViewById(resourceButtonId));
+        }
+        setButtonsVisible(TestDataHelper.amountOfButtons, view);
+    }
+
+    private void setButtonsVisible(int amountOfButtons, View view){
+        if (amountOfButtons <= 4){
+            LinearLayout buttonLayout = (LinearLayout) view.findViewById(R.id.testChoiceButtonsLL);
+            buttonLayout.setVisibility(View.VISIBLE);
+        } else {
+            TableLayout tableLayout = (TableLayout) view.findViewById(R.id.testChoiceButtonsTable);
+            tableLayout.setVisibility(View.VISIBLE);
         }
         for (Button guessButton : guessButtons){
             guessButton.setVisibility(View.VISIBLE);
         }
     }
 
-    private void setProgressBar(){
-        RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
-        testProgressBar.setProgress(TestDataHelper.currentWordNumber);
+    private String getButtonIdString(int amountOfButtons, int iterator){
+        if (amountOfButtons <= 4){
+            return "testChoice" + (iterator+1);
+        }
+        else {
+            return "testChoiceOption" + (iterator+1);
+        }
     }
 
-    private void addWords(View view){                                       //add words and implement onClickListener to Buttons
+    private void setGuessText(View view){
         TextView guessWord = (TextView) view.findViewById(R.id.testWordChoice);
-        int [] shuffleNumberButtonTable = new int[guessButtons.length];
-        shuffleNumberButtonTable = setRandomTableNumber(shuffleNumberButtonTable.length);    //add shuffle number button table
-
-        cursor.moveToPosition(numberOfWord);                                //add good answer to first button
-        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
+        cursor.moveToPosition(TestDataHelper.wordTable.get(TestDataHelper.currentWordNumber));
+        if (TestDataHelper.inEnglish) {
             guessWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
-            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
             guessWord.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
-            guessButtons[shuffleNumberButtonTable[0]].setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         }
-        goodAnswer = shuffleNumberButtonTable[0];
-        guessButtons[shuffleNumberButtonTable[0]].setOnClickListener(this);
-        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
+    }
+
+    private void addWords(View view){
+        ArrayList<Integer> shuffleNumberButtonTable = setRandomTableNumber(guessButtons.length);
+
+
+        goodAnswer = shuffleNumberButtonTable.get(0);
+        if (TestDataHelper.inEnglish) {
             answerText = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
         } else {
             answerText = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
         }
 
-        final int idWord = cursor.getInt(VocabularyDatabaseColumnNames.idColumn);                                //id of first word
+        final int idWord = cursor.getInt(VocabularyDatabaseColumnNames.idColumn);
 
-        final String category = cursor.getString(VocabularyDatabaseColumnNames.categoryColumn);                                    //set cursor to category
-        cursor = dbInstance.getCategoryValues(category, TestDataHelper.lvlOfLanguage);        //change cursor to category words
+        final String category = cursor.getString(VocabularyDatabaseColumnNames.categoryColumn);
+        cursor = dbInstance.getCategoryValues(category, TestDataHelper.lvlOfLanguage);
 
         final int index = searchId(cursor, idWord);
-        int[] tableToShuffleWord = setRandomTableNumber(cursor.getCount(), index, TestDataHelper.amountOfButtons);
+        ArrayList<Integer> randomWordList = setRandomWordList(cursor.getCount(), index, TestDataHelper.amountOfButtons);
 
-        for (int j = 1, i = 0; j < guessButtons.length; i++, j++) {        //add onClick to buttons, and add text
+        for (int j = 0, i = 0; j < guessButtons.length; i++, j++) {
             guessButtons[i].setOnClickListener(this);
             do {
-                cursor.moveToPosition(tableToShuffleWord[i]);
-                if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
-                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
+                cursor.moveToPosition(randomWordList.get(i));
+                if (TestDataHelper.inEnglish) {
+                    guessButtons[shuffleNumberButtonTable.get(j)].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
                 } else {
-                    guessButtons[shuffleNumberButtonTable[j]].setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
+                    guessButtons[shuffleNumberButtonTable.get(j)].setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
                 }
             } while (false);
         }
     }
 
-    private int searchId(Cursor cursor, int id){                                                                                //search index of good answer word in database
+    private int searchId(Cursor cursor, int id){
         int index = 0;
         for (int i = 0; i < cursor.getCount(); i++) {
             cursor.moveToPosition(i);
@@ -172,7 +158,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
     }
 
     @Override
-    public void onClick(View view) {                                                                                        //onClickListener to all buttons
+    public void onClick(View view) {
         for (Button currentButton : guessButtons) {
             currentButton.setClickable(false);
         }
@@ -187,7 +173,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         }
     }
 
-    private void setGoodAnswer(final Button thisButton){                                                                    //good answer handling
+    private void setGoodAnswer(final Button thisButton){
         TestDataHelper.manyGoodAnswer++;
         thisButton.setBackgroundResource(R.drawable.good_answer_change_color);
         Animation trueAnswer;
@@ -199,7 +185,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         startAnimation(trueAnswer, thisButton, true);
     }
 
-    private void setBadAnswer(final Button thisButton){                                                                     //bad answer handling
+    private void setBadAnswer(final Button thisButton){
         thisButton.setBackgroundResource(R.drawable.bad_answer_change_color);
         guessButtons[goodAnswer].setBackgroundResource(R.drawable.good_answer_change_color);
         Animation falseAnswer;
@@ -211,7 +197,7 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         startAnimation(falseAnswer, thisButton, false);
     }
 
-    private void startAnimation(final Animation answerAnimation, final Button thisButton, final boolean isTrue) {           //animation when user click button
+    private void startAnimation(final Animation answerAnimation, final Button thisButton, final boolean isTrue) {
         answerAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -220,7 +206,6 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
                     ((TransitionDrawable) guessButtons[goodAnswer].getBackground()).startTransition(300);
                 }
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 try {
@@ -229,66 +214,36 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
                     e.printStackTrace();
                 }
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                loadNextWord(fragmentTransaction);
+                loadNextWord(fragmentTransaction, getActivity());
             }
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
         });
         thisButton.startAnimation(answerAnimation);
     }
 
-    private int [] setRandomTableNumber(int maxRangeNumber, int index, int buttonsAmount){          //shuffle numbers and add to table of int, class check reply words
-        int [] tableRandomNumbers = new int[buttonsAmount];
+    private ArrayList<Integer> setRandomWordList(int maxRangeNumber, int index, int buttonsAmount){
+        ArrayList<Integer> randomWordList = new ArrayList<>();
+        randomWordList.add(index);
         Random random = new Random();
-        boolean numberIsntOther;
-        for(int i = 0; i < tableRandomNumbers.length; i++){
-            if(i==0){                                                                                       //add first value
-                do {
-                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-                } while (tableRandomNumbers[i] == index);
-            }
-            else {                                                                                          //add other values
-                do {
-                    do {
-                        tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-                    } while (tableRandomNumbers[i] == index);
-                    numberIsntOther = false;
-                    for(int j = 0; j < i; j++){
-                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
-                            numberIsntOther = true;
-                        }
-                    }
-                } while (numberIsntOther);
+        int randomNumber;
+        for(; randomWordList.size() < buttonsAmount;){
+            randomNumber = random.nextInt(maxRangeNumber);
+            if(!(randomWordList.contains(randomNumber)) && randomNumber != index){
+                randomWordList.add(randomNumber);
             }
         }
-        return tableRandomNumbers;
+        Collections.shuffle(randomWordList);
+        return randomWordList;
     }
 
-    private int [] setRandomTableNumber(int maxRangeNumber){          //shuffle numbers and add to table of int
-        int [] tableRandomNumbers = new int[maxRangeNumber];
-        Random random = new Random();
-        boolean numberIsOther;
-        for(int i = 0; i < tableRandomNumbers.length; i++){
-            if(i==0){
-                tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-            }
-            else {
-                do {
-                    numberIsOther = true;
-                    tableRandomNumbers[i] = random.nextInt(maxRangeNumber);
-                    for(int j = 0; j < i; j++){
-                        if(tableRandomNumbers[j]==tableRandomNumbers[i]){
-                            numberIsOther = true;
-                            break;
-                        } else {
-                            numberIsOther = false;
-                        }
-                    }
-                } while (numberIsOther);
-            }
+    private ArrayList<Integer> setRandomTableNumber(int maxLength){
+        ArrayList<Integer> randomWordList = new ArrayList<>();
+        for(int i = 0; i < maxLength; i++){
+            randomWordList.add(i);
         }
-        return tableRandomNumbers;
+        Collections.shuffle(randomWordList);
+        return randomWordList;
     }
 }

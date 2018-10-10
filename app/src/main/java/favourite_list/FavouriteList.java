@@ -18,7 +18,7 @@ public class FavouriteList extends AppCompatActivity {
 
     private VocabularyDatabase dbInstance;
     private FavouriteResAdapter adapter;
-    private ListView favouritelist;
+    private ListView favouriteList;
     private Context context;
     private Toolbar toolbar;
 
@@ -76,12 +76,12 @@ public class FavouriteList extends AppCompatActivity {
                 else {
                     if (adapter.isEnabledDeleteMode()) {
                         adapter.setEnabledDeleteMode(false);
-                        favouritelist.setClickable(false);
+                        favouriteList.setClickable(false);
                         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     } else {
                         adapter.setEnabledDeleteMode(true);
-                        favouritelist.setClickable(true);
-                        toolbar.setBackgroundColor(getResources().getColor(R.color.delete_list_items));
+                        favouriteList.setClickable(true);
+                        toolbar.setBackgroundColor(getResources().getColor(R.color.redColor));
                     }
                 }
                 break;
@@ -132,13 +132,13 @@ public class FavouriteList extends AppCompatActivity {
     }
 
     private void initResources(){
-        favouritelist = (ListView) findViewById(favouriteListView);
-        favouritelist.setClickable(false);
+        favouriteList = (ListView) findViewById(favouriteListView);
+        favouriteList.setClickable(false);
         context = getApplicationContext();
         dbInstance = VocabularyDatabase.getInstance(context);
         adapter = new FavouriteResAdapter(context);
         adapter.setCursor(dbInstance.getAllFavouriteValues(adapter.isAlphabeticalSort()));
-        favouritelist.setAdapter(adapter);
+        favouriteList.setAdapter(adapter);
     }
 
     private void setCursorToShowFavList(String vocabularyLvl){

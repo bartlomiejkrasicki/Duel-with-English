@@ -78,6 +78,11 @@ public class VocabularyDatabase extends SQLiteAssetHelper {
         return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY, null);
     }
 
+    public Cursor getAllLvlValues(String vocabularyLevel) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE " + VocabularyDatabaseColumnNames.COLUMN_NAME_LANGUAGELVL + " = '" + vocabularyLevel + "'", null);
+    }
+
     public void saveTestResult(int result, String lvlLanguage, String categoryName){
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT id, testResultNumber FROM Category WHERE category = '" + categoryName + "' AND languageLvl = '" + lvlLanguage + "'", null);

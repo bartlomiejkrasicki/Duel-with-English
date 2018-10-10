@@ -39,7 +39,8 @@
             android:textColor="@color/textColor"
             android:hint="@string/test_write_et_hint"
             android:inputType="textNoSuggestions"
-            android:focusable="true" />
+            android:focusable="true"
+            android:digits="aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż AĄBCĆDEĘFGHIJKLŁMNŃOÓPQRSŚTUVWXYZŹŻ"/>
 
         <Button
             android:id="@+id/testWriteCheckButton"

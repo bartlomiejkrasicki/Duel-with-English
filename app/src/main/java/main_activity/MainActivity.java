@@ -1,16 +1,20 @@
 package main_activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import database_vocabulary.VocabularyDatabase;
 import dictionary.Dictionary;
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        exitApp();
+        exitAppDialog();
     }
 
     private void configurationToolbar(){
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void exitButtonOnClick(View view) {
-        exitApp();
+        exitAppDialog();
     }
 
     private void firstLaunch() {
@@ -105,22 +109,21 @@ public class MainActivity extends AppCompatActivity {
         dbInstance.close();
     }
 
-    private void exitApp(){
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("Czy na pewno chcesz zamknąć aplikację?");
-        alertDialogBuilder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        alertDialogBuilder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+    private void exitAppDialog(){
+        MaterialStyledDialog.Builder exitAppDialog = new MaterialStyledDialog.Builder(this)
+                .withDialogAnimation(true)
+                .withDivider(true)
+                .setTitle("Zamknąć aplikację?")
+                .setHeaderColor(R.color.colorAccent)
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setNegativeText("Nie")
+                .setPositiveText("Tak")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        finish();
+                    }
+                });
+        exitAppDialog.show();
     }
 }

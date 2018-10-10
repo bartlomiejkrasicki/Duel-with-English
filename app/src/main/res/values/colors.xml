@@ -4,9 +4,8 @@
     <color name="colorPrimaryDark">#102027</color>
     <color name="colorAccent">#1976d2</color>
     <color name="transparentColor">#00000000</color>
-    <color name="color_buttons_special">#1976d2</color>
-    <color name="delete_list_items">#B71C1C</color>
-    <color name="colorBadAnswer">#B71C1C</color>
+    <color name="redColor">#D32F2F</color>
+    <color name="greenColor">#388E3C</color>
     <color name="textColor">#de111010</color>
     <color name="textButtonsColor">#FFFFFF</color>
     <color name="Background">#e0e0e0</color>

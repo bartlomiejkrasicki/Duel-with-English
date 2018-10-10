@@ -1,6 +1,9 @@
 package test_fragments;
 
+import android.animation.Animator;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +18,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import database_vocabulary.VocabularyDatabase;
 import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
@@ -24,22 +30,18 @@ import vocabulary_test.VocabularyTest;
 public class VocabularyTestWriteFragment extends BaseTestFragments {
 
     private Cursor cursor;
-    private TextView wordtoGuess;
+    private TextView wordToGuess;
     private EditText userWordET;
     private VocabularyDatabase dbInstance;
-    private String correctAnswer;
 
     public VocabularyTestWriteFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_test_write, container, false);
         declarationVariables(view);
-        TestDataHelper.setToolbarHeader(cursor, getActivity());
-        TestDataHelper.setTestHint(R.string.test_write_en_hint, R.string.test_write_pl_hint, getActivity());
-        TestDataHelper.setProgressBar(getActivity());
+        TestDataHelper.prepareView(cursor, getActivity());
         addWord();
         configureEditText();
         configureCheckButton(view);
@@ -48,28 +50,29 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
 
     private void declarationVariables(View view){
         VocabularyTest vocabularyTest = new VocabularyTest();
-        dbInstance = VocabularyDatabase.getInstance(getActivity().getApplicationContext());
+        dbInstance = VocabularyDatabase.getInstance(getActivity());
         cursor = vocabularyTest.getCursor(dbInstance);
-        wordtoGuess = (TextView) view.findViewById(R.id.test_write_word);
+        wordToGuess = (TextView) view.findViewById(R.id.test_write_word);
         userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
     }
 
     private void addWord(){
-        cursor.moveToPosition(TestDataHelper.wordTable[TestDataHelper.currentWordNumber]);
-        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
-            wordtoGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
+        cursor.moveToPosition(TestDataHelper.wordTable.get(TestDataHelper.currentWordNumber));
+        if (TestDataHelper.inEnglish) {
+            wordToGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
         } else {
-            wordtoGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
+            wordToGuess.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         }
     }
 
     private void configureEditText(){
-        if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
+        if (TestDataHelper.inEnglish) {
             userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn).length())});
         } else {
             userWordET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn).length())});
         }
         userWordET.setText("");
+        userWordET.getBackground().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN);
     }
 
     private void configureCheckButton(View view){
@@ -80,67 +83,68 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
                 userWordET.setFocusableInTouchMode(true);
                 userWordET.requestFocus();
                 userWordET.setSelected(true);
-                final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 String userRealAnswer = userWordET.getText().toString();
-                if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
-                    correctAnswer = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
-                } else {
-                    correctAnswer = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
-                }
                 if (userRealAnswer.equalsIgnoreCase("")){
                     Toast.makeText(getActivity().getApplicationContext(), "Pole odpowiedzi jest puste", Toast.LENGTH_SHORT).show();
                 }
-                else if (userRealAnswer.equalsIgnoreCase(correctAnswer)){                                                                                            //good answer
+                else if (userRealAnswer.equalsIgnoreCase(getCorrectAnswer())){                                                                                            //good answer
                     view.setClickable(false);
-                    goodAnswerClick(view, fragmentTransaction);
-                } else if (!(userRealAnswer.equalsIgnoreCase(correctAnswer))){                                                                                       //bad answer
+                    userWordET.setEnabled(false);
+                    correctAnswerOnClick(view);
+                } else if (!(userRealAnswer.equalsIgnoreCase(getCorrectAnswer()))){                                                                                       //bad answer
                     view.setClickable(false);
-                    badAnswerClick(view, fragmentTransaction);
+                    userWordET.setEnabled(false);
+                    incorrectAnswerOnClick(view);
                 }
             }
         });
     }
 
-    private void goodAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
+    private void correctAnswerOnClick(final View view){
         TestDataHelper.manyGoodAnswer++;
-//        Flubber.with().animation(Flubber.AnimationPreset.SHAKE).duration(2000).createFor(view).start();
-        Animation animationCorrect = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
-        animationCorrect.setAnimationListener(new Animation.AnimationListener() {
+        YoYo.with(Techniques.ZoomIn).duration(1000).withListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animator animator) {
+                Animation animationFadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_fragment_fade_out);
+                Animation animationFadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_fragment_fade_in);
                 userWordET.setEnabled(false);
+                userWordET.startAnimation(animationFadeOut);
+                userWordET.setText(getCorrectAnswer());
+                userWordET.setTextColor(Color.WHITE);
+                userWordET.startAnimation(animationFadeIn);
+                userWordET.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 view.setBackgroundResource(R.drawable.good_answer_change_color);
                 ((TransitionDrawable) view.getBackground()).startTransition(500);
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
-                userWordET.setText("");
-
-                loadNextWord(fragmentTransaction);
+            public void onAnimationEnd(Animator animator) {
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                loadNextWord(fragmentTransaction, getActivity());
             }
+
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationCancel(Animator animator) {
 
             }
-        });
-        view.startAnimation(animationCorrect);
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        }).playOn(view);
     }
 
-    private void badAnswerClick(final View view, final FragmentTransaction fragmentTransaction){
-        Animation animationWrong = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test_big_button);
-        animationWrong.setAnimationListener(new Animation.AnimationListener() {
+    private void incorrectAnswerOnClick(final View view){
+        YoYo.with(Techniques.Shake).duration(1000).withListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-                Animation animationFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim_fragment_fade_out);
-                Animation animationFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim_fragment_fade_in);
+            public void onAnimationStart(Animator animator) {
+                Animation animationFadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_fragment_fade_out);
+                Animation animationFadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_fragment_fade_in);
                 userWordET.setEnabled(false);
                 userWordET.startAnimation(animationFadeOut);
-                if (TestDataHelper.inEnglish[TestDataHelper.currentWordNumber]) {
-                    userWordET.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
-                } else {
-                    userWordET.setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
-                }
+                userWordET.setText(getCorrectAnswer());
+                userWordET.setTextColor(Color.WHITE);
                 userWordET.startAnimation(animationFadeIn);
                 userWordET.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 view.setBackgroundResource(R.drawable.bad_answer_change_color);
@@ -148,20 +152,33 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
-                userWordET.setText("");
-                loadNextWord(fragmentTransaction);
+            public void onAnimationEnd(Animator animator) {
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                loadNextWord(fragmentTransaction, getActivity());
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationCancel(Animator animator) {
+
             }
-        });
-        view.startAnimation(animationWrong);
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        }).playOn(view);
+    }
+
+    private String getCorrectAnswer(){
+        if (TestDataHelper.inEnglish) {
+            return cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
+        } else {
+            return cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
+        }
     }
 
     @Override
-    public void onDestroy() {                                                                                   //close cursor and database
+    public void onDestroy() {
         super.onDestroy();
         cursor.close();
         dbInstance.close();

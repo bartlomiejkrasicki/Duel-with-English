@@ -1,25 +1,28 @@
 package test_fragments;
 
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.TestDataHelper;
-import vocabulary_test.VocabularyTest;
 
 public class BaseTestFragments extends android.support.v4.app.Fragment{
 
+    public BaseTestFragments() {
+
+    }
+
     protected void replaceFragment(FragmentTransaction fragmentTransaction){                 //show next fragment after answer
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (VocabularyTest.randomNumber(3)){
+        switch (TestDataHelper.getRandomNumber(3)){
             case 0:{
                 VocabularyTestChoiceFragment choiceFragment = new VocabularyTestChoiceFragment();
                 fragmentTransaction.replace(R.id.testFragment, choiceFragment).commit();
@@ -36,107 +39,118 @@ public class BaseTestFragments extends android.support.v4.app.Fragment{
                 break;
             }
             default:{
-                Toast.makeText(getActivity(), "Błąd wczytywania testu. Uruchom go jeszcze raz :(", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Błąd wczytywania testu. Uruchom go jeszcze raz :(", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    protected void loadNextWord(FragmentTransaction fragmentTransaction){
+    protected void loadNextWord(FragmentTransaction fragmentTransaction, Activity activity){
         TestDataHelper.currentWordNumber++;
+        TestDataHelper.inEnglishSetRandom();
         if(TestDataHelper.currentWordNumber == TestDataHelper.amountOfWords){
-            endTestAlertDialog();
+            showEndTestAlertDialog(activity);
         } else {
             replaceFragment(fragmentTransaction);
         }
     }
 
-    private void endTestAlertDialog(){
-        final RoundCornerProgressBar testProgressBar = (RoundCornerProgressBar) getActivity().findViewById(R.id.testProgressBar);
+    private MaterialStyledDialog.Builder createEndDialogFromLesson(){
+        MaterialStyledDialog.Builder exitAppDialog = new MaterialStyledDialog.Builder(getContext())
+                .withDialogAnimation(true)
+                .withDivider(true)
+                .setHeaderColor(R.color.colorAccent)
+                .setNegativeText("Powtórz")
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        saveResultsAndRecreate();
+                    }
+                })
+                .setPositiveText("Zakończ")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        saveResults();
+                    }
+                });
+        if(setTestResultIcon()==0){
+            exitAppDialog.setStyle(Style.HEADER_WITH_TITLE);
+            exitAppDialog.setTitle("Spróbuj ponownie");
+            exitAppDialog.setDescription(String.format("Zdobyłeś %s %% prawidłowych odpowiedzi. Zdobądź minimum 50%% aby otrzymać osiągnięcie", TestDataHelper.calculatePercentage()));
+        } else {
+            exitAppDialog.setStyle(Style.HEADER_WITH_ICON);
+            exitAppDialog.setIcon(setTestResultIcon());
+            exitAppDialog.setDescription(String.format("Gratulacje, %s %% prawidłowych odpowiedzi", TestDataHelper.calculatePercentage()));
+        }
+        return exitAppDialog;
+    }
+
+    private MaterialStyledDialog.Builder createEndDialogNoLesson(final Activity activity){
+        return new MaterialStyledDialog.Builder(activity)
+                .withDialogAnimation(true)
+                .withDivider(true)
+                .setHeaderColor(R.color.colorAccent)
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setTitle("Gratulacje")
+                .setDescription("Odpowiedziałeś poprawnie na " + TestDataHelper.manyGoodAnswer + " z " + TestDataHelper.amountOfWords + " pytań, co stanowi " + TestDataHelper.calculatePercentage() + "% wszystkich odpowiedzi.")
+                .setNegativeText("Powtórz")
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        TestDataHelper.cleanVariablesAfterRecreate();
+                        activity.recreate();
+                    }
+                })
+                .setPositiveText("Zakończ")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        TestDataHelper.cleanVariablesAfterFinish();
+                        activity.finish();
+                    }
+                });
+    }
+
+    private void showEndTestAlertDialog(Activity activity){
         if (TestDataHelper.isTestFromLesson){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            final View view = getActivity().getLayoutInflater().inflate(R.layout.test_from_lesson_custom_dialog, null);
-            setTestResultIcon(view);
-            TextView testResultPercent = (TextView) view.findViewById(R.id.testResultPercentDialog);
-            testResultPercent.setText(String.format("%s %%", TestDataHelper.calculatePercentage()));
-            builder.setView(view);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    saveResultsTest();
-                    TestDataHelper.manyGoodAnswer = 0;
-                    TestDataHelper.currentWordNumber = 0;
-                    getActivity().finish();
-                }
-            });
-            builder.setNegativeButton("Powtórz test", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    testProgressBar.setProgress(0);
-                    saveAndReplayTest();
-                    TestDataHelper.manyGoodAnswer = 0;
-                    TestDataHelper.currentWordNumber = 0;
-                    getActivity().recreate();
-                }
-            });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+            createEndDialogFromLesson().show();
         } else {
-            testProgressBar.setProgress(TestDataHelper.currentWordNumber);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-            alertDialogBuilder.setTitle("Test został zakończony");
-            alertDialogBuilder.setMessage("Odpowiedziałeś poprawnie na " + TestDataHelper.manyGoodAnswer + " z " + TestDataHelper.amountOfWords + " pytań, co stanowi " + TestDataHelper.calculatePercentage() + "% wszystkich odpowiedzi.");
-            alertDialogBuilder.setCancelable(false);
-            alertDialogBuilder.setPositiveButton("Jeszcze raz", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    testProgressBar.setProgress(0);
-                    TestDataHelper.manyGoodAnswer = 0;
-                    TestDataHelper.currentWordNumber = 0;
-                    getActivity().recreate();
-                }
-            });
-            alertDialogBuilder.setNegativeButton("Zakończ", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    getActivity().finish();
-                }
-            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+          createEndDialogNoLesson(activity).show();
         }
     }
 
-    private void setTestResultIcon(View view) {
+    private int setTestResultIcon() {
         int progressPercent = (int) TestDataHelper.calculatePercentage();
-        ImageView endTestIcon = (ImageView) view.findViewById(R.id.endTestIcon);
-        if (progressPercent >= 65 && progressPercent < 75 ){
-            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_crown_bronze_icon));
+        if (progressPercent >= 50 && progressPercent < 75 ){
+            return R.drawable.ic_crown_bronze_icon;
         } else if (progressPercent >= 75 && progressPercent < 90){
-            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_crown_silver_icon));
+            return R.drawable.ic_crown_silver_icon;
         } else if (progressPercent >= 90){
-            endTestIcon.setImageDrawable(getActivity().getDrawable(R.drawable.ic_crown_gold_icon));
+            return R.drawable.ic_crown_gold_icon;
         } else {
-            endTestIcon.setVisibility(View.INVISIBLE);
+            return 0;
         }
     }
 
-    private void saveResultsTest() {
-        saveTestResults();
+    private void saveResults() {
+        saveTestResultsToDB();
+        TestDataHelper.cleanVariablesAfterFinish();
         getActivity().finish();
     }
 
-    private void saveAndReplayTest() {
-        saveTestResults();
+    private void saveResultsAndRecreate() {
+        saveTestResultsToDB();
+        TestDataHelper.cleanVariablesAfterRecreate();
         getActivity().recreate();
     }
 
-    private void saveTestResults(){
+    private void saveTestResultsToDB(){
         VocabularyDatabase dbInstance = VocabularyDatabase.getInstance(getContext());
         dbInstance.saveTestResult(getIconResultNumber(TestDataHelper.calculatePercentage()), TestDataHelper.lvlOfLanguage, TestDataHelper.categoryName);
     }
 
     private int getIconResultNumber(double testResult){
-        if (testResult >= 65 && testResult < 75 ){
+        if (testResult >= 50 && testResult < 75 ){
             return 1;
         } else if (testResult >= 75 && testResult < 90){
             return 2;
