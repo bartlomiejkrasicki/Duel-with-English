@@ -30,7 +30,6 @@ import database_vocabulary.VocabularyDatabase;
 import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.TestDataHelper;
-import vocabulary_test.VocabularyTest;
 
 public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
 
@@ -57,9 +56,8 @@ public class VocabularyTestJigsawWordFragment extends BaseTestFragments {
     }
 
     private void declarationVariables(View view){
-        VocabularyTest vocabularyTest = new VocabularyTest();
         dbInstance = VocabularyDatabase.getInstance(getContext());
-        cursor = vocabularyTest.getCursor(dbInstance);
+        cursor = TestDataHelper.getCursor(dbInstance);
         checkButton = (Button) view.findViewById(R.id.jigsawButtonToCheck);
         TestDataHelper.setToolbarHeader(cursor, getActivity());
         TestDataHelper.setTestHint(R.string.test_jigsaw_word_en_hint, R.string.test_jigsaw_word_pl_hint, getActivity());

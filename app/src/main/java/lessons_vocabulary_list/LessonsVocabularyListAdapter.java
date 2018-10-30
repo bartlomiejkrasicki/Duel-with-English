@@ -16,7 +16,7 @@ import pl.flanelowapopijava.duel_with_english.R;
 
 public class LessonsVocabularyListAdapter extends BaseAdapter {
 
-    private boolean isStarVisible = false;
+    private boolean favouriteIconVisible = false;
     private Context context;
     private Cursor cursor;
     private VocabularyDatabase dbInstance;
@@ -38,12 +38,12 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
         this.cursor = cursor;
     }
 
-    boolean isStarVisible() {
-        return isStarVisible;
+    boolean isFavouriteIconVisible() {
+        return favouriteIconVisible;
     }
 
-    void setStarVisible(boolean starVisible) {
-        isStarVisible = starVisible;
+    void setFavouriteIconVisible(boolean favouriteIconVisible) {
+        this.favouriteIconVisible = favouriteIconVisible;
     }
 
     String getLevelLanguage() {
@@ -103,7 +103,7 @@ public class LessonsVocabularyListAdapter extends BaseAdapter {
             } else
                 favouriteIcon.setImageResource(R.drawable.ic_favouriteiconoff);
         }
-        if (isStarVisible()){                                     //star button is visible or not
+        if (isFavouriteIconVisible()){                                     //star button is visible or not
             favouriteIcon.setVisibility(View.VISIBLE);
         }
         else {

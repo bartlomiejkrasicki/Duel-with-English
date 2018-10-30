@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import database_vocabulary.VocabularyDatabase;
 import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 
 public class TestDataHelper {
 
     public static int manyGoodAnswer = 0, currentWordNumber = 0;
-    public static boolean inEnglish, isTestFromLesson = true;
+    public static boolean inEnglish, isTestFromLesson;
     public static int amountOfWords = 0, amountOfButtons = 0;
     public static String lvlOfLanguage = "", categoryName = "";
     public static ArrayList<Integer> wordTable;
@@ -35,8 +36,17 @@ public class TestDataHelper {
         return numberList;
     }
 
+    public static Cursor getCursor(VocabularyDatabase vocabularyDatabase) {
+        if (TestDataHelper.isTestFromLesson) {
+            return vocabularyDatabase.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
+        }
+        else {
+            return vocabularyDatabase.getAllLvlValues(TestDataHelper.lvlOfLanguage);
+        }
+    }
+
     public static void setToolbarHeader(Cursor cursor, Activity currentActivity){
-        cursor.moveToPosition(currentWordNumber);
+        cursor.moveToPosition(wordTable.get(currentWordNumber));
         Toolbar toolbar = (Toolbar) currentActivity.findViewById(R.id.testVocabularyToolbar);
         toolbar.setTitle("Kategoria: " + cursor.getString(VocabularyDatabaseColumnNames.categoryColumn));
         toolbar.setSubtitle("Postęp: " + (currentWordNumber + 1) + "/" + amountOfWords);
@@ -81,9 +91,7 @@ public class TestDataHelper {
         return random.nextInt(i);
     }
 
-    public static void prepareView(Cursor cursor, Activity activity){
-        TestDataHelper.setToolbarHeader(cursor, activity);
-        TestDataHelper.setTestHint(R.string.test_write_en_hint, R.string.test_write_pl_hint, activity);
-        TestDataHelper.setProgressBar(activity);
+    public static int getCurrentWordNumber(){
+        return wordTable.get(currentWordNumber);
     }
 }

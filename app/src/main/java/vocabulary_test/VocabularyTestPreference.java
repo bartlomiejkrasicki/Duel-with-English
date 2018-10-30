@@ -52,10 +52,10 @@ public class VocabularyTestPreference extends FragmentActivity {
 
     public void startTestClick(View view){
         Intent intent = new Intent(this, VocabularyTest.class);
-        intent.putExtra("amountOfButtons", Integer.valueOf(sharedPreferences.getString("amountOfButtons", "")));
-        intent.putExtra("wordsAmount", Integer.valueOf(sharedPreferences.getString("wordsAmount", "")));
-        intent.putExtra("levelOfLanguage", sharedPreferences.getString("levelOfLanguage", ""));
-        intent.putExtra("isTestFromLesson", false);
+        TestDataHelper.amountOfButtons = Integer.valueOf(sharedPreferences.getString("amountOfButtons", ""));
+        TestDataHelper.amountOfWords = Integer.valueOf(sharedPreferences.getString("wordsAmount", ""));
+        TestDataHelper.lvlOfLanguage = sharedPreferences.getString("levelOfLanguage", "");
+        TestDataHelper.isTestFromLesson = false;
         startActivity(intent);
     }
 }

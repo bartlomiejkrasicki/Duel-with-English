@@ -3,10 +3,13 @@ package vocabulary_test;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -17,7 +20,6 @@ import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import database_vocabulary.VocabularyDatabase;
 import pl.flanelowapopijava.duel_with_english.R;
-import test_fragments.VocabularyTestChoiceFragment;
 import test_fragments.VocabularyTestJigsawWordFragment;
 import test_fragments.VocabularyTestWriteFragment;
 
@@ -31,6 +33,7 @@ public class VocabularyTest extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary_test);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setToolbarOnClick();
         declarationVariables();
         prepareProgressBar();
@@ -61,46 +64,45 @@ public class VocabularyTest extends FragmentActivity {
         }
         TestDataHelper.wordTable = TestDataHelper.prepareWordRandomTable();
         TestDataHelper.inEnglishSetRandom();
+        Log.d("tag",TestDataHelper.isTestFromLesson + "");
     }
 
     private void showFirstFragment(){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_fade_in, R.anim.anim_fragment_fade_out);
-        switch (TestDataHelper.getRandomNumber(3)){
-            case 0:{
-                VocabularyTestChoiceFragment choiceFragment = new VocabularyTestChoiceFragment();
-                fragmentTransaction.add(R.id.testFragment, choiceFragment).commit();
-                break;
+        Object firstFragmentInstance = getFirstFragmentObject(getRandomFirstFragmentNumber());
+        fragmentTransaction.add(R.id.testFragment, (Fragment) firstFragmentInstance).commit();
+    }
+
+    private int getRandomFirstFragmentNumber(){
+        if(cursor.getCount() < 2)
+            return TestDataHelper.getRandomNumber(3);
+        else
+            return TestDataHelper.getRandomNumber(2);
+    }
+
+    private Object getFirstFragmentObject(int firstFragmentNumber) {
+        switch (firstFragmentNumber) {
+            case 0: {
+                return new VocabularyTestWriteFragment();
             }
-            case 1:{
-                VocabularyTestWriteFragment writeFragment = new VocabularyTestWriteFragment();
-                fragmentTransaction.add(R.id.testFragment, writeFragment).commit();
-                break;
+            case 1: {
+                return new VocabularyTestJigsawWordFragment();
             }
-            case 2:{
-                VocabularyTestJigsawWordFragment jigsawWordFragment = new VocabularyTestJigsawWordFragment();
-                fragmentTransaction.add(R.id.testFragment, jigsawWordFragment).commit();
-                break;
+            case 2: {
+                return new VocabularyTestWriteFragment();
             }
-            default:{
+            default: {
                 Toast.makeText(this, "Błąd wczytywania testu. Spróbuj ponownie", Toast.LENGTH_SHORT).show();
             }
         }
+        return null;
     }
 
     private void prepareProgressBar(){
         testProgressBar = (RoundCornerProgressBar) findViewById(R.id.testProgressBar);
         testProgressBar.setMax(TestDataHelper.amountOfWords);
         testProgressBar.setProgress(0);
-    }
-
-    public Cursor getCursor(VocabularyDatabase vocabularyDatabase) {
-        if (TestDataHelper.categoryName != null) {
-            return vocabularyDatabase.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
-        }
-        else {
-            return vocabularyDatabase.getAllLvlValues(TestDataHelper.lvlOfLanguage);
-        }
     }
 
     private MaterialStyledDialog.Builder getEndTestDialog(){

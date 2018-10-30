@@ -25,7 +25,6 @@ import database_vocabulary.VocabularyDatabase;
 import database_vocabulary.VocabularyDatabaseColumnNames;
 import pl.flanelowapopijava.duel_with_english.R;
 import vocabulary_test.TestDataHelper;
-import vocabulary_test.VocabularyTest;
 
 public class VocabularyTestWriteFragment extends BaseTestFragments {
 
@@ -41,7 +40,6 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_test_write, container, false);
         declarationVariables(view);
-        TestDataHelper.prepareView(cursor, getActivity());
         addWord();
         configureEditText();
         configureCheckButton(view);
@@ -49,11 +47,13 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
     }
 
     private void declarationVariables(View view){
-        VocabularyTest vocabularyTest = new VocabularyTest();
         dbInstance = VocabularyDatabase.getInstance(getActivity());
-        cursor = vocabularyTest.getCursor(dbInstance);
+        cursor = TestDataHelper.getCursor(dbInstance);
         wordToGuess = (TextView) view.findViewById(R.id.test_write_word);
         userWordET = (EditText) view.findViewById(R.id.userWriteWordET);
+        TestDataHelper.setToolbarHeader(cursor, getActivity());
+        TestDataHelper.setTestHint(R.string.test_write_en_hint, R.string.test_write_pl_hint, getActivity());
+        TestDataHelper.setProgressBar(getActivity());
     }
 
     private void addWord(){
@@ -119,6 +119,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
 
             @Override
             public void onAnimationEnd(Animator animator) {
+                userWordET.setText("");
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 loadNextWord(fragmentTransaction, getActivity());
             }
@@ -153,6 +154,7 @@ public class VocabularyTestWriteFragment extends BaseTestFragments {
 
             @Override
             public void onAnimationEnd(Animator animator) {
+                userWordET.setText("");
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 loadNextWord(fragmentTransaction, getActivity());
             }

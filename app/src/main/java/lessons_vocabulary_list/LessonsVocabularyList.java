@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import database_vocabulary.CategoryDatabaseColumnNames;
 import database_vocabulary.VocabularyDatabase;
@@ -136,10 +137,10 @@ public class LessonsVocabularyList extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.addToFavouriteWordsStar) {
-            if (adapterVocabulary.isStarVisible()) {
-                adapterVocabulary.setStarVisible(false);
+            if (adapterVocabulary.isFavouriteIconVisible()) {
+                adapterVocabulary.setFavouriteIconVisible(false);
             } else {
-                adapterVocabulary.setStarVisible(true);
+                adapterVocabulary.setFavouriteIconVisible(true);
             }
             adapterVocabulary.setCursor(dbInstance.showVocabularyForLessons(adapterVocabulary.getLevelLanguage(), adapterVocabulary.getCategoryName(), adapterVocabulary.isAlphabeticalSort()));
             adapterVocabulary.notifyDataSetChanged();
@@ -166,7 +167,15 @@ public class LessonsVocabularyList extends AppCompatActivity
         return true;
     }
 
-    public void startTestFromLessonOnClick(View view) {
+    public void startTestButtonOnClick(View view) {
+        if(isEmptyCursor(adapterVocabulary.getCursor())){
+            Toast.makeText(this, "Kategoria nie zawiera żadnych słów. Wybierz inną.", Toast.LENGTH_SHORT).show();
+        } else {
+            startTest();
+        }
+    }
+
+    private void startTest(){
         TestDataHelper.amountOfWords = adapterVocabulary.getCount();
         TestDataHelper.amountOfButtons = 6;
         TestDataHelper.lvlOfLanguage = adapterVocabulary.getLevelLanguage();
@@ -174,5 +183,9 @@ public class LessonsVocabularyList extends AppCompatActivity
         TestDataHelper.isTestFromLesson = true;
         Intent intent = new Intent(this, VocabularyTest.class);
         startActivity(intent);
+    }
+
+    private boolean isEmptyCursor(Cursor cursor){
+        return cursor == null;
     }
 }

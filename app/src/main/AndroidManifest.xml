@@ -78,7 +78,7 @@
             android:parentActivityName="vocabulary_test.VocabularyTestPreference"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan|adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vocabulary_test.VocabularyTestPreference" />

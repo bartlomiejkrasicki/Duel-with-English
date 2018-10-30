@@ -1,5 +1,6 @@
 package test_fragments;
 
+import android.animation.Animator;
 import android.database.Cursor;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -7,12 +8,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,11 +27,10 @@ import vocabulary_test.TestDataHelper;
 
 public class VocabularyTestChoiceFragment extends BaseTestFragments implements View.OnClickListener{
 
-    private String answerText;
     private Button[] guessButtons;
     private Cursor cursor;
     private VocabularyDatabase dbInstance;
-    private int goodAnswer;
+    private int goodAnswerButtonNumber;
 
     public VocabularyTestChoiceFragment(){
     }
@@ -41,28 +42,20 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         setDataOnView();
         buttonsDeclaration(view);
         setGuessText(view);
-        addWords(view);
+        addWords();
         return view;
     }
 
     private void declarationVariables(){
         dbInstance = VocabularyDatabase.getInstance(getActivity().getApplicationContext());
         guessButtons = new Button[TestDataHelper.amountOfButtons];
-        cursor = setCursor();
+        cursor = TestDataHelper.getCursor(dbInstance);
     }
 
     private void setDataOnView(){
         TestDataHelper.setToolbarHeader(cursor, getActivity());
         TestDataHelper.setTestHint(R.string.test_choice_en_hint, R.string.test_choice_pl_hint, getActivity());
         TestDataHelper.setProgressBar(getActivity());
-    }
-
-    private Cursor setCursor(){
-        if (TestDataHelper.isTestFromLesson) {
-            return dbInstance.getCategoryValues(TestDataHelper.categoryName, TestDataHelper.lvlOfLanguage);
-        } else {
-            return dbInstance.getAllValues();
-        }
     }
 
     private void buttonsDeclaration(View view){
@@ -98,7 +91,8 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
 
     private void setGuessText(View view){
         TextView guessWord = (TextView) view.findViewById(R.id.testWordChoice);
-        cursor.moveToPosition(TestDataHelper.wordTable.get(TestDataHelper.currentWordNumber));
+        cursor = TestDataHelper.getCursor(dbInstance);
+        cursor.moveToPosition(TestDataHelper.getCurrentWordNumber());
         if (TestDataHelper.inEnglish) {
             guessWord.setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
         } else {
@@ -106,48 +100,25 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         }
     }
 
-    private void addWords(View view){
-        ArrayList<Integer> shuffleNumberButtonTable = setRandomTableNumber(guessButtons.length);
-
-
-        goodAnswer = shuffleNumberButtonTable.get(0);
-        if (TestDataHelper.inEnglish) {
-            answerText = cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
-        } else {
-            answerText = cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
-        }
-
-        final int idWord = cursor.getInt(VocabularyDatabaseColumnNames.idColumn);
-
-        final String category = cursor.getString(VocabularyDatabaseColumnNames.categoryColumn);
-        cursor = dbInstance.getCategoryValues(category, TestDataHelper.lvlOfLanguage);
-
-        final int index = searchId(cursor, idWord);
-        ArrayList<Integer> randomWordList = setRandomWordList(cursor.getCount(), index, TestDataHelper.amountOfButtons);
-
-        for (int j = 0, i = 0; j < guessButtons.length; i++, j++) {
+    private void addWords(){
+        cursor = TestDataHelper.getCursor(dbInstance);
+        ArrayList<Integer> shuffleWordIdTable = setRandomWordList(cursor.getCount(), TestDataHelper.amountOfButtons);
+        for (int i = 0; i < guessButtons.length; i++) {
             guessButtons[i].setOnClickListener(this);
-            do {
-                cursor.moveToPosition(randomWordList.get(i));
-                if (TestDataHelper.inEnglish) {
-                    guessButtons[shuffleNumberButtonTable.get(j)].setText(cursor.getString(VocabularyDatabaseColumnNames.plwordColumn));
-                } else {
-                    guessButtons[shuffleNumberButtonTable.get(j)].setText(cursor.getString(VocabularyDatabaseColumnNames.enwordColumn));
-                }
-            } while (false);
+            cursor.moveToPosition(shuffleWordIdTable.get(i));
+            guessButtons[i].setText(getButtonText());
+            if(shuffleWordIdTable.get(i) == TestDataHelper.getCurrentWordNumber()){
+                goodAnswerButtonNumber = i;
+            }
         }
     }
 
-    private int searchId(Cursor cursor, int id){
-        int index = 0;
-        for (int i = 0; i < cursor.getCount(); i++) {
-            cursor.moveToPosition(i);
-            if (cursor.getInt(0) == id) {
-                index = i;
-                break;
-            }
+    private String getButtonText(){
+        if (TestDataHelper.inEnglish) {
+            return cursor.getString(VocabularyDatabaseColumnNames.plwordColumn);
+        } else {
+            return cursor.getString(VocabularyDatabaseColumnNames.enwordColumn);
         }
-        return index;
     }
 
     @Override
@@ -162,52 +133,27 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
         for (Button currentButton : guessButtons) {
             currentButton.setClickable(false);
         }
-        final Button thisButton = (Button) view;
+        Button thisButton = (Button) view;
         String buttonText = thisButton.getText().toString();
-
-        if (buttonText.equalsIgnoreCase(answerText)) {
-           setGoodAnswer(thisButton);
-
+        cursor.moveToPosition(TestDataHelper.getCurrentWordNumber());
+        if (buttonText.equalsIgnoreCase(getButtonText())) {
+            TestDataHelper.manyGoodAnswer++;
+            goodAnswerAnimation(thisButton);
         } else {
-           setBadAnswer(thisButton);
+            badAnswerAnimation(thisButton);
         }
     }
 
-    private void setGoodAnswer(final Button thisButton){
-        TestDataHelper.manyGoodAnswer++;
+    private void goodAnswerAnimation(final Button thisButton){
         thisButton.setBackgroundResource(R.drawable.good_answer_change_color);
-        Animation trueAnswer;
-        if (TestDataHelper.amountOfButtons > 5) {
-            trueAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test);
-        } else {
-            trueAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.correct_answer_test_big_button);
-        }
-        startAnimation(trueAnswer, thisButton, true);
-    }
-
-    private void setBadAnswer(final Button thisButton){
-        thisButton.setBackgroundResource(R.drawable.bad_answer_change_color);
-        guessButtons[goodAnswer].setBackgroundResource(R.drawable.good_answer_change_color);
-        Animation falseAnswer;
-        if (TestDataHelper.amountOfButtons > 5) {
-            falseAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test);
-        } else {
-            falseAnswer = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.wrong_answer_test_big_button);
-        }
-        startAnimation(falseAnswer, thisButton, false);
-    }
-
-    private void startAnimation(final Animation answerAnimation, final Button thisButton, final boolean isTrue) {
-        answerAnimation.setAnimationListener(new Animation.AnimationListener() {
+        YoYo.with(Techniques.ZoomIn).duration(1000).withListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animator animator) {
                 ((TransitionDrawable) thisButton.getBackground()).startTransition(500);
-                if (!isTrue){
-                    ((TransitionDrawable) guessButtons[goodAnswer].getBackground()).startTransition(300);
-                }
             }
+
             @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(Animator animator) {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -216,32 +162,61 @@ public class VocabularyTestChoiceFragment extends BaseTestFragments implements V
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 loadNextWord(fragmentTransaction, getActivity());
             }
+
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationCancel(Animator animator) {
+
             }
-        });
-        thisButton.startAnimation(answerAnimation);
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        }).playOn(thisButton);
     }
 
-    private ArrayList<Integer> setRandomWordList(int maxRangeNumber, int index, int buttonsAmount){
+    private void badAnswerAnimation(final Button thisButton) {
+        thisButton.setBackgroundResource(R.drawable.bad_answer_change_color);
+        guessButtons[goodAnswerButtonNumber].setBackgroundResource(R.drawable.good_answer_change_color);
+        YoYo.with(Techniques.Shake).duration(1000).withListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                ((TransitionDrawable) thisButton.getBackground()).startTransition(500);
+                ((TransitionDrawable) guessButtons[goodAnswerButtonNumber].getBackground()).startTransition(500);
+            }
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                loadNextWord(fragmentTransaction, getActivity());
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        }).playOn(thisButton);
+    }
+
+    private ArrayList<Integer> setRandomWordList(int maxRangeNumber, int buttonsAmount){
         ArrayList<Integer> randomWordList = new ArrayList<>();
-        randomWordList.add(index);
+        randomWordList.add(TestDataHelper.getCurrentWordNumber());
         Random random = new Random();
         int randomNumber;
         for(; randomWordList.size() < buttonsAmount;){
             randomNumber = random.nextInt(maxRangeNumber);
-            if(!(randomWordList.contains(randomNumber)) && randomNumber != index){
+            if(!(randomWordList.contains(randomNumber)) && randomNumber != TestDataHelper.getCurrentWordNumber()){
                 randomWordList.add(randomNumber);
             }
-        }
-        Collections.shuffle(randomWordList);
-        return randomWordList;
-    }
-
-    private ArrayList<Integer> setRandomTableNumber(int maxLength){
-        ArrayList<Integer> randomWordList = new ArrayList<>();
-        for(int i = 0; i < maxLength; i++){
-            randomWordList.add(i);
         }
         Collections.shuffle(randomWordList);
         return randomWordList;

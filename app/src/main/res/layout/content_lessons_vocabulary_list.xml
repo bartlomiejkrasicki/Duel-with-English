@@ -21,7 +21,7 @@
             style="@style/Button.Custom"
             app:layout_widthPercent="100%"
             app:layout_heightPercent="10%"
-            android:onClick="startTestFromLessonOnClick"
+            android:onClick="startTestButtonOnClick"
             android:layout_alignParentBottom="true"
             android:text="@string/start_test_button" />
 
